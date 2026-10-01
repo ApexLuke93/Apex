@@ -273,7 +273,7 @@ table.t th{font:600 10px var(--mono);color:var(--tx3);text-transform:uppercase;l
 // ════════════════════════════════════════════════════════════════════
 // APEX V2 — Stage 1 (data layer + migration) + Stage 2 (execution)
 // ════════════════════════════════════════════════════════════════════
-const APP_VERSION = '2.4.0';
+const APP_VERSION = '2.5.0';
 const STORE_KEY = 'apex.store';           // schema v3
 const LEGACY_KEY = 'apex_v2';             // never written by V2
 const SNAP_PREFIX = 'apex.snap.';
@@ -1181,6 +1181,8 @@ function xpEvents() {
       if (mm.anchors) { const nl = levelFromRating(rate(id, tr.to.v)); if (nl.label !== lvl.label && (nl.li > lvl.li || (nl.li === lvl.li && ROMAN.indexOf(nl.sub) > ROMAN.indexOf(lvl.sub)))) { add(`lv:${id}:${nl.label}`, tr.to.date, 100, `Level up: ${mm.name} → ${nl.label}`, 'level'); lvl = nl; } }
     });
   });
+  NUT().log.forEach(e => { if (e.status === 'yes') add('n:' + e.date, e.date, 10, 'Nutrition logged'); else if (e.status === 'partial') add('n:' + e.date, e.date, 5, 'Nutrition partly logged'); });
+  (P()?.weeks || []).forEach(w => { const ds = Array.from({ length: 7 }, (_, i) => addDays(w.start, i)).filter(nutLogged); if (ds.length >= 5) add('nw:' + w.week, ds[4], 40, `Week ${w.week}: nutrition logged 5+ days`); });
   quests().filter(q => q.done && q.doneDate).forEach(q => add('qu:' + q.id, q.doneDate, q.xp, 'Quest: ' + q.name, 'quest'));
   const blk = P()?.block; if (blk && t > blk.end) { const a = adherenceRange(blk.start, blk.end); if (a.due && a.pct >= 90) add('blk:' + blk.id, blk.end, 300, `${blk.name} complete — ${a.pct}% adherence`, 'block'); }
   computeAwards().forEach(a => add('sp:' + a.key, a.date, SPECIALS[a.type].xp, 'Special card: ' + SPECIALS[a.type].name, 'special'));
@@ -1416,7 +1418,7 @@ function missionsHTML() {
   const wk = weekOf(t), core = wd.filter(d => dayPlan(d)?.session && !dayPlan(d).optional);
   const micro = (Store.d.micro || []).filter(x => wd.includes(x.date)).length, bodyWk = Store.d.body.some(b => b.source === 'user' && wd.includes(b.date));
   const items = core.map(d => ({ label: dayPlan(d).def.name, done: !!completedOn(d).length, xp: 100, sub: fmtDay(d).slice(0, 6) }));
-  const bonus = [{ label: '2 durability micro-sessions', done: micro >= 2, xp: 40, sub: `${Math.min(micro, 2)}/2` }, { label: 'Body check-in', done: bodyWk, xp: 10, sub: '' }];
+  const bonus = [{ label: '2 durability micro-sessions', done: micro >= 2, xp: 40, sub: `${Math.min(micro, 2)}/2` }, { label: 'Body check-in', done: bodyWk, xp: 10, sub: '' }, { label: 'Nutrition logged 5 of 7 days', done: nutWeekCount(wd) >= 5, xp: 40, sub: `${Math.min(nutWeekCount(wd), 5)}/5` }];
   if (wk?.benchmarks) { const ids = ['cmj', 'accel_10m', 'fly_10m', 'cod_505']; bonus.push({ label: 'Field battery: CMJ · 10m · flying 10 · 505', done: ids.every(id => metricSeries(id).some(x => wd.includes(x.date))), xp: 150, sub: `${ids.filter(id => metricSeries(id).some(x => wd.includes(x.date))).length}/4` }); bonus.push({ label: 'Capacity check: heel rise + knee-to-wall', done: ['heelrise', 'wblt'].every(id => metricSeries(id).some(x => wd.includes(x.date))), xp: 60, sub: '' }); }
   const all = [...items, ...bonus], done = all.filter(x => x.done).length, avail = all.filter(x => !x.done).reduce((a, x) => a + x.xp, 0) + (items.every(x => x.done) ? 0 : 100);
   return `<div class="card"><div class="row between"><div class="eyebrow">Week ${wk.week} · ${esc(wk.label)}</div><span class="mono" style="font-size:13px">${done}/${all.length}</span></div>
@@ -1470,7 +1472,7 @@ function renderProgress() {
   h += `<div class="card"><div class="eyebrow">Return to pre-break training capacity</div>${rs.map(r => `<div style="margin-top:10px"><div class="row between"><b>${esc(r.name)}</b><span class="mono">${r.current ? r.pct + '%' : 'not yet'}</span></div>${r.current ? `<div class="bar"><i style="width:${r.pct}%"></i></div><div class="reason">Now ${esc(r.currentText)} · reference ${esc(r.refText)} (estimated 1RM — training data, not a test)</div>` : ''}</div>`).join('')}
     <div class="sep"></div><div class="row between"><b>Strength (training)</b><span class="mono">${known.length ? Math.round(known.reduce((a, b) => a + b.pct, 0) / known.length) + '% (' + known.length + '/3)' : 'INSUFFICIENT DATA'}</span></div>
     <div class="row between" style="margin-top:6px"><b>Training capacity</b><span class="mono dim">${(() => { const a = adherence(28); return a.due >= 4 ? a.pct + '% of planned (28d)' : 'INSUFFICIENT DATA'; })()}</span></div></div>`;
-  h += bodyHealthHTML();
+  h += nutritionHTML() + bodyHealthHTML();
   const ss = [...d.sessions].sort((a, b) => b.endedAt - a.endedAt).slice(0, 8);
   h += `<div class="card"><div class="eyebrow">Recent sessions</div>${ss.length ? ss.map(s => `<div class="list-item"><div style="flex:1"><b>${esc(s.sessionKey)} · ${esc(s.name)}</b><div class="dim" style="font-size:13px">${esc(fmtDay(s.scheduledDate))} · ${s.durationMin} min · RPE ${s.sessionRpe} · ${s.load} AU${s.adaptation?.changes?.length ? ' · adapted' : ''}</div></div><span class="chip ${s.status === 'completed' ? 'g' : 'a'}">${esc(s.status)}</span></div>`).join('') : '<div class="reason">No sessions yet.</div>'}${loadHTML()}</div>`;
   $('#view').innerHTML = h;
@@ -1493,18 +1495,172 @@ function loadHTML() {
   return `<div class="sep"></div><div class="eyebrow">Weekly load (session RPE × min)</div><div class="loadbars">${wks.map(w => `<div><i style="height:${mx ? Math.round(w.load / mx * 100) : 0}%"></i><span>${w.label}</span></div>`).join('')}</div>
     <div class="reason">${chronic ? `This week is ${Math.round(cur / chronic * 100)}% of your 4-week average.` : 'Building history.'} Context only — not an injury prediction.${chronic && cur > chronic * 1.5 ? ' <b class="warn-t">Sharp rise: check soreness and sleep before adding more.</b>' : ''}</div>`;
 }
-function exportCalendar(hhmm) {
-  const [H, M] = hhmm.split(':').map(Number), dt = (d, h, m) => d.replace(/-/g, '') + 'T' + pad(h) + pad(m) + '00';
-  const ev = Object.values(scheduleMap()).filter(x => x.session && x.date >= today()).map(x => { const s = P().sessions[x.session], end = new Date(2000, 0, 1, H, M + (s.estMin || 50));
-    return ['BEGIN:VEVENT', `UID:apex-${x.date}-${x.session}@apex`, `DTSTAMP:${dt(today(), 0, 0)}`, `DTSTART:${dt(x.date, H, M)}`, `DTEND:${dt(x.date, end.getHours(), end.getMinutes())}`, `SUMMARY:Apex ${x.session} — ${s.name}${s.optional ? ' (optional)' : ''}`, 'DESCRIPTION:Open Apex and tap START.', 'BEGIN:VALARM', 'TRIGGER:-PT30M', 'ACTION:DISPLAY', 'DESCRIPTION:Apex session in 30 min', 'END:VALARM', 'END:VEVENT'].join('\r\n'); });
-  const ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Apex//EN', 'CALSCALE:GREGORIAN', ...ev, 'END:VCALENDAR'].join('\r\n'), file = new File([ics], 'apex-sessions.ics', { type: 'text/calendar' });
-  if (navigator.canShare?.({ files: [file] })) navigator.share({ files: [file], title: 'Apex sessions' }).catch(() => {}); else { const u = URL.createObjectURL(file), a = document.createElement('a'); a.href = u; a.download = 'apex-sessions.ics'; document.body.appendChild(a); a.click(); a.remove(); }
-  toast(`${ev.length} sessions exported with 30-min reminders`);
+// ════════════════════════════════════════════════════════════════════
+// STAGE 6 — calendar reminders + nutrition (MyFitnessPal check-in)
+// ════════════════════════════════════════════════════════════════════
+const NUT_DEFAULT = { targets: { kcal: 2400, protein: 180, fat: [70, 80], carbs: [240, 260], lossKgWk: [0.25, 0.5] }, log: [] };
+function NUT() {
+  const d = Store.d; if (!d.nutrition) d.nutrition = JSON.parse(JSON.stringify(NUT_DEFAULT));
+  d.nutrition.targets = { ...NUT_DEFAULT.targets, ...(d.nutrition.targets || {}) }; d.nutrition.log = d.nutrition.log || []; return d.nutrition;
+}
+const REM_DEFAULT = { morning: '06:30', evening: '20:00', restMorning: false };
+const REM = () => ({ ...REM_DEFAULT, ...(Store.d.reminders || {}) });
+const nowHHMM = () => { const n = new Date(); return pad(n.getHours()) + ':' + pad(n.getMinutes()); };
+const nutOn = date => NUT().log.find(x => x.date === date);
+const nutLogged = date => ['yes', 'partial'].includes(nutOn(date)?.status);
+let nutEdit = false;
+
+function setNut(date, patch) {
+  const n = NUT(), before = new Set(xpEvents().map(e => e.key));
+  let e = n.log.find(x => x.date === date);
+  if (!e) { e = { date, status: null, kcal: null, protein: null }; n.log.push(e); n.log.sort((a, b) => a.date.localeCompare(b.date)); }
+  Object.assign(e, patch, { ts: Date.now() }); Store.save();
+  return xpEvents().filter(x => !before.has(x.key)).reduce((a, x) => a + x.xp, 0);
+}
+function nutTap(date, status) {
+  const xp = setNut(date, { status }); nutEdit = false; render();
+  toast((status === 'no' ? 'Noted. Tomorrow counts too' : status === 'partial' ? 'Partly logged' : 'Nutrition logged') + (xp ? ` · +${xp} XP` : ''));
+}
+function nutNums(date) {
+  const k = parseFloat($('#nK').value), p = parseFloat($('#nP').value);
+  if (!(k > 0) && !(p > 0)) return toast('Enter calories or protein', true);
+  if (k > 0 && (k < 300 || k > 8000)) return toast('Calories look off. Check the number', true);
+  if (p > 0 && p > 500) return toast('Protein looks off. Check the number', true);
+  setNut(date, { kcal: k > 0 ? Math.round(k) : null, protein: p > 0 ? Math.round(p) : null }); nutEdit = false; render(); toast('Saved');
+}
+// Logging run: yes/partial days in a row; one missed day per week is forgiven (same rule as the training streak)
+function nutStreak() {
+  const t = today(), start = v2Start(), used = {}; let n = 0;
+  for (let d = nutOn(t)?.status ? t : addDays(t, -1); d >= start; d = addDays(d, -1)) {
+    if (nutLogged(d)) { n++; continue; }
+    const wk = Math.floor(daysBetween(start, d) / 7); if (!used[wk]) { used[wk] = 1; continue; } break;
+  }
+  return n;
+}
+// Averages use FULL-log days only: partial days undercount intake
+function nutWindow(endDate, days = 7) {
+  const s = v2Start(), ds = Array.from({ length: days }, (_, i) => addDays(endDate, -i)).filter(d => d >= s && d <= today());
+  const es = ds.map(nutOn).filter(Boolean), full = es.filter(e => e.status === 'yes');
+  const k = full.filter(e => e.kcal), p = full.filter(e => e.protein), mean = (a, f) => a.length ? Math.round(a.reduce((x, e) => x + e[f], 0) / a.length) : null;
+  return { days: ds.length, yes: full.length, part: es.filter(e => e.status === 'partial').length, kN: k.length, kAvg: mean(k, 'kcal'), pN: p.length, pAvg: mean(p, 'protein') };
+}
+function weightTrend(days = 28) {
+  const t = today(), b = Store.d.body.filter(x => x.weightKg && /^\d{4}-\d\d-\d\d$/.test(x.date) && daysBetween(x.date, t) >= 0 && daysBetween(x.date, t) <= days);
+  const xs = b.map(x => -daysBetween(x.date, t)), ys = b.map(x => x.weightKg), span = xs.length ? Math.max(...xs) - Math.min(...xs) : 0;
+  if (b.length < 3 || span < 14) return { n: b.length, span };
+  const mx = xs.reduce((a, x) => a + x, 0) / xs.length, my = ys.reduce((a, y) => a + y, 0) / ys.length;
+  const slope = xs.reduce((a, x, i) => a + (x - mx) * (ys[i] - my), 0) / xs.reduce((a, x) => a + (x - mx) ** 2, 0);
+  return { n: b.length, span, kgWk: slope * 7 };
+}
+function nutWeekCount(dates) { return dates.filter(nutLogged).length; }
+
+// ── Today card ──────────────────────────────────────────────────────
+function nutCardHTML() {
+  if (!P()) return '';
+  const t = today(), e = nutOn(t), y = addDays(t, -1), T = NUT().targets, st = nutStreak(), evening = nowHHMM() >= REM().evening;
+  const btns = (d, big) => `<div class="grid3" style="margin-top:10px"><button class="btn sm ${big ? 'primary' : ''}" onclick="nutTap('${d}','yes')">✓ Logged</button><button class="btn sm" onclick="nutTap('${d}','partial')">Partly</button><button class="btn sm" onclick="nutTap('${d}','no')">Not today</button></div>`;
+  let h = `<div class="card${evening && !e?.status ? ' hero' : ''}"><div class="row between"><div class="eyebrow">Nutrition · MyFitnessPal</div>${st ? `<span class="chip g">LOGGING RUN ${st}</span>` : ''}</div>`;
+  if (!e?.status) {
+    h += `<div class="reason" style="color:var(--tx)">${evening ? '<b>Evening check-in.</b> ' : ''}Log today's food in MFP, then tick here. Target ${T.kcal.toLocaleString('en-AU')} kcal · ${T.protein}g protein.</div>${btns(t, true)}`;
+  } else if (e.status === 'no') {
+    h += `<div class="row between" style="margin-top:8px"><span class="muted">Not logged today</span><button class="btn ghost sm" onclick="nutTap('${t}','yes')">Actually, I did</button></div>`;
+  } else {
+    const hasN = e.kcal != null || e.protein != null;
+    h += `<div class="row between" style="margin-top:8px"><b>${e.status === 'yes' ? '✓ Logged in MFP' : '◐ Partly logged'}</b><button class="btn ghost sm" onclick="nutTap('${t}','${e.status === 'yes' ? 'partial' : 'yes'}')">${e.status === 'yes' ? 'Only partly' : 'Fully logged'}</button></div>`;
+    if (!hasN || nutEdit) {
+      h += `<div class="dim" style="font-size:12px;margin-top:8px">Optional: today's totals from MFP</div><div class="grid3" style="margin-top:6px"><input class="num" id="nK" inputmode="numeric" placeholder="kcal" value="${e.kcal ?? ''}"><input class="num" id="nP" inputmode="numeric" placeholder="protein g" value="${e.protein ?? ''}"><button class="btn sm" onclick="nutNums('${t}')">Save</button></div>`;
+    } else {
+      const pp = e.protein != null ? Math.min(100, Math.round(e.protein / T.protein * 100)) : null;
+      h += `<div class="mono" style="margin-top:8px" onclick="nutEdit=true;render()">${e.kcal != null ? e.kcal.toLocaleString('en-AU') + ' / ' + T.kcal.toLocaleString('en-AU') + ' kcal' : '— kcal'} · ${e.protein != null ? e.protein + ' / ' + T.protein + 'g protein' : '— protein'} <span class="dim">✎</span></div>${pp != null ? `<div class="bar"><i style="width:${pp}%"></i></div>` : ''}${e.status === 'partial' ? '<div class="reason">Partial days are left out of your averages.</div>' : ''}`;
+    }
+  }
+  if (!nutOn(y)?.status && y >= v2Start()) h += `<div class="sep"></div><div class="dim" style="font-size:13px">Yesterday (${esc(fmtDay(y).slice(0, 10))}) not ticked yet</div>${btns(y, false)}`;
+  return h + '</div>';
+}
+
+// ── Progress card ───────────────────────────────────────────────────
+function nutritionHTML() {
+  const T = NUT().targets, w = nutWindow(today()), tr = weightTrend();
+  const weeks = [3, 2, 1, 0].map(i => { const end = addDays(today(), -7 * i); return { label: i ? `-${i}w` : 'this', ...nutWindow(end) }; });
+  const pChip = w.pN >= 3 ? (w.pAvg >= T.protein * 0.9 ? 'g' : 'a') : '', kChip = w.kN >= 3 ? (Math.abs(w.kAvg - T.kcal) <= T.kcal * 0.1 ? 'g' : 'a') : '';
+  let trend;
+  if (tr.kgWk == null) trend = `<div class="reason">Weight trend needs ≥3 weigh-ins spread over 14+ days in the last 4 weeks (${tr.n} so far). Weigh in 2–3× a week, in the morning, same conditions.</div>`;
+  else {
+    const r = -tr.kgWk, [lo, hi] = T.lossKgWk, txt = `${tr.kgWk > 0 ? '+' : ''}${tr.kgWk.toFixed(2)} kg/wk`;
+    let msg, chip;
+    if (r >= lo && r <= hi) { chip = 'g'; msg = 'On target.'; }
+    else if (r > hi) { chip = 'a'; msg = 'Losing faster than planned. Fine short term, but if training quality, sleep or strength drop, eat closer to target.'; }
+    else { chip = ''; msg = r < 0 ? 'Weight is trending up.' : 'Losing slower than planned.'; msg += (w.kN >= 3 && w.kAvg <= T.kcal * 1.05) ? ` Logged intake is on target, so either some items aren't making it into MFP or ${T.kcal.toLocaleString('en-AU')} is close to maintenance. Give it 3–4 weeks of trend before changing the target.` : ' Check logging is complete before changing the target.'; }
+    trend = `<div class="row between" style="margin-top:10px"><b>Weight trend (4 wk)</b><span class="chip ${chip}">${txt}</span></div><div class="reason">Target −${lo} to −${hi} kg/wk. ${msg} Based on ${tr.n} weigh-ins over ${tr.span} days.</div>`;
+  }
+  return `<div class="card"><div class="row between"><div class="eyebrow">Nutrition — last 7 days</div><button class="btn sm" onclick="nutTargetsSheet()">Targets</button></div>
+    <div class="grid3" style="margin-top:10px">
+      <div><div class="dim" style="font-size:12px">Logged</div><div class="mono" style="font-size:20px;font-weight:700">${w.yes + w.part}/${w.days || 0}</div><div class="dim" style="font-size:11px">${w.part ? w.part + ' partial' : 'days'}</div></div>
+      <div><div class="dim" style="font-size:12px">Protein avg</div><div class="mono" style="font-size:20px;font-weight:700">${w.pN >= 3 ? w.pAvg + 'g' : '—'}</div>${w.pN >= 3 ? `<span class="chip ${pChip}" style="font-size:10px">target ${T.protein}g</span>` : '<div class="dim" style="font-size:11px">needs 3 full days</div>'}</div>
+      <div><div class="dim" style="font-size:12px">Calories avg</div><div class="mono" style="font-size:20px;font-weight:700">${w.kN >= 3 ? w.kAvg.toLocaleString('en-AU') : '—'}</div>${w.kN >= 3 ? `<span class="chip ${kChip}" style="font-size:10px">target ${T.kcal.toLocaleString('en-AU')}</span>` : '<div class="dim" style="font-size:11px">needs 3 full days</div>'}</div></div>
+    <div class="eyebrow" style="margin-top:14px">Days logged per week</div>
+    <div class="loadbars" style="grid-template-columns:repeat(4,1fr);height:70px">${weeks.map(x => `<div><i style="height:${Math.round((x.yes + x.part) / 7 * 100)}%"></i><span>${x.label} · ${x.yes + x.part}</span></div>`).join('')}</div>
+    ${trend}
+    <div class="reason">Targets: ${T.kcal.toLocaleString('en-AU')} kcal · ${T.protein}g protein · fat ${T.fat.join('–')}g · carbs ${T.carbs.join('–')}g. Averages use fully logged days only, because partial days undercount. MFP numbers are estimates, so the weight trend is the real check.</div></div>`;
+}
+function nutTargetsSheet() {
+  const T = NUT().targets, f = (id, label, v) => `<div><div class="dim" style="font-size:12px">${label}</div><input class="num" id="${id}" inputmode="decimal" value="${v}"></div>`;
+  openSheet(`<h2>Nutrition targets</h2><p class="muted" style="font-size:14px;margin-top:6px">Your targets. Apex compares against them and never changes them by itself.</p>
+    <div class="grid2" style="margin-top:14px">${f('tK', 'Calories (kcal/day)', T.kcal)}${f('tP', 'Protein (g/day)', T.protein)}${f('tF1', 'Fat min (g)', T.fat[0])}${f('tF2', 'Fat max (g)', T.fat[1])}${f('tC1', 'Carbs min (g)', T.carbs[0])}${f('tC2', 'Carbs max (g)', T.carbs[1])}${f('tL1', 'Loss min (kg/wk)', T.lossKgWk[0])}${f('tL2', 'Loss max (kg/wk)', T.lossKgWk[1])}</div>
+    <button class="btn primary big" style="margin-top:16px" id="tSave">Save</button>`);
+  $('#tSave').onclick = () => {
+    const v = id => parseFloat($('#' + id).value), t = { kcal: v('tK'), protein: v('tP'), fat: [v('tF1'), v('tF2')], carbs: [v('tC1'), v('tC2')], lossKgWk: [v('tL1'), v('tL2')] };
+    if (!(t.kcal >= 1200 && t.kcal <= 6000) || !(t.protein >= 40 && t.protein <= 400)) return toast('Check calories and protein', true);
+    if ([t.fat, t.carbs, t.lossKgWk].some(([a, b]) => !(a >= 0) || !(b >= a))) return toast('Each min must be ≤ max', true);
+    NUT().targets = t; Store.save(); closeSheet(); render(); toast('Targets saved');
+  };
+}
+
+// ── Calendar reminders (.ics) ───────────────────────────────────────
+const icsEsc = s => String(s).replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
+const icsFold = line => { const out = []; let s = line; while (s.length > 60) { out.push(s.slice(0, 60)); s = ' ' + s.slice(60); } out.push(s); return out.join('\r\n'); };
+function buildReminderICS(fromDate = today()) {
+  const r = REM(), url = location.origin + location.pathname, stamp = new Date().toISOString().replace(/[-:]/g, '').slice(0, 15) + 'Z';
+  const dt = (d, hhmm) => d.replace(/-/g, '') + 'T' + hhmm.replace(':', '') + '00';
+  const plus10 = hhmm => { const [h, m] = hhmm.split(':').map(Number), x = Math.min(h * 60 + m + 10, 1439); return pad(Math.floor(x / 60)) + ':' + pad(x % 60); };
+  const ev = (uid, d, hhmm, sum, desc) => ['BEGIN:VEVENT', `UID:${uid}@apex`, `DTSTAMP:${stamp}`, `DTSTART:${dt(d, hhmm)}`, `DTEND:${dt(d, plus10(hhmm))}`, `SUMMARY:${icsEsc(sum)}`, `DESCRIPTION:${icsEsc(desc)}`, `URL:${url}`, 'TRANSP:TRANSPARENT', 'BEGIN:VALARM', 'TRIGGER:PT0M', 'ACTION:DISPLAY', `DESCRIPTION:${icsEsc(sum)}`, 'END:VALARM', 'END:VEVENT'].map(icsFold).join('\r\n');
+  const days = Object.values(scheduleMap()).filter(x => x.date >= fromDate).sort((a, b) => a.date.localeCompare(b.date)), out = [];
+  days.forEach(x => {
+    const s = x.session ? P().sessions[x.session] : null;
+    if (s) out.push(ev(`am-${x.date}`, x.date, r.morning, `Apex · ${x.session} — ${s.name}${s.optional ? ' (optional)' : ''}`, `About ${s.estMin || 50} min. Open Apex: readiness check, then START.`));
+    else if (r.restMorning) out.push(ev(`am-${x.date}`, x.date, r.morning, 'Apex · Rest day', 'Recovery counts toward your streak. Optional 8-min micro-session in Apex.'));
+    out.push(ev(`pm-${x.date}`, x.date, r.evening, s && !s.optional ? 'Apex · Log session + MFP' : 'Apex · Log food in MFP', `${s ? 'Session done? Finish it in Apex. ' : ''}Log today's food in MyFitnessPal, then tick Nutrition in Apex (10 sec).`));
+  });
+  return { ics: ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Apex//Reminders//EN', 'CALSCALE:GREGORIAN', 'X-WR-CALNAME:Apex', ...out, 'END:VCALENDAR'].join('\r\n'), count: out.length, from: days[0]?.date, to: days[days.length - 1]?.date };
+}
+function exportReminders() {
+  const b = buildReminderICS(); if (!b.count) return toast('No planned days left in this block', true);
+  const file = new File([b.ics], 'apex-reminders.ics', { type: 'text/calendar' });
+  if (navigator.canShare?.({ files: [file] })) navigator.share({ files: [file], title: 'Apex reminders' }).catch(() => {});
+  else { const u = URL.createObjectURL(file), a = document.createElement('a'); a.href = u; a.download = 'apex-reminders.ics'; document.body.appendChild(a); a.click(); a.remove(); }
+  Store.d.reminders = { ...REM(), exportedAt: Date.now(), coversTo: b.to }; Store.save();
+  toast(`${b.count} reminders · ${fmtDay(b.from).slice(0, 6)} – ${fmtDay(b.to).slice(0, 6)}`);
 }
 function calendarSheet() {
-  openSheet(`<h2>Calendar reminders</h2><p class="muted" style="font-size:14px;margin-top:6px">iOS web apps can't schedule their own notifications without a push server. This exports your planned sessions to your calendar with a 30-minute alert — reliable and offline.</p>
-    <div class="pick" style="margin-top:14px">${['06:00', '06:30', '17:30', '18:00'].map(t => `<button onclick="closeSheet();exportCalendar('${t}')">${t}</button>`).join('')}</div>
-    <div class="reason">After moving sessions, export again — events keep stable IDs.</div>`);
+  const r = REM(), b = buildReminderICS();
+  openSheet(`<h2>Reminders</h2><p class="muted" style="font-size:14px;margin-top:6px">iPhone web apps can't schedule their own notifications, so Apex adds reminder events to your Calendar. They work offline and follow your local time when you travel.</p>
+    <div class="grid2" style="margin-top:14px"><div><div class="dim" style="font-size:12px">Morning: today's mission</div><input class="num" type="time" id="rM" value="${r.morning}"></div>
+    <div><div class="dim" style="font-size:12px">Evening: log session + MFP</div><input class="num" type="time" id="rE" value="${r.evening}"></div></div>
+    <label class="row" style="margin-top:12px;gap:10px;font-size:14px"><input type="checkbox" id="rR" ${r.restMorning ? 'checked' : ''} style="width:20px;height:20px"> Morning reminder on rest days too</label>
+    <button class="btn primary big" style="margin-top:16px" id="rGo">Add to Calendar</button>
+    <div class="reason"><b>First time:</b> in the Calendar app, add a calendar called <b>Apex</b>. Then tap Add to Calendar → Calendar → <b>Add All</b> → choose Apex.<br>
+    <b>Plan changed or a new block loaded?</b> Delete the Apex calendar, recreate it and export again. iPhone duplicates events if you import twice.<br>
+    Covers ${b.from ? esc(fmtDay(b.from).slice(0, 10)) + ' – ' + esc(fmtDay(b.to).slice(0, 10)) : 'nothing (block finished)'}${r.exportedAt ? ` · last exported ${new Date(r.exportedAt).toLocaleDateString('en-AU')}` : ''}.</div>`);
+  $('#rGo').onclick = () => {
+    const m = $('#rM').value, e = $('#rE').value; if (!/^\d\d:\d\d$/.test(m) || !/^\d\d:\d\d$/.test(e)) return toast('Set both times', true);
+    Store.d.reminders = { ...REM(), morning: m, evening: e, restMorning: $('#rR').checked }; Store.save(); closeSheet(); exportReminders();
+  };
+}
+function habitsMeHTML() {
+  const r = REM(), T = NUT().targets, end = P() ? Object.keys(scheduleMap()).sort().pop() : null, stale = r.exportedAt && end && r.coversTo && r.coversTo < end;
+  return `<div class="card"><div class="eyebrow">Reminders & nutrition</div>
+    <div class="list-item"><div style="flex:1"><b>Calendar reminders</b><div class="dim" style="font-size:13px">Morning ${r.morning} · evening ${r.evening}${r.exportedAt ? '' : ' · <span class="warn-t">not set up yet</span>'}${stale ? ' · <span class="warn-t">re-export: plan changed</span>' : ''}</div></div><button class="btn sm" onclick="calendarSheet()">Set up</button></div>
+    <div class="list-item"><div style="flex:1"><b>Nutrition targets</b><div class="dim" style="font-size:13px">${T.kcal.toLocaleString('en-AU')} kcal · ${T.protein}g protein · −${T.lossKgWk.join('–')} kg/wk</div></div><button class="btn sm" onclick="nutTargetsSheet()">Edit</button></div></div>`;
 }
 
 // ════════════════════════════════════════════════════════════════════
@@ -1687,7 +1843,7 @@ function renderToday() {
     </div>`;
   }
 
-  html += missionsHTML() + closestHTML();
+  html += nutCardHTML() + missionsHTML() + closestHTML();
   const wd = [];
   if (wd.length) {
     const core = wd.filter(d => dayPlan(d)?.session && !dayPlan(d).optional);
@@ -2148,12 +2304,12 @@ function renderMe() {
     <div class="card"><div class="row between"><div class="eyebrow">Location & equipment</div><button class="btn sm" onclick="adaptSheet()">Edit</button></div>
       <div class="reason" style="color:var(--tx)">Active: <b>${esc(activeEquip().name)}</b> · ${activeEquip().equip.length} items${activeEquip().equip.includes('dumbbells') ? ' · DBs to ' + fmtKg(activeEquip().maxDbKg) + 'kg' : ''}</div>
       <div class="reason">Stays active until you change it — set Hotel gym on 22 Oct and every session adapts automatically (with review).</div></div>
+    ${habitsMeHTML()}
     ${appearanceHTML()}
     <div class="card"><div class="eyebrow">Settings</div><div class="row between" style="margin-top:10px"><span>Home-gym max barbell load</span>${stepperRaw('homeMax', d.settings.homeMaxKg)}</div></div>
     <div class="card"><div class="eyebrow">Data</div>
       <div class="reason">${d.sessions.length} V2 sessions · ${d.observations.length} performance records · ${d.body.length} body entries · ~${Math.round(bytes/1024)} KB<br>Last export: ${d.lastExportAt ? new Date(d.lastExportAt).toLocaleString('en-AU') : '<b style="color:var(--amber)">never</b>'}</div>
       <div class="grid2" style="margin-top:12px"><button class="btn" onclick="exportAll()">Export backup</button><button class="btn" onclick="$('#fileIn').click()">Import file</button></div>
-      <button class="btn" style="width:100%;margin-top:8px" onclick="calendarSheet()">Calendar reminders (.ics)</button>
       <div class="reason" style="margin-top:10px">Import accepts: your legacy Apex export, the Apex seed file, a program (apex.program/1) from a coach or AI, an athlete baseline, or a V2 backup. You always see a preview first.</div>
       ${snaps.length ? `<div class="sep"></div><div class="eyebrow">Snapshots on this device</div>${snaps.map(k => { const ts = +k.slice(SNAP_PREFIX.length); return `<div class="list-item"><div style="flex:1" class="mono dim">${new Date(ts).toLocaleString('en-AU',{day:'numeric',month:'short',hour:'numeric',minute:'2-digit'})}</div><button class="btn sm" onclick="restoreSnap('${k}')">Restore</button></div>`; }).join('')}` : ''}
       ${(d.migrations||[]).length ? `<div class="sep"></div><div class="eyebrow">Migration log</div>${d.migrations.map(m => `<div class="reason mono" style="font-size:12px">${new Date(m.at).toLocaleDateString('en-AU')} · ${esc(m.from)}${m.observations!=null?` · ${m.observations} records, ${m.body} body`:''}</div>`).join('')}` : ''}
