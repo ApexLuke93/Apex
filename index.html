@@ -15,10 +15,11 @@
 :root{
   --bg:#09090e;--bg2:#101017;--bg3:#18181f;--bg4:#202028;--bg5:#2a2a33;
   --line:rgba(255,255,255,.07);--line2:rgba(255,255,255,.13);
-  --tx:#ededf5;--tx2:#9a9ab2;--tx3:#5c5c74;
+  --tx:#ededf5;--tx2:#a3a3bb;--tx3:#8b8ba3;
   --green:#22c55e;--greenD:rgba(34,197,94,.13);--amber:#f5a524;--amberD:rgba(245,165,36,.13);
   --red:#ef4444;--redD:rgba(239,68,68,.13);--blue:#5b8cff;--blueD:rgba(91,140,255,.13);--teal:#14b8a6;
   --r:14px;--rs:10px;
+  --acc:#22c55e;--accD:rgba(34,197,94,.14);--accInk:#06210f;--heroA:#16231c;--tabbg:rgba(16,16,23,.92);--warn:var(--amber);
   --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Inter,system-ui,sans-serif;
   --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
   --safeT:env(safe-area-inset-top,0px);--safeB:env(safe-area-inset-bottom,0px);
@@ -117,6 +118,80 @@ table.t{width:100%;border-collapse:collapse;font-size:13px}
 table.t td,table.t th{padding:8px 4px;border-bottom:1px solid var(--line);text-align:left}
 table.t th{font:600 10px var(--mono);color:var(--tx3);text-transform:uppercase;letter-spacing:.08em}
 .warn{background:var(--amberD);border:1px solid rgba(245,165,36,.35);color:var(--amber);border-radius:12px;padding:12px;font-size:14px;margin-top:10px;line-height:1.45}
+/* Player card */
+.pcard{margin-top:14px;border-radius:20px;padding:18px 16px 12px;background:linear-gradient(155deg,#1b1d24 0%,#0f1015 60%,#14151b 100%);border:1px solid rgba(255,255,255,.14);position:relative;overflow:hidden}
+.pcard:before{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.05) 45%,transparent 60%);pointer-events:none}
+.pcard.t1{border-color:rgba(205,127,50,.55)}.pcard.t2{border-color:rgba(192,192,200,.6)}.pcard.t3{border-color:rgba(230,190,90,.7)}.pcard.t4{border-color:rgba(34,197,94,.8);box-shadow:0 0 30px rgba(34,197,94,.12)}
+.pc-top{display:flex;gap:16px;align-items:center}
+.pc-ovr{font:800 52px/1 var(--mono);letter-spacing:-.04em}
+.pc-pos{font:700 13px var(--mono);color:var(--tx2);letter-spacing:.14em;text-align:center;margin-top:2px}
+.pc-name{font:800 22px var(--font);letter-spacing:.06em}
+.pc-sub{font:500 11px var(--mono);color:var(--tx3);letter-spacing:.04em;margin-top:4px}
+.pc-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:16px}
+.pc-stat{display:flex;flex-direction:column;align-items:flex-start;background:rgba(255,255,255,.04);border-radius:12px;padding:10px;text-align:left;border:1px solid var(--line)}
+.pc-v{font:800 26px/1 var(--mono)}.pc-v.stale{color:var(--tx3)}
+.pc-k{font:700 12px var(--mono);color:var(--tx2);letter-spacing:.14em;margin-top:4px}
+.pc-c{font:500 10px var(--mono);color:var(--tx3);margin-top:3px}
+.pc-foot{font:500 10px var(--mono);color:var(--tx3);margin-top:12px;line-height:1.5}
+.mission{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
+.mission i{width:22px;height:22px;border-radius:7px;border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;font-style:normal;font-weight:800;font-size:13px;flex-shrink:0}
+.mission.on i{background:var(--green);color:#06210f;border:none}.mission.on span{color:var(--tx2)}
+.mission span{flex:1}.mission em{font:500 11px var(--mono);color:var(--tx3);font-style:normal}
+.lvbar{position:relative;height:74px;margin:18px 6px 4px;border-top:3px solid var(--bg4)}
+.lvseg{position:absolute;top:-3px;transform:translateX(-50%);text-align:center}
+.lvseg i{display:block;width:2px;height:10px;background:var(--tx3);margin:0 auto}
+.lvseg span{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font:600 9px var(--mono);color:var(--tx3)}
+.lvseg em{display:block;font:500 9px var(--mono);color:var(--tx3);font-style:normal;margin-top:2px;white-space:nowrap}
+.lvyou{position:absolute;top:-10px;transform:translateX(-50%);width:16px;height:16px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px rgba(34,197,94,.25)}
+.lvyou b{position:absolute;top:40px;left:50%;transform:translateX(-50%);font:800 11px var(--mono);color:var(--green)}
+.lvprev{position:absolute;top:-6px;transform:translateX(-50%);width:8px;height:8px;border-radius:50%;background:var(--tx2)}
+.loadbars{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;height:90px;align-items:end;margin-top:8px}
+.loadbars div{display:flex;flex-direction:column;justify-content:flex-end;height:100%;text-align:center}
+.loadbars i{display:block;background:var(--green);border-radius:4px 4px 0 0;opacity:.75;min-height:2px}
+.loadbars span{font:500 10px var(--mono);color:var(--tx3);margin-top:4px}
+.pgrid{display:block}
+@media (min-width:900px){.pgrid{display:grid;grid-template-columns:360px 1fr;gap:16px}}
+
+/* ── Themes (all pairs checked to WCAG AA) ── */
+[data-accent=blue]{--acc:#5b9bff;--accD:rgba(91,155,255,.15);--accInk:#061229;--heroA:#141c2c}
+[data-accent=amber]{--acc:#f2a541;--accD:rgba(242,165,65,.15);--accInk:#2a1700;--heroA:#2a2114}
+[data-accent=violet]{--acc:#b39dfb;--accD:rgba(179,157,251,.16);--accInk:#160c33;--heroA:#1d1830}
+[data-theme=light]{--bg:#f5f6f8;--bg2:#ffffff;--bg3:#eef0f4;--bg4:#e2e5eb;--bg5:#cfd4dc;--line:rgba(16,18,27,.10);--line2:rgba(16,18,27,.18);--tx:#12131a;--tx2:#424555;--tx3:#5b5f6f;
+  --green:#126b33;--greenD:rgba(18,107,51,.12);--amber:#9a5a06;--amberD:rgba(154,90,6,.12);--red:#c81e1e;--redD:rgba(200,30,30,.10);--blue:#1d4ed8;--blueD:rgba(29,78,216,.10);
+  --acc:#15803d;--accD:rgba(21,128,61,.12);--accInk:#ffffff;--heroA:#e5f4ea;--tabbg:rgba(255,255,255,.94)}
+[data-theme=light][data-accent=blue]{--acc:#1d4ed8;--accD:rgba(29,78,216,.10);--heroA:#e6edfc}
+[data-theme=light][data-accent=amber]{--acc:#a1520a;--accD:rgba(161,82,10,.12);--heroA:#fbefdf}
+[data-theme=light][data-accent=violet]{--acc:#6d28d9;--accD:rgba(109,40,217,.10);--heroA:#efe8fc}
+[data-theme=contrast]{--bg:#000;--bg2:#0a0a0a;--bg3:#151515;--bg4:#222;--bg5:#333;--line:rgba(255,255,255,.3);--line2:rgba(255,255,255,.55);--tx:#fff;--tx2:#e8e8e8;--tx3:#c8c8c8;
+  --green:#5ee88f;--greenD:rgba(94,232,143,.18);--amber:#ffc24a;--amberD:rgba(255,194,74,.18);--red:#ff7a7a;--redD:rgba(255,122,122,.18);--blue:#8ab4ff;--heroA:#000;--tabbg:rgba(0,0,0,.96)}
+[data-status=cvd]{--green:#56b4e9;--greenD:rgba(86,180,233,.15);--amber:#e69f00;--amberD:rgba(230,159,0,.15);--red:#ff8c42;--redD:rgba(255,140,66,.15)}
+[data-theme=light][data-status=cvd]{--green:#0063a0;--greenD:rgba(0,99,160,.10);--amber:#8a5a00;--amberD:rgba(138,90,0,.12);--red:#b23b00;--redD:rgba(178,59,0,.10)}
+[data-text=l] .wrap,[data-text=l] .pbody,[data-text=l] #sheetBody,[data-text=l] .ph,[data-text=l] .pfoot{zoom:1.12}
+[data-text=xl] .wrap,[data-text=xl] .pbody,[data-text=xl] #sheetBody,[data-text=xl] .ph,[data-text=xl] .pfoot{zoom:1.25}
+[data-motion=reduce] *{transition:none!important;animation:none!important;scroll-behavior:auto!important}
+/* accent-driven components */
+.btn.primary,.toast{background:var(--acc);color:var(--accInk)}
+.hero{background:linear-gradient(160deg,var(--heroA) 0%,var(--bg2) 60%);border-color:var(--accD)}
+#tabs{background:var(--tabbg)}#tabs button.on{color:var(--acc)}
+.day.today{border-color:var(--acc)}
+.pick button.sel{background:var(--accD);border-color:var(--acc);color:var(--tx)}
+.bar i,.loadbars i{background:var(--acc)}
+.setrow.cur{border-color:var(--acc);background:var(--accD)}
+.setrow.cur .tick,.rpe button.sel,.taps button.on,.mission.on i{background:var(--acc);color:var(--accInk)}
+#rest{border-color:var(--acc);background:var(--bg2)}
+.pb{background:var(--accD);border-color:var(--acc)}
+.lvyou{background:var(--acc)}.lvyou b{color:var(--acc)}
+.ok{color:var(--green)}.warn-t{color:var(--amber)}
+.layer{background:var(--bg3);border-radius:12px;padding:12px;margin-top:10px}
+.layer summary{cursor:pointer}
+.lbl{font:600 11px var(--mono);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.sw{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+.pcard{--tx:#ededf5;--tx2:#b4b4ca;--tx3:#9d9db5;--line:rgba(255,255,255,.1);--green:#22c55e;--red:#f87171;color:var(--tx)}
+[data-status=cvd] .pcard{--green:#56b4e9;--red:#ff8c42}
+.pc-left{display:flex;flex-direction:column;align-items:center;background:none;border:none;padding:0}
+.pc-stat .up{color:var(--green)}.pc-stat .dn{color:var(--red)}
+.chip.g{color:var(--green);background:var(--greenD)}.chip.a{color:var(--amber);background:var(--amberD)}.chip.r{color:var(--red);background:var(--redD)}
+.mono.ok{color:var(--green)}
 @media (min-width:900px){
   body{padding-bottom:0;padding-left:220px}
   #tabs{top:0;bottom:0;right:auto;width:220px;flex-direction:column;justify-content:flex-start;padding:24px 10px;border-top:none;border-right:1px solid var(--line);gap:4px}
@@ -167,12 +242,12 @@ table.t th{font:600 10px var(--mono);color:var(--tx3);text-transform:uppercase;l
 // ════════════════════════════════════════════════════════════════════
 // APEX V2 — Stage 1 (data layer + migration) + Stage 2 (execution)
 // ════════════════════════════════════════════════════════════════════
-const APP_VERSION = '2.1.0-stage3';
+const APP_VERSION = '2.3.0';
 const STORE_KEY = 'apex.store';           // schema v3
 const LEGACY_KEY = 'apex_v2';             // never written by V2
 const SNAP_PREFIX = 'apex.snap.';
 const SCHEMA = 3;
-const DEFAULT_PROGRAM = {"schema": "apex.program/1", "id": "fy27-foundation-1a", "version": 2, "createdAt": "2026-10-01", "season": {"id": "fy27", "name": "2027 Football Preparation"}, "phase": {"id": "p1", "name": "Phase 1 — Off-season Reconditioning + Foundation"}, "block": {"id": "1A", "name": "Foundation 1A", "start": "2026-10-01", "end": "2026-10-21", "objectives": ["Re-entry and training rhythm", "Establish current capacities from normal training (no max tests)", "Progressive running exposure", "Progressive sprint intensity", "Begin meaningful strength progression"], "next": [{"id": "travel", "name": "Travel / Maintenance", "start": "2026-10-22", "end": "2026-11-03", "mode": "travel"}, {"id": "1B", "name": "Foundation / Development 1B", "start": "2026-11-04", "note": "Built from 1A data"}]}, "weeks": [{"week": 1, "label": "Re-entry / Calibration", "start": "2026-10-01", "stressTargetPctOfPreBreak": [60, 70], "mainLiftRpe": [6, 7], "sprintIntensityPct": [70, 85]}, {"week": 2, "label": "Build", "start": "2026-10-08", "stressTargetPctOfPreBreak": [70, 80], "mainLiftRpe": [6.5, 7.5], "sprintIntensityPct": [80, 90]}, {"week": 3, "label": "Approach + Baseline", "start": "2026-10-15", "stressTargetPctOfPreBreak": [80, 90], "mainLiftRpe": [7, 8], "sprintIntensityPct": [90, 95], "benchmarks": ["flying_10m_video", "sprint_10m_video", "broad_jump"]}, {"week": 4, "label": "Travel — Maintenance", "start": "2026-10-22", "stressTargetPctOfPreBreak": [60, 75], "mainLiftRpe": [7, 8], "travel": true}, {"week": 5, "label": "Travel — Maintenance", "start": "2026-10-29", "stressTargetPctOfPreBreak": [65, 80], "mainLiftRpe": [7, 8], "travel": true}], "sessions": {"A": {"name": "Lower Strength + Acceleration", "estMin": 55, "intent": {"primary": ["acceleration", "lower_strength"], "secondary": ["unilateral_strength", "calf_soleus", "adductors", "trunk"]}, "develops": {"acceleration": 2, "strength": 2, "lower_body_power": 1, "calf_soleus": 1, "adductor": 1, "durability": 1}, "slots": [{"id": "prep", "exercise": "prep_general", "name": "Preparation", "priority": "P1", "intent": "prep", "progression": {"model": "none"}, "byWeek": {"1": {"durationMin": 10, "text": "3 min easy bike → leg swings, hip openers → knee-to-wall 1×10/side → pogos 2×10 → 3 build-ups 20m @ 60/70/80%"}, "2": {"durationMin": 10, "text": "As week 1; build-ups to 85%"}, "3": {"durationMin": 10, "text": "As week 1; build-ups to 90%"}}}, {"id": "accel", "exercise": "sprint_10m_2pt", "name": "Acceleration — 10–15m from 2-point start", "priority": "P1", "intent": "speed", "progression": {"model": "quality_gated"}, "byWeek": {"1": {"sets": 6, "distanceM": 10, "intensityPct": [75, 85], "restSec": 90, "text": "6 × 10m @ ~80%. Fast but relaxed. Walk back + 90s."}, "2": {"sets": 6, "distanceM": 15, "intensityPct": [85, 90], "restSec": 120}, "3": {"sets": 6, "distanceM": 15, "intensityPct": [90, 95], "restSec": 150, "text": "Stop the set if a rep feels slower or tighter."}}, "cues": "Full recovery. Quality over volume. Any hamstring/calf twinge → stop speed work for the day."}, {"id": "fsq", "exercise": "front_squat", "name": "Front Squat", "priority": "P1", "intent": "strength", "progression": {"model": "rpe_then_linear", "incrementKg": 2.5}, "byWeek": {"1": {"sets": 3, "reps": 5, "rpe": [6, 7], "load": {"mode": "find", "hint": "Ramp in sets of 5 from 20kg. Working load = first load that feels RPE 6–7. Likely 40–50kg — don't predetermine."}}, "2": {"sets": 3, "reps": 5, "rpe": [6.5, 7.5], "load": {"mode": "from_last", "rule": "+5kg if last week's final set ≤ RPE 6; +2.5kg if RPE 7; hold if ≥ RPE 8"}}, "3": {"sets": 4, "reps": 5, "rpe": [7, 8], "load": {"mode": "from_last", "rule": "Same rule. No grinding."}}}, "minSets": 2, "cues": "Historical reference 60×5 @8 — a destination, not this week's prescription."}, {"id": "split", "exercise": "db_split_squat", "name": "DB Split Squat", "priority": "P3", "intent": "unilateral_strength", "progression": {"model": "double_progression"}, "byWeek": {"1": {"sets": 2, "reps": 8, "perSide": true, "rpe": [6, 6]}, "2": {"sets": 3, "reps": 8, "perSide": true, "rpe": [6, 7]}, "3": {"sets": 3, "reps": 10, "perSide": true, "rpe": [7, 7]}}, "cues": "Low eccentric volume week 1 — split squats are the DOMS trap after a break."}, {"id": "calf", "exercise": "sl_calf_raise", "name": "Single-leg Calf Raise (straight knee) + Bent-knee Calf Raise", "priority": "P2", "intent": "durability", "progression": {"model": "capacity_standard"}, "byWeek": {"1": {"sets": 2, "reps": "12 + 15", "perSide": true}, "2": {"sets": 3, "reps": "15 + 15", "perSide": true}, "3": {"sets": 3, "reps": "15 + 20", "perSide": true, "text": "Add DB once 3×20 bent-knee is easy"}}, "superset": "A5"}, {"id": "cop", "exercise": "copenhagen_short", "name": "Copenhagen Plank (short lever, knee support)", "priority": "P2", "intent": "durability", "progression": {"model": "capacity_standard"}, "byWeek": {"1": {"sets": 2, "holdSec": 15, "perSide": true}, "2": {"sets": 3, "holdSec": 20, "perSide": true}, "3": {"sets": 3, "holdSec": 25, "perSide": true}}, "superset": "A5"}, {"id": "trunk", "exercise": "dead_bug", "name": "Dead Bug", "priority": "P4", "intent": "trunk", "progression": {"model": "double_progression"}, "byWeek": {"1": {"sets": 2, "reps": 8, "perSide": true}, "2": {"sets": 2, "reps": 10, "perSide": true}, "3": {"sets": 3, "reps": 10, "perSide": true}}}]}, "B": {"name": "Upper Strength + Aerobic", "estMin": 55, "intent": {"primary": ["upper_strength", "aerobic"], "secondary": ["pulling_strength", "trunk"]}, "develops": {"upper_body_strength": 2, "aerobic_engine": 2, "stamina": 1, "trunk": 1}, "slots": [{"id": "prep", "exercise": "prep_upper", "name": "Preparation", "priority": "P1", "intent": "prep", "progression": {"model": "none"}, "byWeek": {"1": {"durationMin": 6, "text": "Band pull-aparts 2×15, scap push-ups 2×10, empty-bar bench 1×10"}, "2": {"durationMin": 6}, "3": {"durationMin": 6}}}, {"id": "bench", "exercise": "bench_press", "name": "Bench Press", "priority": "P1", "intent": "strength", "progression": {"model": "rpe_then_linear", "incrementKg": 2.5}, "byWeek": {"1": {"sets": 3, "reps": 5, "rpe": [6, 7], "load": {"mode": "find", "hint": "Ramp in sets of 5 from the bar. Working load = first load at RPE 6–7. Likely 40–47.5kg."}}, "2": {"sets": 3, "reps": 5, "rpe": [6.5, 7.5], "load": {"mode": "from_last", "rule": "+2.5kg if final set ≤ RPE 7; hold otherwise"}}, "3": {"sets": 3, "reps": 5, "rpe": [7, 8], "load": {"mode": "from_last", "rule": "Same rule"}}}, "minSets": 2, "cues": "Any pec symptom (not just pain — pulling, tightness) → stop pressing, log it, swap to DB floor press."}, {"id": "pull", "exercise": "pullup_strict", "name": "Strict Pull-up", "priority": "P1", "intent": "strength", "progression": {"model": "strict_reps"}, "byWeek": {"1": {"sets": "1 + 3", "reps": "max strict, then (max−1)", "text": "After warm-up: ONE set to the last strict rep (that's your baseline). Then 3 sets of max−1. Log STRICT reps only."}, "2": {"sets": 4, "reps": "baseline", "text": "4 sets at baseline strict reps. Add a set before adding reps."}, "3": {"sets": 5, "reps": "baseline", "text": "5 sets; if all strict, next week +1 rep on set 1"}}, "cues": "No kip. Rep ends when chin clears bar from a dead hang. The rep that kips doesn't count."}, {"id": "row", "exercise": "db_row", "name": "DB Row", "priority": "P3", "intent": "pulling", "progression": {"model": "double_progression"}, "byWeek": {"1": {"sets": 2, "reps": 10, "perSide": true, "rpe": [6, 7]}, "2": {"sets": 3, "reps": 10, "perSide": true, "rpe": [7, 7]}, "3": {"sets": 3, "reps": 12, "perSide": true, "rpe": [7, 8]}}, "superset": "B4"}, {"id": "ohp", "exercise": "hk_db_press", "name": "Half-kneeling DB Press", "priority": "P3", "intent": "upper_strength", "progression": {"model": "double_progression"}, "byWeek": {"1": {"sets": 2, "reps": 8, "perSide": true, "rpe": [6, 6]}, "2": {"sets": 3, "reps": 8, "perSide": true, "rpe": [6, 7]}, "3": {"sets": 3, "reps": 10, "perSide": true, "rpe": [7, 7]}}, "superset": "B4"}, {"id": "side", "exercise": "side_plank", "name": "Side Plank", "priority": "P4", "intent": "trunk", "progression": {"model": "capacity_standard"}, "byWeek": {"1": {"sets": 2, "holdSec": 30, "perSide": true}, "2": {"sets": 2, "holdSec": 40, "perSide": true}, "3": {"sets": 3, "holdSec": 40, "perSide": true}}}, {"id": "z2", "exercise": "bikeerg_z2", "name": "BikeErg — Zone 2", "priority": "P2", "intent": "aerobic", "progression": {"model": "time_distance"}, "byWeek": {"1": {"durationMin": 20, "rpe": [3, 4], "text": "Conversational. Nasal-breathing test: if you can't, back off. Log distance + avg pace (and HR if you have it)."}, "2": {"durationMin": 25, "rpe": [3, 4]}, "3": {"durationMin": 30, "rpe": [3, 4]}}, "cues": "Same damper setting every session so pace is comparable week to week."}]}, "C": {"name": "Speed + Power + Football", "estMin": 55, "intent": {"primary": ["max_velocity", "lower_body_power"], "secondary": ["change_of_direction", "hamstring_resilience", "football_technical"]}, "develops": {"sprint_speed": 2, "acceleration": 1, "lower_body_power": 2, "jumping": 2, "change_of_direction": 1, "hamstring": 1, "ball_control": 1}, "slots": [{"id": "prep", "exercise": "prep_speed", "name": "Comprehensive Preparation", "priority": "P1", "intent": "prep", "progression": {"model": "none"}, "byWeek": {"1": {"durationMin": 15, "text": "3 min jog → dynamic mobility → A-march, A-skip, B-skip 2×20m → straight-leg bounds 2×20m → pogos 2×15 → 3 build-ups 30m"}, "2": {"durationMin": 15}, "3": {"durationMin": 15}}}, {"id": "wall", "exercise": "wall_drill", "name": "Wall Drill (switches)", "priority": "P2", "intent": "speed", "progression": {"model": "none"}, "byWeek": {"1": {"sets": 3, "reps": "5 switches"}, "2": {"sets": 3, "reps": "5 switches"}, "3": {"sets": 3, "reps": "6 switches"}}}, {"id": "speed", "exercise": "sprint_flying", "name": "Speed — build-ups → flying sprints", "priority": "P1", "intent": "speed", "progression": {"model": "quality_gated"}, "byWeek": {"1": {"sets": 4, "distanceM": 30, "intensityPct": [70, 80], "restSec": 150, "text": "4 × 30m build-ups @ 70–80%. Relaxed face and shoulders."}, "2": {"sets": 4, "distanceM": 30, "intensityPct": [85, 90], "restSec": 180, "text": "4 × (20m build + 10m @ 85–90%)"}, "3": {"sets": 3, "distanceM": 30, "intensityPct": [90, 95], "restSec": 240, "text": "BENCHMARK (only if Weeks 1–2 felt good): 3 × (20m build + flying 10m @ ~95%), video-timed. Then 2 × 10m from standing start, max effort, video-timed."}}, "minSets": 2, "cues": "Max speed is never done tired. If the warm-up feels flat, run Week 2's version instead."}, {"id": "broad", "exercise": "broad_jump", "name": "Broad Jump", "priority": "P2", "intent": "power", "progression": {"model": "quality_gated"}, "byWeek": {"1": {"sets": 3, "reps": 3, "text": "Submax ~80%, stick the landing"}, "2": {"sets": 3, "reps": 3, "text": "~90%, stick the landing"}, "3": {"sets": 3, "reps": 2, "text": "BENCHMARK: best of 6 max jumps, measured toe-to-heel with tape"}}}, {"id": "cod", "exercise": "cod_drills", "name": "Change of Direction", "priority": "P3", "intent": "cod", "progression": {"model": "quality_gated"}, "byWeek": {"1": {"sets": 4, "text": "Decel drills: 10m run → stop in 3 steps; 2 each side"}, "2": {"sets": 4, "text": "505-style turns @ 80%, 2 each side"}, "3": {"sets": 4, "text": "505 @ 90%, 2 each side — note which side feels better"}}}, {"id": "ham", "exercise": "hamstring_resilience", "name": "Hamstring Resilience", "priority": "P2", "intent": "durability", "progression": {"model": "capacity_standard"}, "byWeek": {"1": {"sets": 2, "holdSec": 20, "perSide": true, "text": "Single-leg hamstring bridge iso (heel on bench) — no eccentrics yet"}, "2": {"sets": 2, "reps": 3, "text": "Nordic — partial range, controlled, stop before you collapse"}, "3": {"sets": 2, "reps": 4, "text": "Nordic — same rules"}}}, {"id": "ball", "exercise": "ball_technical", "name": "Ball Work", "priority": "P4", "intent": "football_technical", "progression": {"model": "none"}, "byWeek": {"1": {"durationMin": 10, "text": "Wall passes both feet (L/R alternate), first touch out of feet"}, "2": {"durationMin": 10}, "3": {"durationMin": 10}}}]}, "D": {"name": "Posterior Chain + Work Capacity", "estMin": 55, "intent": {"primary": ["posterior_strength", "work_capacity"], "secondary": ["unilateral_strength", "hip_groin", "upper_pull"]}, "develops": {"strength": 2, "hamstring": 1, "stamina": 2, "repeat_sprint": 1, "adductor": 1}, "slots": [{"id": "prep", "exercise": "prep_general", "name": "Preparation", "priority": "P1", "intent": "prep", "progression": {"model": "none"}, "byWeek": {"1": {"durationMin": 10, "text": "3 min easy bike → leg swings, hip openers → knee-to-wall 1×10/side → pogos 2×10 → 3 build-ups 20m @ 60/70/80%"}, "2": {"durationMin": 10, "text": "As week 1; build-ups to 85%"}, "3": {"durationMin": 10, "text": "As week 1; build-ups to 90%"}}}, {"id": "dl", "exercise": "deadlift", "name": "Deadlift", "priority": "P1", "intent": "strength", "progression": {"model": "rpe_then_linear", "incrementKg": 5}, "byWeek": {"1": {"sets": 2, "reps": 5, "rpe": [6, 7], "load": {"mode": "find", "hint": "Ramp in sets of 5 from 40kg. Working load = first load at RPE 6–7. 2 working sets only."}}, "2": {"sets": 3, "reps": 5, "rpe": [6.5, 7.5], "load": {"mode": "from_last", "rule": "+5–10kg if final set ≤ RPE 6.5; +5kg if RPE 7; hold if ≥ RPE 8"}}, "3": {"sets": 3, "reps": 5, "rpe": [7, 8], "load": {"mode": "from_last", "rule": "Same rule; reference 90×5×3 @7"}}}, "minSets": 2, "cues": "90kg is your home-gym ceiling, not your ceiling. If it's easy before Week 4, Apex switches to pauses/tempo/reps."}, {"id": "rdl", "exercise": "bb_rdl", "name": "Romanian Deadlift", "priority": "P3", "intent": "posterior", "progression": {"model": "double_progression"}, "byWeek": {"1": {"sets": 2, "reps": 8, "rpe": [6, 6], "text": "Light (~40kg). This is the DOMS risk exercise — respect it."}, "2": {"sets": 3, "reps": 8, "rpe": [6, 7]}, "3": {"sets": 3, "reps": 10, "rpe": [7, 7], "text": "Heading toward 60×10×3 @7"}}}, {"id": "lat", "exercise": "lateral_lunge", "name": "Lateral Lunge (goblet)", "priority": "P3", "intent": "hip_groin", "progression": {"model": "double_progression"}, "byWeek": {"1": {"sets": 2, "reps": 6, "perSide": true}, "2": {"sets": 2, "reps": 8, "perSide": true}, "3": {"sets": 3, "reps": 8, "perSide": true}}, "superset": "D4"}, {"id": "bbrow", "exercise": "bb_row", "name": "Barbell Row", "priority": "P3", "intent": "pulling", "progression": {"model": "double_progression"}, "byWeek": {"1": {"sets": 2, "reps": 10, "rpe": [6, 6], "text": "~30kg"}, "2": {"sets": 3, "reps": 10, "rpe": [6, 7]}, "3": {"sets": 3, "reps": 10, "rpe": [7, 7], "text": "Heading toward 40×10×3"}}, "superset": "D4"}, {"id": "wc", "exercise": "bikeerg_intervals", "name": "BikeErg — Work Capacity", "priority": "P1", "intent": "work_capacity", "progression": {"model": "time_distance"}, "byWeek": {"1": {"sets": 6, "workSec": 60, "restSec": 60, "rpe": [7, 7], "text": "6 × 1 min hard (RPE 7) / 1 min easy. Log metres per rep."}, "2": {"sets": 4, "workSec": 180, "restSec": 90, "rpe": [7, 7], "text": "4 × 3 min @ threshold (RPE 7) / 90s easy"}, "3": {"sets": 5, "workSec": 180, "restSec": 90, "rpe": [7, 8], "text": "5 × 3 min @ threshold / 90s easy"}}, "cues": "Repeatability is the metric: last rep within ~5% of first rep's metres."}]}, "E": {"name": "Aerobic / Running Exposure (optional, low cost)", "estMin": 35, "optional": true, "intent": {"primary": ["aerobic", "running_tolerance"], "secondary": ["mobility"]}, "develops": {"aerobic_engine": 1, "stamina": 1, "durability": 1}, "slots": [{"id": "run", "exercise": "run_walk", "name": "Run–Walk on grass", "priority": "P1", "intent": "running_tolerance", "progression": {"model": "time_distance"}, "byWeek": {"1": {"sets": 6, "text": "6 × (3 min easy run / 1 min walk) = 18 min running"}, "2": {"sets": 5, "text": "5 × (5 min run / 1 min walk) = 25 min running"}, "3": {"sets": 3, "text": "3 × (8 min run / 1 min walk), or 25 min continuous if calves have been quiet"}}, "cues": "Lower-leg tightness ≥ 3/10 → walk the rest and log it. That's data, not failure."}, {"id": "mob", "exercise": "mobility_flow", "name": "Mobility", "priority": "P4", "intent": "mobility", "progression": {"model": "none"}, "byWeek": {"1": {"durationMin": 8}, "2": {"durationMin": 8}, "3": {"durationMin": 8}}}]}, "E2": {"name": "Zone 2 BikeErg (optional, low cost)", "estMin": 35, "optional": true, "intent": {"primary": ["aerobic"], "secondary": []}, "develops": {"aerobic_engine": 1}, "slots": [{"id": "z2", "exercise": "bikeerg_z2", "name": "BikeErg — Zone 2", "priority": "P1", "intent": "aerobic", "progression": {"model": "time_distance"}, "byWeek": {"1": {"durationMin": 30, "rpe": [3, 4]}, "2": {"durationMin": 35, "rpe": [3, 4]}, "3": {"durationMin": 40, "rpe": [3, 4]}, "4": {"durationMin": 30, "rpe": [3, 4]}, "5": {"durationMin": 35, "rpe": [3, 4]}}}]}, "T1": {"name": "Travel Strength A — Full Body", "estMin": 40, "travel": true, "intent": {"primary": ["lower_strength", "upper_strength"], "secondary": ["calf_soleus", "adductors"]}, "develops": {"strength": 2, "upper_body_strength": 1, "calf_soleus": 1, "adductor": 1, "durability": 1}, "slots": [{"id": "prep", "exercise": "prep_general", "name": "Preparation", "priority": "P1", "intent": "prep", "progression": {"model": "none"}, "byWeek": {"4": {"durationMin": 8, "text": "5 min easy cardio → leg swings, hip openers → knee-to-wall 1×10/side → pogos 2×15 (if floor allows)"}, "5": {"durationMin": 8}}}, {"id": "bss", "exercise": "db_bss", "name": "DB Bulgarian Split Squat", "priority": "P1", "intent": "strength", "progression": {"model": "double_progression"}, "byWeek": {"4": {"sets": 3, "reps": 8, "perSide": true, "rpe": [7, 8]}, "5": {"sets": 3, "reps": 10, "perSide": true, "rpe": [7, 8]}}, "cues": "Heaviest DBs that allow clean reps. If the rack tops out early, slow the lowering to 3s."}, {"id": "dbb", "exercise": "db_bench", "name": "DB Bench Press", "priority": "P1", "intent": "upper_strength", "progression": {"model": "double_progression"}, "byWeek": {"4": {"sets": 3, "reps": 8, "rpe": [7, 8]}, "5": {"sets": 3, "reps": 10, "rpe": [7, 8]}}}, {"id": "row", "exercise": "db_row", "name": "DB Row", "priority": "P2", "intent": "pulling", "progression": {"model": "double_progression"}, "byWeek": {"4": {"sets": 3, "reps": 10, "perSide": true, "rpe": [7, 8]}, "5": {"sets": 3, "reps": 12, "perSide": true, "rpe": [7, 8]}}}, {"id": "rdl", "exercise": "db_rdl", "name": "DB Romanian Deadlift", "priority": "P2", "intent": "posterior", "progression": {"model": "double_progression"}, "byWeek": {"4": {"sets": 3, "reps": 10, "rpe": [7, 7]}, "5": {"sets": 3, "reps": 12, "rpe": [7, 8]}}}, {"id": "cop", "exercise": "copenhagen_short", "name": "Copenhagen Plank (short lever)", "priority": "P2", "intent": "durability", "progression": {"model": "capacity_standard"}, "byWeek": {"4": {"sets": 2, "holdSec": 25, "perSide": true}, "5": {"sets": 2, "holdSec": 30, "perSide": true}}, "superset": "T1-5"}, {"id": "calf", "exercise": "sl_calf_raise", "name": "Single-leg Calf Raise", "priority": "P2", "intent": "durability", "progression": {"model": "capacity_standard"}, "byWeek": {"4": {"sets": 2, "reps": 15, "perSide": true}, "5": {"sets": 3, "reps": 15, "perSide": true}}, "superset": "T1-5"}]}, "T2": {"name": "Travel Conditioning + Durability", "estMin": 35, "travel": true, "intent": {"primary": ["aerobic", "work_capacity"], "secondary": ["hamstring_resilience", "trunk"]}, "develops": {"aerobic_engine": 2, "stamina": 2, "hamstring": 1, "trunk": 1}, "slots": [{"id": "prep", "exercise": "prep_general", "name": "Preparation", "priority": "P1", "intent": "prep", "progression": {"model": "none"}, "byWeek": {"4": {"durationMin": 8, "text": "5 min easy cardio → leg swings, hip openers → knee-to-wall 1×10/side → pogos 2×15 (if floor allows)"}, "5": {"durationMin": 8}}}, {"id": "int", "exercise": "cardio_intervals", "name": "Intervals — any cardio machine", "priority": "P1", "intent": "work_capacity", "progression": {"model": "time_distance"}, "byWeek": {"4": {"sets": 6, "workSec": 120, "restSec": 60, "rpe": [7, 8], "text": "6 × 2 min hard / 1 min easy on whatever exists: bike, rower, treadmill (incline OK)"}, "5": {"sets": 7, "workSec": 120, "restSec": 60, "rpe": [7, 8]}}, "cues": "Log the machine used. Output isn't compared across machines."}, {"id": "ham", "exercise": "sl_ham_bridge", "name": "Single-leg Hamstring Bridge (heel on bench)", "priority": "P2", "intent": "durability", "progression": {"model": "double_progression"}, "byWeek": {"4": {"sets": 2, "reps": 10, "perSide": true}, "5": {"sets": 3, "reps": 10, "perSide": true}}}, {"id": "pogo", "exercise": "pogo_skips", "name": "Pogos + Skips", "priority": "P3", "intent": "durability", "progression": {"model": "none"}, "byWeek": {"4": {"sets": 3, "text": "3 × (20 pogos + 20m skips) — only if floor/space allows"}, "5": {"sets": 3}}}, {"id": "trunk", "exercise": "dead_bug", "name": "Dead Bug", "priority": "P4", "intent": "trunk", "progression": {"model": "double_progression"}, "byWeek": {"4": {"sets": 2, "reps": 10, "perSide": true}, "5": {"sets": 3, "reps": 10, "perSide": true}}}]}, "T3": {"name": "Travel Strength B — Full Body", "estMin": 40, "travel": true, "intent": {"primary": ["lower_strength", "pulling_strength"], "secondary": ["hip_groin", "trunk"]}, "develops": {"strength": 2, "upper_body_strength": 2, "hamstring": 1, "adductor": 1, "trunk": 1}, "slots": [{"id": "prep", "exercise": "prep_general", "name": "Preparation", "priority": "P1", "intent": "prep", "progression": {"model": "none"}, "byWeek": {"4": {"durationMin": 8, "text": "5 min easy cardio → leg swings, hip openers → knee-to-wall 1×10/side → pogos 2×15 (if floor allows)"}, "5": {"durationMin": 8}}}, {"id": "gob", "exercise": "goblet_squat", "name": "Goblet Squat (3s lowering)", "priority": "P1", "intent": "strength", "progression": {"model": "double_progression"}, "byWeek": {"4": {"sets": 3, "reps": 10, "rpe": [7, 8]}, "5": {"sets": 4, "reps": 10, "rpe": [7, 8]}}}, {"id": "pull", "exercise": "pullup_strict", "name": "Strict Pull-up", "priority": "P1", "intent": "strength", "progression": {"model": "strict_reps"}, "byWeek": {"4": {"sets": 4, "reps": "baseline", "text": "4 sets at your strict baseline"}, "5": {"sets": 5, "reps": "baseline"}}}, {"id": "push", "exercise": "pushup_fe", "name": "Push-up (feet elevated)", "priority": "P2", "intent": "upper_strength", "progression": {"model": "double_progression"}, "byWeek": {"4": {"sets": 3, "reps": 12, "rpe": [7, 8]}, "5": {"sets": 3, "reps": 15, "rpe": [7, 8]}}}, {"id": "slrdl", "exercise": "db_sl_rdl", "name": "Single-leg DB RDL", "priority": "P2", "intent": "posterior", "progression": {"model": "double_progression"}, "byWeek": {"4": {"sets": 3, "reps": 8, "perSide": true, "rpe": [7, 7]}, "5": {"sets": 3, "reps": 10, "perSide": true, "rpe": [7, 8]}}}, {"id": "lat", "exercise": "lateral_lunge", "name": "Lateral Lunge", "priority": "P3", "intent": "hip_groin", "progression": {"model": "double_progression"}, "byWeek": {"4": {"sets": 2, "reps": 8, "perSide": true}, "5": {"sets": 3, "reps": 8, "perSide": true}}}, {"id": "side", "exercise": "side_plank", "name": "Side Plank", "priority": "P4", "intent": "trunk", "progression": {"model": "capacity_standard"}, "byWeek": {"4": {"sets": 2, "holdSec": 40, "perSide": true}, "5": {"sets": 3, "holdSec": 40, "perSide": true}}}]}}, "microSessions": [{"id": "m_ankle", "name": "Ankle / calf durability (8 min)", "items": ["Knee-to-wall 1×10/side", "Single-leg balance 30s eyes closed/side", "Tibialis raises 2×20", "Pogos 2×15"]}, {"id": "m_groin", "name": "Hip / groin (6 min)", "items": ["Copenhagen short lever 2×15s/side", "Banded marches 2×20 (2s hold)", "Side-lying adduction 1×12/side"]}, {"id": "m_ball", "name": "Ball touches (10 min)", "items": ["Sole rolls, inside-outside, both feet", "Wall passes L/R, two-touch then one-touch"]}], "schedule": [{"date": "2026-10-01", "week": 1, "session": "B", "type": "core"}, {"date": "2026-10-02", "week": 1, "session": "E", "type": "optional"}, {"date": "2026-10-03", "week": 1, "session": "A", "type": "core"}, {"date": "2026-10-04", "week": 1, "session": null, "type": "rest"}, {"date": "2026-10-05", "week": 1, "session": "C", "type": "core"}, {"date": "2026-10-06", "week": 1, "session": "E2", "type": "optional"}, {"date": "2026-10-07", "week": 1, "session": "D", "type": "core"}, {"date": "2026-10-08", "week": 2, "session": "B", "type": "core"}, {"date": "2026-10-09", "week": 2, "session": "E", "type": "optional"}, {"date": "2026-10-10", "week": 2, "session": "A", "type": "core"}, {"date": "2026-10-11", "week": 2, "session": null, "type": "rest"}, {"date": "2026-10-12", "week": 2, "session": "C", "type": "core"}, {"date": "2026-10-13", "week": 2, "session": "E2", "type": "optional"}, {"date": "2026-10-14", "week": 2, "session": "D", "type": "core"}, {"date": "2026-10-15", "week": 3, "session": "B", "type": "core"}, {"date": "2026-10-16", "week": 3, "session": "E", "type": "optional"}, {"date": "2026-10-17", "week": 3, "session": "A", "type": "core"}, {"date": "2026-10-18", "week": 3, "session": null, "type": "rest"}, {"date": "2026-10-19", "week": 3, "session": "C", "type": "core"}, {"date": "2026-10-20", "week": 3, "session": "E2", "type": "optional"}, {"date": "2026-10-21", "week": 3, "session": "D", "type": "core"}, {"date": "2026-10-22", "week": 4, "session": null, "type": "rest", "note": "Travel day"}, {"date": "2026-10-23", "week": 4, "session": "T1", "type": "core"}, {"date": "2026-10-24", "week": 4, "session": "E2", "type": "optional"}, {"date": "2026-10-25", "week": 4, "session": "T2", "type": "core"}, {"date": "2026-10-26", "week": 4, "session": null, "type": "rest"}, {"date": "2026-10-27", "week": 4, "session": "T3", "type": "core"}, {"date": "2026-10-28", "week": 4, "session": "E2", "type": "optional"}, {"date": "2026-10-29", "week": 5, "session": "T1", "type": "core"}, {"date": "2026-10-30", "week": 5, "session": null, "type": "rest"}, {"date": "2026-10-31", "week": 5, "session": "T2", "type": "core"}, {"date": "2026-11-01", "week": 5, "session": "E2", "type": "optional"}, {"date": "2026-11-02", "week": 5, "session": "T3", "type": "core"}, {"date": "2026-11-03", "week": 5, "session": null, "type": "rest", "note": "Travel day"}], "rules": [{"id": "autoreg_week", "text": "Week labels are a ceiling, not a timetable. Progress early if RPE supports it; repeat a week if it doesn't."}, {"id": "doms", "text": "Soreness ≥ 5/10 in the muscles you're about to train → keep P1 work, drop one set of every P3/P4 slot."}, {"id": "speed_gate", "text": "Any rep slower, tighter or 'off' → stop speed work for the day. Never sprint max after heavy lower-body work."}, {"id": "pain_gate", "text": "Pain ≥ 3/10 in a region an exercise loads → no load increase; offer substitute or regress."}, {"id": "spacing", "text": "Keep ≥ 48h between C (max speed) and the previous A or D. Moving D to the day before C triggers a warning."}, {"id": "travel", "text": "Travel weeks are maintenance, not failure. Two strength sessions + one conditioning session a week holds most of what 1A built. Walk daily."}, {"id": "optional", "text": "E sessions are optional and earn adherence credit only when done as prescribed (easy). Skip them if recovery is poor."}], "historicalTargets": "see apex-athlete-baseline.json → targets"};
+const DEFAULT_PROGRAM = {"schema": "apex.program/1", "id": "fy27-foundation-1a", "version": 3, "createdAt": "2026-10-01", "season": {"id": "fy27", "name": "2027 Football Preparation"}, "phase": {"id": "p1", "name": "Phase 1 — Off-season Reconditioning + Foundation"}, "block": {"id": "1A", "name": "Foundation 1A", "start": "2026-10-01", "end": "2026-10-21", "objectives": ["Re-entry and training rhythm", "Establish current capacities from normal training (no max tests)", "Progressive running exposure", "Progressive sprint intensity", "Begin meaningful strength progression"], "next": [{"id": "travel", "name": "Travel / Maintenance", "start": "2026-10-22", "end": "2026-11-03", "mode": "travel"}, {"id": "1B", "name": "Foundation / Development 1B", "start": "2026-11-04", "note": "Built from 1A data. Week 1: Yo-Yo IR1 familiarisation run + high-bar back squat technique work. Week 2: Yo-Yo IR1 baseline (standalone, fresh) and 5RM high-bar squat test (≥48h apart)."}]}, "weeks": [{"week": 1, "label": "Re-entry / Calibration", "start": "2026-10-01", "stressTargetPctOfPreBreak": [60, 70], "mainLiftRpe": [6, 7], "sprintIntensityPct": [70, 85]}, {"week": 2, "label": "Build", "start": "2026-10-08", "stressTargetPctOfPreBreak": [70, 80], "mainLiftRpe": [6.5, 7.5], "sprintIntensityPct": [80, 90]}, {"week": 3, "label": "Approach + Baseline", "start": "2026-10-15", "stressTargetPctOfPreBreak": [80, 90], "mainLiftRpe": [7, 8], "sprintIntensityPct": [90, 95], "benchmarks": ["cmj", "accel_10m", "fly_10m", "cod_505", "heelrise", "wblt"]}, {"week": 4, "label": "Travel — Maintenance", "start": "2026-10-22", "stressTargetPctOfPreBreak": [60, 75], "mainLiftRpe": [7, 8], "travel": true}, {"week": 5, "label": "Travel — Maintenance", "start": "2026-10-29", "stressTargetPctOfPreBreak": [65, 80], "mainLiftRpe": [7, 8], "travel": true}], "sessions": {"A": {"name": "Lower Strength + Acceleration", "estMin": 55, "intent": {"primary": ["acceleration", "lower_strength"], "secondary": ["unilateral_strength", "calf_soleus", "adductors", "trunk"]}, "develops": {"acceleration": 2, "strength": 2, "lower_body_power": 1, "calf_soleus": 1, "adductor": 1, "durability": 1}, "slots": [{"id": "prep", "exercise": "prep_general", "name": "Preparation", "priority": "P1", "intent": "prep", "progression": {"model": "none"}, "byWeek": {"1": {"durationMin": 10, "text": "3 min easy bike → leg swings, hip openers → knee-to-wall 1×10/side → pogos 2×10 → 3 build-ups 20m @ 60/70/80%"}, "2": {"durationMin": 10, "text": "As week 1; build-ups to 85%"}, "3": {"durationMin": 10, "text": "As week 1; build-ups to 90%"}}}, {"id": "accel", "exercise": "sprint_10m_2pt", "name": "Acceleration — 10–15m from 2-point start", "priority": "P1", "intent": "speed", "progression": {"model": "quality_gated"}, "byWeek": {"1": {"sets": 6, "distanceM": 10, "intensityPct": [75, 85], "restSec": 90, "text": "6 × 10m @ ~80%. Fast but relaxed. Walk back + 90s."}, "2": {"sets": 6, "distanceM": 15, "intensityPct": [85, 90], "restSec": 120}, "3": {"sets": 6, "distanceM": 15, "intensityPct": [90, 95], "restSec": 150, "text": "Stop the set if a rep feels slower or tighter."}}, "cues": "Full recovery. Quality over volume. Any hamstring/calf twinge → stop speed work for the day."}, {"id": "fsq", "exercise": "front_squat", "name": "Front Squat", "priority": "P1", "intent": "strength", "progression": {"model": "rpe_then_linear", "incrementKg": 2.5}, "byWeek": {"1": {"sets": 3, "reps": 5, "rpe": [6, 7], "load": {"mode": "find", "hint": "Ramp in sets of 5 from 20kg. Working load = first load that feels RPE 6–7. Likely 40–50kg — don't predetermine."}}, "2": {"sets": 3, "reps": 5, "rpe": [6.5, 7.5], "load": {"mode": "from_last", "rule": "+5kg if last week's final set ≤ RPE 6; +2.5kg if RPE 7; hold if ≥ RPE 8"}}, "3": {"sets": 4, "reps": 5, "rpe": [7, 8], "load": {"mode": "from_last", "rule": "Same rule. No grinding."}}}, "minSets": 2, "cues": "Historical reference 60×5 @8 — a destination, not this week's prescription."}, {"id": "split", "exercise": "db_split_squat", "name": "DB Split Squat", "priority": "P3", "intent": "unilateral_strength", "progression": {"model": "double_progression"}, "byWeek": {"1": {"sets": 2, "reps": 8, "perSide": true, "rpe": [6, 6]}, "2": {"sets": 3, "reps": 8, "perSide": true, "rpe": [6, 7]}, "3": {"sets": 3, "reps": 10, "perSide": true, "rpe": [7, 7]}}, "cues": "Low eccentric volume week 1 — split squats are the DOMS trap after a break."}, {"id": "calf", "exercise": "sl_calf_raise", "name": "Single-leg Calf Raise (straight knee) + Bent-knee Calf Raise", "priority": "P2", "intent": "durability", "progression": {"model": "capacity_standard"}, "byWeek": {"1": {"sets": 2, "reps": "12 + 15", "perSide": true}, "2": {"sets": 3, "reps": "15 + 15", "perSide": true}, "3": {"sets": 3, "reps": "15 + 20", "perSide": true, "text": "If you've just done the heel-rise test, do one set only."}}, "superset": "A5"}, {"id": "cop", "exercise": "copenhagen_short", "name": "Copenhagen Plank (short lever, knee support)", "priority": "P2", "intent": "durability", "progression": {"model": "capacity_standard"}, "byWeek": {"1": {"sets": 2, "holdSec": 15, "perSide": true}, "2": {"sets": 3, "holdSec": 20, "perSide": true}, "3": {"sets": 3, "holdSec": 25, "perSide": true}}, "superset": "A5"}, {"id": "trunk", "exercise": "dead_bug", "name": "Dead Bug", "priority": "P4", "intent": "trunk", "progression": {"model": "double_progression"}, "byWeek": {"1": {"sets": 2, "reps": 8, "perSide": true}, "2": {"sets": 2, "reps": 10, "perSide": true}, "3": {"sets": 3, "reps": 10, "perSide": true}}}, {"id": "capcheck", "exercise": "capacity_check", "name": "Capacity Check — heel rise + knee-to-wall", "priority": "P2", "intent": "test", "onlyWeeks": [3], "progression": {"model": "none"}, "byWeek": {"3": {"sets": 1, "tests": ["heelrise", "wblt"], "text": "Both legs. Heel rise on a ~10° board with a fixed metronome cadence you'll reuse every time. These are monitors — no score, no injury verdict."}}}]}, "B": {"name": "Upper Strength + Aerobic", "estMin": 55, "intent": {"primary": ["upper_strength", "aerobic"], "secondary": ["pulling_strength", "trunk"]}, "develops": {"upper_body_strength": 2, "aerobic_engine": 2, "stamina": 1, "trunk": 1}, "slots": [{"id": "prep", "exercise": "prep_upper", "name": "Preparation", "priority": "P1", "intent": "prep", "progression": {"model": "none"}, "byWeek": {"1": {"durationMin": 6, "text": "Band pull-aparts 2×15, scap push-ups 2×10, empty-bar bench 1×10"}, "2": {"durationMin": 6}, "3": {"durationMin": 6}}}, {"id": "bench", "exercise": "bench_press", "name": "Bench Press", "priority": "P1", "intent": "strength", "progression": {"model": "rpe_then_linear", "incrementKg": 2.5}, "byWeek": {"1": {"sets": 3, "reps": 5, "rpe": [6, 7], "load": {"mode": "find", "hint": "Ramp in sets of 5 from the bar. Working load = first load at RPE 6–7. Likely 40–47.5kg."}}, "2": {"sets": 3, "reps": 5, "rpe": [6.5, 7.5], "load": {"mode": "from_last", "rule": "+2.5kg if final set ≤ RPE 7; hold otherwise"}}, "3": {"sets": 3, "reps": 5, "rpe": [7, 8], "load": {"mode": "from_last", "rule": "Same rule"}}}, "minSets": 2, "cues": "Any pec symptom (not just pain — pulling, tightness) → stop pressing, log it, swap to DB floor press."}, {"id": "pull", "exercise": "pullup_strict", "name": "Strict Pull-up", "priority": "P1", "intent": "strength", "progression": {"model": "strict_reps"}, "byWeek": {"1": {"sets": "1 + 3", "reps": "max strict, then (max−1)", "text": "After warm-up: ONE set to the last strict rep (that's your baseline). Then 3 sets of max−1. Log STRICT reps only."}, "2": {"sets": 4, "reps": "baseline", "text": "4 sets at baseline strict reps. Add a set before adding reps."}, "3": {"sets": 5, "reps": "baseline", "text": "5 sets; if all strict, next week +1 rep on set 1"}}, "cues": "No kip. Rep ends when chin clears bar from a dead hang. The rep that kips doesn't count."}, {"id": "row", "exercise": "db_row", "name": "DB Row", "priority": "P3", "intent": "pulling", "progression": {"model": "double_progression"}, "byWeek": {"1": {"sets": 2, "reps": 10, "perSide": true, "rpe": [6, 7]}, "2": {"sets": 3, "reps": 10, "perSide": true, "rpe": [7, 7]}, "3": {"sets": 3, "reps": 12, "perSide": true, "rpe": [7, 8]}}, "superset": "B4"}, {"id": "ohp", "exercise": "hk_db_press", "name": "Half-kneeling DB Press", "priority": "P3", "intent": "upper_strength", "progression": {"model": "double_progression"}, "byWeek": {"1": {"sets": 2, "reps": 8, "perSide": true, "rpe": [6, 6]}, "2": {"sets": 3, "reps": 8, "perSide": true, "rpe": [6, 7]}, "3": {"sets": 3, "reps": 10, "perSide": true, "rpe": [7, 7]}}, "superset": "B4"}, {"id": "side", "exercise": "side_plank", "name": "Side Plank", "priority": "P4", "intent": "trunk", "progression": {"model": "capacity_standard"}, "byWeek": {"1": {"sets": 2, "holdSec": 30, "perSide": true}, "2": {"sets": 2, "holdSec": 40, "perSide": true}, "3": {"sets": 3, "holdSec": 40, "perSide": true}}}, {"id": "z2", "exercise": "bikeerg_z2", "name": "BikeErg — Zone 2", "priority": "P2", "intent": "aerobic", "progression": {"model": "time_distance"}, "byWeek": {"1": {"durationMin": 20, "rpe": [3, 4], "text": "Conversational. Nasal-breathing test: if you can't, back off. Log distance + avg pace (and HR if you have it)."}, "2": {"durationMin": 25, "rpe": [3, 4]}, "3": {"durationMin": 30, "rpe": [3, 4]}}, "cues": "Same damper setting every session so pace is comparable week to week."}]}, "C": {"name": "Speed + Power + Football", "estMin": 55, "intent": {"primary": ["max_velocity", "lower_body_power"], "secondary": ["change_of_direction", "hamstring_resilience", "football_technical"]}, "develops": {"sprint_speed": 2, "acceleration": 1, "lower_body_power": 2, "jumping": 2, "change_of_direction": 1, "hamstring": 1, "ball_control": 1}, "slots": [{"id": "prep", "exercise": "prep_speed", "name": "Comprehensive Preparation", "priority": "P1", "intent": "prep", "progression": {"model": "none"}, "byWeek": {"1": {"durationMin": 15, "text": "3 min jog → dynamic mobility → A-march, A-skip, B-skip 2×20m → straight-leg bounds 2×20m → pogos 2×15 → 3 build-ups 30m"}, "2": {"durationMin": 15}, "3": {"durationMin": 15}}}, {"id": "battery", "exercise": "field_battery", "name": "Field Battery — CMJ · 10m · Flying 10 · 505", "priority": "P1", "intent": "test", "onlyWeeks": [3], "progression": {"model": "none"}, "byWeek": {"3": {"sets": 4, "tests": ["cmj", "accel_10m", "fly_10m", "cod_505"], "text": "Fresh, after the full warm-up and one near-max rehearsal. Order: CMJ (3 jumps) → 10m (3 trials) → flying 10m (3 trials) → 505 (2 each side). Film everything at 240fps. Only do this if Weeks 1–2 felt good; otherwise run Week 2's session and test after travel."}}, "cues": "Same surface, footwear and time of day next time you test — the protocol is part of the result."}, {"id": "wall", "exercise": "wall_drill", "name": "Wall Drill (switches)", "priority": "P2", "intent": "speed", "progression": {"model": "none"}, "byWeek": {"1": {"sets": 3, "reps": "5 switches"}, "2": {"sets": 3, "reps": "5 switches"}, "3": {"sets": 3, "reps": "6 switches"}}}, {"id": "speed", "exercise": "sprint_flying", "name": "Speed — build-ups → flying sprints", "priority": "P1", "intent": "speed", "progression": {"model": "quality_gated"}, "byWeek": {"1": {"sets": 4, "distanceM": 30, "intensityPct": [70, 80], "restSec": 150, "text": "4 × 30m build-ups @ 70–80%. Relaxed face and shoulders."}, "2": {"sets": 4, "distanceM": 30, "intensityPct": [85, 90], "restSec": 180, "text": "4 × (20m build + 10m @ 85–90%)"}, "3": {"sets": 2, "distanceM": 30, "intensityPct": [70, 80], "restSec": 120, "text": "Battery done — 2 relaxed 30m build-ups to finish. No extra max-speed volume."}}, "minSets": 2, "cues": "Max speed is never done tired. If the warm-up feels flat, run Week 2's version instead."}, {"id": "broad", "exercise": "broad_jump", "name": "Broad Jump", "priority": "P2", "intent": "power", "progression": {"model": "quality_gated"}, "byWeek": {"1": {"sets": 3, "reps": 3, "text": "Submax ~80%, stick the landing"}, "2": {"sets": 3, "reps": 3, "text": "~90%, stick the landing"}, "3": {"sets": 3, "reps": 2, "text": "BENCHMARK: best of 6 max jumps, measured toe-to-heel with tape"}}, "onlyWeeks": [1, 2]}, {"id": "cod", "exercise": "cod_drills", "name": "Change of Direction", "priority": "P3", "intent": "cod", "progression": {"model": "quality_gated"}, "byWeek": {"1": {"sets": 4, "text": "Decel drills: 10m run → stop in 3 steps; 2 each side"}, "2": {"sets": 4, "text": "505-style turns @ 80%, 2 each side"}, "3": {"sets": 4, "text": "505 @ 90%, 2 each side — note which side feels better"}}, "onlyWeeks": [1, 2]}, {"id": "ham", "exercise": "hamstring_resilience", "name": "Hamstring Resilience", "priority": "P2", "intent": "durability", "progression": {"model": "capacity_standard"}, "byWeek": {"1": {"sets": 2, "holdSec": 20, "perSide": true, "text": "Single-leg hamstring bridge iso (heel on bench) — no eccentrics yet"}, "2": {"sets": 2, "reps": 3, "text": "Nordic — partial range, controlled, stop before you collapse"}, "3": {"sets": 2, "reps": 4, "text": "Nordic — same rules"}}}, {"id": "ball", "exercise": "ball_technical", "name": "Ball Work", "priority": "P4", "intent": "football_technical", "progression": {"model": "none"}, "byWeek": {"1": {"durationMin": 10, "text": "Wall passes both feet (L/R alternate), first touch out of feet"}, "2": {"durationMin": 10}, "3": {"durationMin": 10}}}]}, "D": {"name": "Posterior Chain + Work Capacity", "estMin": 55, "intent": {"primary": ["posterior_strength", "work_capacity"], "secondary": ["unilateral_strength", "hip_groin", "upper_pull"]}, "develops": {"strength": 2, "hamstring": 1, "stamina": 2, "repeat_sprint": 1, "adductor": 1}, "slots": [{"id": "prep", "exercise": "prep_general", "name": "Preparation", "priority": "P1", "intent": "prep", "progression": {"model": "none"}, "byWeek": {"1": {"durationMin": 10, "text": "3 min easy bike → leg swings, hip openers → knee-to-wall 1×10/side → pogos 2×10 → 3 build-ups 20m @ 60/70/80%"}, "2": {"durationMin": 10, "text": "As week 1; build-ups to 85%"}, "3": {"durationMin": 10, "text": "As week 1; build-ups to 90%"}}}, {"id": "dl", "exercise": "deadlift", "name": "Deadlift", "priority": "P1", "intent": "strength", "progression": {"model": "rpe_then_linear", "incrementKg": 5}, "byWeek": {"1": {"sets": 2, "reps": 5, "rpe": [6, 7], "load": {"mode": "find", "hint": "Ramp in sets of 5 from 40kg. Working load = first load at RPE 6–7. 2 working sets only."}}, "2": {"sets": 3, "reps": 5, "rpe": [6.5, 7.5], "load": {"mode": "from_last", "rule": "+5–10kg if final set ≤ RPE 6.5; +5kg if RPE 7; hold if ≥ RPE 8"}}, "3": {"sets": 3, "reps": 5, "rpe": [7, 8], "load": {"mode": "from_last", "rule": "Same rule; reference 90×5×3 @7"}}}, "minSets": 2, "cues": "90kg is your home-gym ceiling, not your ceiling. If it's easy before Week 4, Apex switches to pauses/tempo/reps."}, {"id": "rdl", "exercise": "bb_rdl", "name": "Romanian Deadlift", "priority": "P3", "intent": "posterior", "progression": {"model": "double_progression"}, "byWeek": {"1": {"sets": 2, "reps": 8, "rpe": [6, 6], "text": "Light (~40kg). This is the DOMS risk exercise — respect it."}, "2": {"sets": 3, "reps": 8, "rpe": [6, 7]}, "3": {"sets": 3, "reps": 10, "rpe": [7, 7], "text": "Heading toward 60×10×3 @7"}}}, {"id": "lat", "exercise": "lateral_lunge", "name": "Lateral Lunge (goblet)", "priority": "P3", "intent": "hip_groin", "progression": {"model": "double_progression"}, "byWeek": {"1": {"sets": 2, "reps": 6, "perSide": true}, "2": {"sets": 2, "reps": 8, "perSide": true}, "3": {"sets": 3, "reps": 8, "perSide": true}}, "superset": "D4"}, {"id": "bbrow", "exercise": "bb_row", "name": "Barbell Row", "priority": "P3", "intent": "pulling", "progression": {"model": "double_progression"}, "byWeek": {"1": {"sets": 2, "reps": 10, "rpe": [6, 6], "text": "~30kg"}, "2": {"sets": 3, "reps": 10, "rpe": [6, 7]}, "3": {"sets": 3, "reps": 10, "rpe": [7, 7], "text": "Heading toward 40×10×3"}}, "superset": "D4"}, {"id": "wc", "exercise": "bikeerg_intervals", "name": "BikeErg — Work Capacity", "priority": "P1", "intent": "work_capacity", "progression": {"model": "time_distance"}, "byWeek": {"1": {"sets": 6, "workSec": 60, "restSec": 60, "rpe": [7, 7], "text": "6 × 1 min hard (RPE 7) / 1 min easy. Log metres per rep."}, "2": {"sets": 4, "workSec": 180, "restSec": 90, "rpe": [7, 7], "text": "4 × 3 min @ threshold (RPE 7) / 90s easy"}, "3": {"sets": 5, "workSec": 180, "restSec": 90, "rpe": [7, 8], "text": "5 × 3 min @ threshold / 90s easy"}}, "cues": "Repeatability is the metric: last rep within ~5% of first rep's metres."}]}, "E": {"name": "Aerobic / Running Exposure (optional, low cost)", "estMin": 35, "optional": true, "intent": {"primary": ["aerobic", "running_tolerance"], "secondary": ["mobility"]}, "develops": {"aerobic_engine": 1, "stamina": 1, "durability": 1}, "slots": [{"id": "run", "exercise": "run_walk", "name": "Run–Walk on grass", "priority": "P1", "intent": "running_tolerance", "progression": {"model": "time_distance"}, "byWeek": {"1": {"sets": 6, "text": "6 × (3 min easy run / 1 min walk) = 18 min running"}, "2": {"sets": 5, "text": "5 × (5 min run / 1 min walk) = 25 min running"}, "3": {"sets": 3, "text": "3 × (8 min run / 1 min walk), or 25 min continuous if calves have been quiet"}}, "cues": "Lower-leg tightness ≥ 3/10 → walk the rest and log it. That's data, not failure."}, {"id": "mob", "exercise": "mobility_flow", "name": "Mobility", "priority": "P4", "intent": "mobility", "progression": {"model": "none"}, "byWeek": {"1": {"durationMin": 8}, "2": {"durationMin": 8}, "3": {"durationMin": 8}}}]}, "E2": {"name": "Zone 2 BikeErg (optional, low cost)", "estMin": 35, "optional": true, "intent": {"primary": ["aerobic"], "secondary": []}, "develops": {"aerobic_engine": 1}, "slots": [{"id": "z2", "exercise": "bikeerg_z2", "name": "BikeErg — Zone 2", "priority": "P1", "intent": "aerobic", "progression": {"model": "time_distance"}, "byWeek": {"1": {"durationMin": 30, "rpe": [3, 4]}, "2": {"durationMin": 35, "rpe": [3, 4]}, "3": {"durationMin": 40, "rpe": [3, 4]}, "4": {"durationMin": 30, "rpe": [3, 4]}, "5": {"durationMin": 35, "rpe": [3, 4]}}}]}, "T1": {"name": "Travel Strength A — Full Body", "estMin": 40, "travel": true, "intent": {"primary": ["lower_strength", "upper_strength"], "secondary": ["calf_soleus", "adductors"]}, "develops": {"strength": 2, "upper_body_strength": 1, "calf_soleus": 1, "adductor": 1, "durability": 1}, "slots": [{"id": "prep", "exercise": "prep_general", "name": "Preparation", "priority": "P1", "intent": "prep", "progression": {"model": "none"}, "byWeek": {"4": {"durationMin": 8, "text": "5 min easy cardio → leg swings, hip openers → knee-to-wall 1×10/side → pogos 2×15 (if floor allows)"}, "5": {"durationMin": 8}}}, {"id": "bss", "exercise": "db_bss", "name": "DB Bulgarian Split Squat", "priority": "P1", "intent": "strength", "progression": {"model": "double_progression"}, "byWeek": {"4": {"sets": 3, "reps": 8, "perSide": true, "rpe": [7, 8]}, "5": {"sets": 3, "reps": 10, "perSide": true, "rpe": [7, 8]}}, "cues": "Heaviest DBs that allow clean reps. If the rack tops out early, slow the lowering to 3s."}, {"id": "dbb", "exercise": "db_bench", "name": "DB Bench Press", "priority": "P1", "intent": "upper_strength", "progression": {"model": "double_progression"}, "byWeek": {"4": {"sets": 3, "reps": 8, "rpe": [7, 8]}, "5": {"sets": 3, "reps": 10, "rpe": [7, 8]}}}, {"id": "row", "exercise": "db_row", "name": "DB Row", "priority": "P2", "intent": "pulling", "progression": {"model": "double_progression"}, "byWeek": {"4": {"sets": 3, "reps": 10, "perSide": true, "rpe": [7, 8]}, "5": {"sets": 3, "reps": 12, "perSide": true, "rpe": [7, 8]}}}, {"id": "rdl", "exercise": "db_rdl", "name": "DB Romanian Deadlift", "priority": "P2", "intent": "posterior", "progression": {"model": "double_progression"}, "byWeek": {"4": {"sets": 3, "reps": 10, "rpe": [7, 7]}, "5": {"sets": 3, "reps": 12, "rpe": [7, 8]}}}, {"id": "cop", "exercise": "copenhagen_short", "name": "Copenhagen Plank (short lever)", "priority": "P2", "intent": "durability", "progression": {"model": "capacity_standard"}, "byWeek": {"4": {"sets": 2, "holdSec": 25, "perSide": true}, "5": {"sets": 2, "holdSec": 30, "perSide": true}}, "superset": "T1-5"}, {"id": "calf", "exercise": "sl_calf_raise", "name": "Single-leg Calf Raise", "priority": "P2", "intent": "durability", "progression": {"model": "capacity_standard"}, "byWeek": {"4": {"sets": 2, "reps": 15, "perSide": true}, "5": {"sets": 3, "reps": 15, "perSide": true}}, "superset": "T1-5"}]}, "T2": {"name": "Travel Conditioning + Durability", "estMin": 35, "travel": true, "intent": {"primary": ["aerobic", "work_capacity"], "secondary": ["hamstring_resilience", "trunk"]}, "develops": {"aerobic_engine": 2, "stamina": 2, "hamstring": 1, "trunk": 1}, "slots": [{"id": "prep", "exercise": "prep_general", "name": "Preparation", "priority": "P1", "intent": "prep", "progression": {"model": "none"}, "byWeek": {"4": {"durationMin": 8, "text": "5 min easy cardio → leg swings, hip openers → knee-to-wall 1×10/side → pogos 2×15 (if floor allows)"}, "5": {"durationMin": 8}}}, {"id": "int", "exercise": "cardio_intervals", "name": "Intervals — any cardio machine", "priority": "P1", "intent": "work_capacity", "progression": {"model": "time_distance"}, "byWeek": {"4": {"sets": 6, "workSec": 120, "restSec": 60, "rpe": [7, 8], "text": "6 × 2 min hard / 1 min easy on whatever exists: bike, rower, treadmill (incline OK)"}, "5": {"sets": 7, "workSec": 120, "restSec": 60, "rpe": [7, 8]}}, "cues": "Log the machine used. Output isn't compared across machines."}, {"id": "ham", "exercise": "sl_ham_bridge", "name": "Single-leg Hamstring Bridge (heel on bench)", "priority": "P2", "intent": "durability", "progression": {"model": "double_progression"}, "byWeek": {"4": {"sets": 2, "reps": 10, "perSide": true}, "5": {"sets": 3, "reps": 10, "perSide": true}}}, {"id": "pogo", "exercise": "pogo_skips", "name": "Pogos + Skips", "priority": "P3", "intent": "durability", "progression": {"model": "none"}, "byWeek": {"4": {"sets": 3, "text": "3 × (20 pogos + 20m skips) — only if floor/space allows"}, "5": {"sets": 3}}}, {"id": "trunk", "exercise": "dead_bug", "name": "Dead Bug", "priority": "P4", "intent": "trunk", "progression": {"model": "double_progression"}, "byWeek": {"4": {"sets": 2, "reps": 10, "perSide": true}, "5": {"sets": 3, "reps": 10, "perSide": true}}}]}, "T3": {"name": "Travel Strength B — Full Body", "estMin": 40, "travel": true, "intent": {"primary": ["lower_strength", "pulling_strength"], "secondary": ["hip_groin", "trunk"]}, "develops": {"strength": 2, "upper_body_strength": 2, "hamstring": 1, "adductor": 1, "trunk": 1}, "slots": [{"id": "prep", "exercise": "prep_general", "name": "Preparation", "priority": "P1", "intent": "prep", "progression": {"model": "none"}, "byWeek": {"4": {"durationMin": 8, "text": "5 min easy cardio → leg swings, hip openers → knee-to-wall 1×10/side → pogos 2×15 (if floor allows)"}, "5": {"durationMin": 8}}}, {"id": "gob", "exercise": "goblet_squat", "name": "Goblet Squat (3s lowering)", "priority": "P1", "intent": "strength", "progression": {"model": "double_progression"}, "byWeek": {"4": {"sets": 3, "reps": 10, "rpe": [7, 8]}, "5": {"sets": 4, "reps": 10, "rpe": [7, 8]}}}, {"id": "pull", "exercise": "pullup_strict", "name": "Strict Pull-up", "priority": "P1", "intent": "strength", "progression": {"model": "strict_reps"}, "byWeek": {"4": {"sets": 4, "reps": "baseline", "text": "4 sets at your strict baseline"}, "5": {"sets": 5, "reps": "baseline"}}}, {"id": "push", "exercise": "pushup_fe", "name": "Push-up (feet elevated)", "priority": "P2", "intent": "upper_strength", "progression": {"model": "double_progression"}, "byWeek": {"4": {"sets": 3, "reps": 12, "rpe": [7, 8]}, "5": {"sets": 3, "reps": 15, "rpe": [7, 8]}}}, {"id": "slrdl", "exercise": "db_sl_rdl", "name": "Single-leg DB RDL", "priority": "P2", "intent": "posterior", "progression": {"model": "double_progression"}, "byWeek": {"4": {"sets": 3, "reps": 8, "perSide": true, "rpe": [7, 7]}, "5": {"sets": 3, "reps": 10, "perSide": true, "rpe": [7, 8]}}}, {"id": "lat", "exercise": "lateral_lunge", "name": "Lateral Lunge", "priority": "P3", "intent": "hip_groin", "progression": {"model": "double_progression"}, "byWeek": {"4": {"sets": 2, "reps": 8, "perSide": true}, "5": {"sets": 3, "reps": 8, "perSide": true}}}, {"id": "side", "exercise": "side_plank", "name": "Side Plank", "priority": "P4", "intent": "trunk", "progression": {"model": "capacity_standard"}, "byWeek": {"4": {"sets": 2, "holdSec": 40, "perSide": true}, "5": {"sets": 3, "holdSec": 40, "perSide": true}}}]}}, "microSessions": [{"id": "m_ankle", "name": "Ankle / calf durability (8 min)", "items": ["Knee-to-wall 1×10/side", "Single-leg balance 30s eyes closed/side", "Tibialis raises 2×20", "Pogos 2×15"]}, {"id": "m_groin", "name": "Hip / groin (6 min)", "items": ["Copenhagen short lever 2×15s/side", "Banded marches 2×20 (2s hold)", "Side-lying adduction 1×12/side"]}, {"id": "m_ball", "name": "Ball touches (10 min)", "items": ["Sole rolls, inside-outside, both feet", "Wall passes L/R, two-touch then one-touch"]}], "schedule": [{"date": "2026-10-01", "week": 1, "session": "B", "type": "core"}, {"date": "2026-10-02", "week": 1, "session": "E", "type": "optional"}, {"date": "2026-10-03", "week": 1, "session": "A", "type": "core"}, {"date": "2026-10-04", "week": 1, "session": null, "type": "rest"}, {"date": "2026-10-05", "week": 1, "session": "C", "type": "core"}, {"date": "2026-10-06", "week": 1, "session": "E2", "type": "optional"}, {"date": "2026-10-07", "week": 1, "session": "D", "type": "core"}, {"date": "2026-10-08", "week": 2, "session": "B", "type": "core"}, {"date": "2026-10-09", "week": 2, "session": "E", "type": "optional"}, {"date": "2026-10-10", "week": 2, "session": "A", "type": "core"}, {"date": "2026-10-11", "week": 2, "session": null, "type": "rest"}, {"date": "2026-10-12", "week": 2, "session": "C", "type": "core"}, {"date": "2026-10-13", "week": 2, "session": "E2", "type": "optional"}, {"date": "2026-10-14", "week": 2, "session": "D", "type": "core"}, {"date": "2026-10-15", "week": 3, "session": "B", "type": "core"}, {"date": "2026-10-16", "week": 3, "session": "E", "type": "optional"}, {"date": "2026-10-17", "week": 3, "session": "A", "type": "core"}, {"date": "2026-10-18", "week": 3, "session": null, "type": "rest"}, {"date": "2026-10-19", "week": 3, "session": "C", "type": "core"}, {"date": "2026-10-20", "week": 3, "session": "E2", "type": "optional"}, {"date": "2026-10-21", "week": 3, "session": "D", "type": "core"}, {"date": "2026-10-22", "week": 4, "session": null, "type": "rest", "note": "Travel day"}, {"date": "2026-10-23", "week": 4, "session": "T1", "type": "core"}, {"date": "2026-10-24", "week": 4, "session": "E2", "type": "optional"}, {"date": "2026-10-25", "week": 4, "session": "T2", "type": "core"}, {"date": "2026-10-26", "week": 4, "session": null, "type": "rest"}, {"date": "2026-10-27", "week": 4, "session": "T3", "type": "core"}, {"date": "2026-10-28", "week": 4, "session": "E2", "type": "optional"}, {"date": "2026-10-29", "week": 5, "session": "T1", "type": "core"}, {"date": "2026-10-30", "week": 5, "session": null, "type": "rest"}, {"date": "2026-10-31", "week": 5, "session": "T2", "type": "core"}, {"date": "2026-11-01", "week": 5, "session": "E2", "type": "optional"}, {"date": "2026-11-02", "week": 5, "session": "T3", "type": "core"}, {"date": "2026-11-03", "week": 5, "session": null, "type": "rest", "note": "Travel day"}], "rules": [{"id": "autoreg_week", "text": "Week labels are a ceiling, not a timetable. Progress early if RPE supports it; repeat a week if it doesn't."}, {"id": "doms", "text": "Soreness ≥ 5/10 in the muscles you're about to train → keep P1 work, drop one set of every P3/P4 slot."}, {"id": "speed_gate", "text": "Any rep slower, tighter or 'off' → stop speed work for the day. Never sprint max after heavy lower-body work."}, {"id": "pain_gate", "text": "Pain ≥ 3/10 in a region an exercise loads → no load increase; offer substitute or regress."}, {"id": "spacing", "text": "Keep ≥ 48h between C (max speed) and the previous A or D. Moving D to the day before C triggers a warning."}, {"id": "travel", "text": "Travel weeks are maintenance, not failure. Two strength sessions + one conditioning session a week holds most of what 1A built. Walk daily."}, {"id": "optional", "text": "E sessions are optional and earn adherence credit only when done as prescribed (easy). Skip them if recovery is poor."}, {"id": "testing", "text": "Test fresh and under the same conditions. A result only moves a rating when it beats that test's measurement-error gate; smaller changes are logged as observed, not confirmed."}], "historicalTargets": "see apex-athlete-baseline.json → targets"};
 
 // ── Utilities ───────────────────────────────────────────────────────
 const $ = s => document.querySelector(s);
@@ -333,7 +408,7 @@ function scheduleMap() {
   return m;
 }
 function dayPlan(date) { const x = scheduleMap()[date]; if (!x) return null; const s = x.session ? P().sessions[x.session] : null; return { ...x, def: s, optional: !!s?.optional }; }
-function weekOf(date) { const w = (P()?.weeks || []).filter(w => w.start <= date).pop(); return w || null; }
+function weekOf(date) { const w = (P()?.weeks || []).filter(w => w.start <= date).pop(); return w && date <= addDays(w.start, 6) ? w : null; }
 function weekDates(date) { const w = weekOf(date); if (!w) return []; return Array.from({length:7}, (_,i) => addDays(w.start, i)); }
 function completedOn(date) { return Store.d.sessions.filter(s => s.scheduledDate === date && s.status !== 'abandoned'); }
 function dayStatus(date) {
@@ -440,7 +515,7 @@ function buildWorkout(date, sessionKey) {
   const def = P().sessions[sessionKey], w = weekOf(date)?.week || 1;
   return {
     id: uid('s'), scheduledDate: date, sessionKey, week: w, name: def.name, startedAt: Date.now(), idx: 0,
-    slots: def.slots.map(sl => {
+    slots: def.slots.filter(sl => !sl.onlyWeeks || sl.onlyWeeks.includes(w)).map(sl => {
       const wk = sl.byWeek[String(w)] || sl.byWeek['1'] || {};
       const kind = slotKind(sl, wk);
       const base = { slotId: sl.id, exercise: sl.exercise, name: sl.name, kind, priority: sl.priority, intent: sl.intent, wk, cues: sl.cues || '', superset: sl.superset || null, sets: [], measures: {} };
@@ -798,6 +873,623 @@ function setTime(t) { const a = adaptState(today()); a.timeMin = t; Store.d.adap
 function toggleReadAdj() { const a = adaptState(today()); a.applyReadiness = !a.applyReadiness; Store.d.adaptToday = a; Store.save(); adaptSheet(); }
 
 // ════════════════════════════════════════════════════════════════════
+// STAGE 4 v3 — EVIDENCE-BASED RATING SYSTEM
+// Source: "Apex Evidence-Based Benchmark, Testing, and Rating System" (Oct 2026).
+// raw result → method namespace → anchors → noise gate → 1–99 → composite (0.8·mean + 0.2·min)
+// The 1–99 score is NOT a percentile.
+// ════════════════════════════════════════════════════════════════════
+const LEVELS = [['Foundation',1,19],['Recreational',20,39],['Trained',40,59],['Competitive',60,74],['Advanced',75,89],['High Performance',90,99]];
+const ROMAN = ['I','II','III'];
+const parseObsDate = s => { if (!s || s === 'unknown') return null; const m = String(s).match(/^(\d{4})-(\d{2})(?:-(\d{2}))?/); return m ? `${m[1]}-${m[2]}-${m[3] || '15'}` : null; };
+const secParse = v => { if (typeof v === 'number') return v; const p = String(v).trim().split(':').map(Number); return p.some(isNaN) ? null : p.length === 2 ? p[0] * 60 + p[1] : p.length === 3 ? p[0] * 3600 + p[1] * 60 + p[2] : p.length === 1 ? p[0] : null; };
+const fmtSec = s => s >= 60 ? `${Math.floor(s / 60)}:${pad(Math.round(s % 60))}` : `${(+s).toFixed(2)}s`;
+function bwAt(date) {
+  const b = Store.d.body.filter(x => x.weightKg).sort((a, c) => a.date.localeCompare(c.date));
+  const before = b.filter(x => !date || x.date <= date).pop() || b[b.length - 1];
+  return before?.weightKg || null;
+}
+const SRC = {
+  haugen:  { cite: 'Haugen, Tønnessen & Seiler 2013, IJSPP', doi: '10.1123/ijspp.8.2.148' },
+  krustrup:{ cite: 'Krustrup et al. 2003, MSSE', doi: '10.1249/01.MSS.0000058441.94520.32' },
+  bangsbo: { cite: 'Bangsbo, Iaia & Krustrup 2008, Sports Med 38:37–51', doi: null },
+  grgic:   { cite: 'Grgic et al. 2020, Sports Med Open', doi: '10.1186/s40798-020-00260-z' },
+  myjump:  { cite: 'Gallardo-Fuentes et al. 2016, JSCR', doi: '10.1519/JSC.0000000000001304' },
+  plos:    { cite: 'Speed tests in soccer: systematic review 2019, PLOS One', doi: '10.1371/journal.pone.0220982' },
+  aedo:    { cite: 'Aedo-Muñoz et al. 2024, JPES', doi: '10.7752/jpes.2024.02049' },
+  heel:    { cite: 'Standing heel-rise normative values 2017, Physiotherapy', doi: '10.1016/j.physio.2017.03.002' },
+  wblt:    { cite: 'WBLT reliability & validity 2013 (PMID 23997389)', doi: null },
+  nice:    { cite: 'NICE NG246 — central adiposity', doi: null },
+  bahr:    { cite: 'Bahr 2016, BJSM — screening tests', doi: '10.1136/bjsports-2016-096256' },
+};
+const MMC = { accel: p => Math.max(0.03, 0.02 * p), fly: p => Math.max(0.03, 0.02 * p), cod: p => Math.max(0.07, 0.03 * p), cmj: p => Math.max(2, 0.05 * p),
+  yoyo: p => Math.max(160, 0.08 * p), sq: p => 0.05 * p, heel: () => 7, wblt: () => 1.5, pct3: p => 0.03 * Math.abs(p), pct2: p => 0.02 * Math.abs(p) };
+
+// tier: core (rated 1–99) | secondary (personal) | capacity (monitor, never scored) | skill (Apex internal, personal only) | health
+const METRICS = {
+  accel_10m: { name:'10m Acceleration', obs:'sprint_10m', tier:'core', dir:'down', unit:'s', fmt:v=>(+v).toFixed(2)+'s', group:'Speed', attr:'acceleration',
+    methods:{ video:'Smartphone video, movement onset → torso (Apex namespace)', gates:'Timing gates (separate namespace)', hand:'Hand stopwatch (personal history only)' }, rated:['video'],
+    anchors:[[2.60,1],[2.35,10],[2.15,25],[2.00,40],[1.90,55],[1.80,70],[1.72,82],[1.65,90],[1.50,99]], mmc:MMC.accel, retest:[42,56],
+    benchmarkType:'APEX_INTERNAL_STANDARD', status:'PROVISIONAL', evidence:'MODERATE for test · HIGH for context', protocolId:'SPRINT_10M_VIDEO_V1', sources:['haugen','plos'],
+    form:'trials', protocol:'Straight, flat, dry 10m lane with ≥10m braking space. Two-point standing start, same foot forward every test, no rocking. Phone 8–12m to the side of the 10m line, lens perpendicular, ≥120fps (240 preferred), both lines in view. Frame zero = first unmistakable forward movement; finish = first frame the torso breaks the 10m plane. 3 maximal trials, 3–4 min rest. Invalid: slip, false start, blocked view.' },
+  fly_10m: { name:'Flying 10m (max velocity)', obs:'sprint_flying_10m', tier:'core', dir:'down', unit:'s', fmt:v=>`${(+v).toFixed(2)}s · ${(10 / v).toFixed(2)} m/s`, group:'Speed', attr:'sprint_speed',
+    methods:{ video:'Smartphone video, torso-plane crossing', gates:'Timing gates (separate namespace)', hand:'Hand stopwatch (personal history only)' }, rated:['video'],
+    anchors:[[1.80,1],[1.60,10],[1.48,25],[1.38,40],[1.30,55],[1.23,70],[1.17,82],[1.13,90],[1.05,99]], mmc:MMC.fly, retest:[42,56],
+    benchmarkType:'APEX_DERIVED_INTERPOLATION', status:'PROVISIONAL', evidence:'MODERATE', protocolId:'FLY10_VIDEO_V1', sources:['haugen'],
+    form:'trials', protocol:'20m progressive run-in, 10m timed zone, ≥10m run-out. Tall cones/poles at entry and exit. Phone at 240fps, 12–20m to the side of the zone midpoint so both lines are visible. Reach max speed before the first line; don\'t lunge at either line. Time torso crossing entry → torso crossing exit. 3 trials, 4 min rest.' },
+  cod_505: { name:'505 Change of Direction', obs:'t505', tier:'core', dir:'down', unit:'s', fmt:v=>(+v).toFixed(2)+'s', group:'Speed', attr:'cod',
+    methods:{ video:'Smartphone video at the 10m line', gates:'Timing gates (separate namespace)', hand:'Hand stopwatch (personal history only)' }, rated:['video'],
+    anchors:[[3.50,1],[3.10,10],[2.85,25],[2.65,40],[2.50,55],[2.35,70],[2.20,82],[2.10,90],[1.90,99]], mmc:MMC.cod, retest:[42,56],
+    benchmarkType:'APEX_INTERNAL_STANDARD', status:'EXPERIMENTAL', evidence:'MODERATE', protocolId:'505_VIDEO_V1', sources:['plos','aedo'],
+    form:'505', protocol:'Start line 0m, timing line 10m, turn line 15m. Accelerate from 0, cross 10m, plant on/beyond 15m, turn 180°, return through 10m. Phone 240fps perpendicular to the 10m line. Time first torso crossing outbound → first torso crossing inbound. One practice each way, then 2 valid trials turning off each leg, 2–3 min rest. Score = mean of best left and best right. This is pre-planned COD, not reactive agility.' },
+  cmj: { name:'Countermovement Jump', obs:'cmj', tier:'core', dir:'up', unit:'cm', fmt:v=>(+v).toFixed(1)+'cm', group:'Power', attr:'jumping',
+    methods:{ video_ft:'Video / My Jump flight time, hands on hips', mat:'Contact mat (separate namespace)', forceplate:'Force plate (separate namespace)' }, rated:['video_ft'],
+    anchors:[[10,1],[17,10],[23,25],[28,40],[32,55],[36.5,70],[40,82],[45,90],[55,99]], mmc:MMC.cmj, retest:[28,42],
+    benchmarkType:'APEX_DERIVED_INTERPOLATION', status:'PROVISIONAL', evidence:'MODERATE to HIGH', protocolId:'CMJ_FT_VIDEO_V1', sources:['haugen','myjump'],
+    form:'cmj', protocol:'Feet shoulder-width, hands fixed on hips throughout. Self-selected dip, then maximal vertical jump. Phone 240fps on a tripod 2–3m away, full lower body in view, no oblique angle. Flight time = last frame of ground contact → first frame of landing; height = g·t²/8. 3 valid jumps, 60–90s rest. Invalid: hands leave hips, knee tuck, landing posture shortened. Height only — no app power/watts.' },
+  squat_5rm: { name:'5RM High-Bar Back Squat ÷ body mass', obs:'squat5rm_hb', tier:'core', dir:'up', unit:'×BM', fmt:v=>(+v).toFixed(2)+'×BM', group:'Strength', attr:'strength',
+    methods:{ hb_full:'High-bar, hip crease to top of knee, video-checked' }, rated:['hb_full'],
+    anchors:[[0.40,1],[0.60,10],[0.80,25],[1.00,40],[1.25,55],[1.50,70],[1.70,82],[1.90,90],[2.25,99]], mmc:MMC.sq, retest:[42,56],
+    benchmarkType:'APEX_INTERNAL_STANDARD', status:'EXPERIMENTAL', evidence:'HIGH measurement · LOW normative', protocolId:'SQUAT_5RM_HB_V1', sources:['grgic'],
+    derive:o => o.value?.rel ?? (o.value?.load && o.value?.bw ? o.value.load / o.value.bw : null),
+    form:'squat', protocol:'High-bar back squat only — never merged with front, low-bar, box or half squats. Depth: hip crease at least level with the top of the knee; film from the side. Rack safeties set, spotter preferred. Warm-up: bar × 8–10, ~40–50% × 5, 60–65% × 3, 75% × 2, then heavier sets. Up to 3 serious 5RM attempts, 4–5 min rest. 5RM = five valid reps with no sixth possible at depth. Not converted to a 1RM.' },
+  yoyo_ir1: { name:'Yo-Yo IR1', obs:'yoyo_ir1', tier:'core', dir:'up', unit:'m', fmt:v=>Math.round(v)+'m', group:'Engine', attr:'stamina',
+    methods:{ standard:'Standard Yo-Yo IR1 audio' }, rated:['standard'],
+    anchors:[[200,1],[600,10],[1100,25],[1500,40],[1810,55],[2030,70],[2190,82],[2420,90],[3200,99]], mmc:MMC.yoyo, retest:[56,84],
+    anchorBasis:{ 1810:'published moderately-trained reference', 2030:'published sub-elite reference', 2190:'published elite reference', 2420:'published international reference' },
+    benchmarkType:'MIXED: DIRECT + REVIEW-SYNTHESIZED', status:'PRODUCTION CANDIDATE', evidence:'HIGH for test · MODERATE for level anchors', protocolId:'YOYO_IR1_V1', sources:['krustrup','bangsbo'],
+    form:'yoyo', protocol:'Two lines 20m apart plus a 5m recovery zone behind the start. Standard Yo-Yo IR1 audio. Each bout = 20m out + 20m back; 10s active recovery in the 5m zone. Reach lines on the beep, don\'t cut turns. Test ends at the second failure (standard procedure). Log total distance. Same surface and footwear each time. Do one familiarisation run before your baseline — practice alone improves scores.' },
+  rsa_6x40: { name:'RSA 6 × 40m Shuttle (mean)', obs:'rsa_6x40', tier:'secondary', dir:'down', unit:'s', fmt:v=>(+v).toFixed(2)+'s', group:'Engine',
+    methods:{ video:'Video-timed shuttle', hand:'Hand-timed' }, rated:[], mmc:MMC.pct3, retest:[56,84], benchmarkType:'SELF / SOURCE-SPECIFIC', status:'SECONDARY — NO GLOBAL RATING', evidence:'MODERATE', protocolId:'RSA_6X40_SHUTTLE_V1', sources:['plos'],
+    form:'rsa', protocol:'One rep = 20m out, 180° turn, 20m back. Six reps with exactly 20s recovery — choose active or passive recovery and never mix them between tests. Film perpendicular to the start/finish line. Outputs: best, mean and total. % decrement is shown for interest only; it is too unreliable to rate.' },
+  broad_jump: { name:'Standing Broad Jump', obs:'broad_jump', tier:'secondary', dir:'up', unit:'cm', fmt:v=>Math.round(v)+'cm', group:'Power', rated:[], mmc:MMC.pct3, retest:[28,56], status:'PERSONAL', protocolId:'BROAD_V1',
+    form:'single', input:'numeric', protocol:'Two-foot take-off and landing, arm swing allowed. Measure take-off line to the rearmost heel; must stick the landing. Best of 6. Personal metric — CMJ is the scored power test.' },
+  pullup_max: { name:'Strict Pull-ups (max)', obs:'pullup_strict_max', tier:'secondary', dir:'up', unit:'reps', fmt:v=>v+' reps', group:'Strength', rated:[], mmc:()=>1, retest:[28,56], status:'PERSONAL', protocolId:'PULLUP_STRICT_V1',
+    form:'single', input:'numeric', protocol:'Dead hang, overhand grip. Chin clears the bar; full elbow lockout at the bottom. Stop at the first rep that kips or doesn\'t reach. Clean reps only.' },
+  bench_5rm: { name:'Bench Press 5RM', obs:'bench5rm', tier:'secondary', dir:'up', unit:'kg', fmt:v=>fmtKg(v)+'kg', group:'Strength', rated:[], mmc:MMC.sq, retest:[42,56], status:'PERSONAL', protocolId:'BENCH_5RM_V1',
+    form:'single', input:'decimal', protocol:'Touch chest, pause-free, full lockout, feet and hips planted. Warm up as for the squat test. 5 valid reps, no sixth possible.' },
+  deadlift_5rm: { name:'Deadlift 5RM', obs:'deadlift5rm', tier:'secondary', dir:'up', unit:'kg', fmt:v=>fmtKg(v)+'kg', group:'Strength', rated:[], mmc:MMC.sq, retest:[42,56], status:'PERSONAL', protocolId:'DL_5RM_V1',
+    form:'single', input:'decimal', protocol:'Conventional, dead stop each rep, no bounce. 5 valid reps. Home ceiling is 90kg — log reps-at-90 in the note if capped.' },
+  run_5k: { name:'5km Run', obs:'run_5km', tier:'secondary', dir:'down', unit:'time', fmt:fmtSec, group:'Engine', rated:[], mmc:MMC.pct2, retest:[42,84], status:'PERSONAL',
+    derive:o => o.seconds ?? secParse(o.value), protocolId:'RUN_5K_V1', form:'single', input:'time', protocol:'Continuous run on a measured course or GPS, no walking. mm:ss. A run with walk breaks is training, not this test.' },
+  bikeerg_10: { name:'BikeErg 10 min', obs:'bikeerg_10min', tier:'secondary', dir:'up', unit:'m', fmt:v=>Math.round(v)+'m', group:'Engine', rated:[], mmc:MMC.pct2, retest:[42,84], status:'PERSONAL (optional)', protocolId:'BIKEERG_10_V1',
+    form:'single', input:'numeric', protocol:'Same damper every test. 10 min max effort, even pacing. Total metres.' },
+  bikeerg_8: { name:'BikeErg 8 min', obs:'bikeerg_8min', tier:'secondary', dir:'up', unit:'m', fmt:v=>Math.round(v)+'m', group:'Engine', rated:[], mmc:MMC.pct2, retest:[42,84], status:'PERSONAL (optional)', protocolId:'BIKEERG_8_V1',
+    form:'single', input:'numeric', protocol:'Same damper every test. 8 min max effort. Total metres.' },
+  heelrise: { name:'Single-leg Heel Rise', obs:'heelrise_sl', tier:'capacity', dir:'up', unit:'reps', fmt:v=>Math.round(v)+' reps', group:'Capacity', rated:[], mmc:MMC.heel, retest:[28,42], status:'MONITOR — NO SCORE', evidence:'HIGH (general adults)', protocolId:'HEELRISE_SL_V1', sources:['heel','bahr'],
+    form:'lr', input:'numeric', protocol:'Single leg on a ~10° incline board, fingertip balance only, knee straight. Fixed metronome cadence — never change it between tests. Full controlled rise to the same visible endpoint. Reps to failure each leg. Stop at height loss, repeated cadence failure, knee bend or pain. Changes under 7 reps are within measurement error.' },
+  wblt: { name:'Knee-to-Wall (WBLT)', obs:'wblt', tier:'capacity', dir:'up', unit:'cm', fmt:v=>(+v).toFixed(1)+'cm', group:'Capacity', rated:[], mmc:MMC.wblt, retest:[28,42], status:'MONITOR — NO SCORE', evidence:'MODERATE', protocolId:'WBLT_CM_V1', sources:['wblt','bahr'],
+    form:'lr', input:'decimal', protocol:'Barefoot (or the same minimal shoe). Foot straight at the wall; knee tracks over the 2nd toe to touch the wall with the heel flat. Move the foot back to the maximal valid distance. 3 attempts per side after practice. Big-toe-to-wall in cm. Under 1.5cm change is noise.' },
+  copenhagen: { name:'Copenhagen Hold (short lever)', obs:'copenhagen_hold', tier:'capacity', dir:'up', unit:'s', fmt:v=>Math.round(v)+'s', group:'Capacity', rated:[], mmc:MMC.pct3, retest:[28,56], status:'PERSONAL — NO THRESHOLD', protocolId:'COPENHAGEN_SL_V1', sources:['bahr'],
+    form:'lr', input:'numeric', protocol:'Side plank with the top knee on a bench, bottom leg free, hips in line. Hold to failure each side. No hold time means "low groin risk" — this tracks capacity only.' },
+  wall_pass: { name:'Wall Pass Accuracy', obs:'wall_pass', tier:'skill', dir:'up', unit:'/20', fmt:v=>v+'/20', group:'Football', rated:[], mmc:()=>2, retest:[42,70], status:'APEX INTERNAL SKILL TEST — personal only', protocolId:'APEX_WALLPASS_V1',
+    form:'single', input:'numeric', protocol:'1m-wide wall target, 6m away. 20 one-touch passes alternating feet. Score = hits. Note weak-foot hits. Not the Loughborough test — personal progression only.' },
+  long_pass: { name:'Long Pass Accuracy', obs:'long_pass', tier:'skill', dir:'up', unit:'/10', fmt:v=>v+'/10', group:'Football', rated:[], mmc:()=>2, retest:[42,70], status:'APEX INTERNAL SKILL TEST — personal only', protocolId:'APEX_LONGPASS_V1',
+    form:'single', input:'numeric', protocol:'5×5m grid 30m away. 10 lofted passes, 5 per foot, still ball. Score = balls landing in the grid first bounce.' },
+  finishing: { name:'Finishing Accuracy', obs:'finishing', tier:'skill', dir:'up', unit:'/10', fmt:v=>v+'/10', group:'Football', rated:[], mmc:()=>2, retest:[42,70], status:'APEX INTERNAL SKILL TEST — personal only', protocolId:'APEX_FINISH_V1',
+    form:'single', input:'numeric', protocol:'Goal split into thirds with cones. 10 shots from 16m, 5 per foot, after one touch. Score = shots in a corner third. Shooting precision is noisy (published CV ~24%) — expect big swings.' },
+  penalties: { name:'Penalties', obs:'penalties', tier:'skill', dir:'up', unit:'/10', fmt:v=>v+'/10', group:'Football', rated:[], mmc:()=>2, retest:[42,70], status:'APEX INTERNAL SKILL TEST — personal only', protocolId:'APEX_PENS_V1',
+    form:'single', input:'numeric', protocol:'10 penalties at an empty goal, corner thirds marked. Measures execution, not pressure.' },
+  dribble: { name:'Cone Dribble', obs:'dribble_slalom', tier:'skill', dir:'down', unit:'s', fmt:v=>(+v).toFixed(2)+'s', group:'Football', rated:[], mmc:MMC.pct3, retest:[42,70], status:'APEX INTERNAL SKILL TEST — personal only', protocolId:'APEX_DRIBBLE_V1',
+    form:'single', input:'decimal', protocol:'6 cones 2m apart (12m). Slalom out and back with the ball. First touch → crossing the start line. Best of 3. Not the published Russell 20m protocol — personal progression only.' },
+};
+const TEST_GROUPS = [['Core battery (rated)', m => m.tier === 'core'], ['Capacity monitors (no score)', m => m.tier === 'capacity'], ['Personal performance', m => m.tier === 'secondary'], ['Football skill (personal)', m => m.tier === 'skill']];
+
+// External references (context layer). compat: how far a comparison may go.
+const REFS = {
+  accel_10m: { compat: 'CONTEXT_ONLY_INCOMPATIBLE_PROTOCOL', note: 'Clock started at front-foot release from a pressure pad — a different start definition from Apex video. Values shown for context only; no placement is made.', src: 'haugen',
+    rows: [['National team (Norway)', 49, '26.8', 1.51, .05], ['First division', 315, '23.4', 1.52, .06], ['Second division', 158, '23.4', 1.53, .05], ['Third–fifth division (semi-pro/amateur)', 175, '23.0', 1.58, .09], ['Professional midfielders', 210, '22.5', 1.54, .06], ['Professionals over 28', 76, '30.6', 1.54, .05]] },
+  fly_10m: { compat: 'CONTEXT_PARTIAL', note: '30–40m split with electronic timing after a 30m acceleration — not identical to a 20m run-in on video. Placement is approximate context.', src: 'haugen', place: true,
+    rows: [['National team', 49, '26.8', 1.13, .04], ['First division', 315, '23.4', 1.14, .07], ['Professional midfielders', 210, '22.5', 1.15, .04], ['Third–fifth division', 175, '23.0', 1.17, .05]] },
+  cmj: { compat: 'CONTEXT_CROSS_DEVICE', note: 'Force-platform jumps (hands on hips). Video flight-time is a different device — moderate-confidence context.', src: 'haugen', place: true,
+    rows: [['National team', 21, '26.8', 39.4, 5.2], ['First division', 244, '23.4', 39.0, 4.6], ['Professional midfielders', 134, '22.5', 37.5, 3.7], ['Professionals over 28', 62, '30.6', 38.6, 4.1], ['Third–fifth division', 93, '23.0', 36.7, 4.4]] },
+  yoyo_ir1: { compat: 'SAME_PROTOCOL_REVIEW_REFERENCE', note: 'Review-level reference means for male football — not percentiles and not age-33 norms. Elite U19 data (2,547 ± 337m) are youth context only and are not used.', src: 'bangsbo', place: true,
+    rows: [['Moderately trained', null, 'adult', 1810, null], ['Sub-elite', null, 'adult', 2030, null], ['Elite', null, 'adult', 2190, null], ['International / top elite', null, 'adult', 2420, null]] },
+};
+
+// ── Rating maths ────────────────────────────────────────────────────
+function rate(id, v) {
+  const a = METRICS[id].anchors; if (!a) return null;
+  const down = METRICS[id].dir === 'down', pts = down ? [...a].reverse() : a;   // ascending raw
+  if (v <= pts[0][0]) return down ? 99 : 1;
+  if (v >= pts[pts.length - 1][0]) return down ? 1 : 99;
+  for (let i = 0; i < pts.length - 1; i++) { const [x0, r0] = pts[i], [x1, r1] = pts[i + 1]; if (v >= x0 && v <= x1) return Math.max(1, Math.min(99, Math.round(r0 + (r1 - r0) * (v - x0) / (x1 - x0)))); }
+  return null;
+}
+function rawForRating(id, r) {
+  const a = METRICS[id].anchors; for (let i = 0; i < a.length - 1; i++) { const [x0, r0] = a[i], [x1, r1] = a[i + 1]; if (r >= r0 && r <= r1) return x0 + (x1 - x0) * (r - r0) / (r1 - r0); } return null;
+}
+function levelFromRating(r) {
+  const li = LEVELS.findIndex(([, lo, hi]) => r >= lo && r <= hi), [name, lo, hi] = LEVELS[li], w = (hi - lo + 1) / 3, si = Math.min(2, Math.floor((r - lo) / w));
+  return { li, name, sub: ROMAN[si], label: `${name} ${ROMAN[si]}`, subStart: Math.round(lo + si * w) };
+}
+function nextLevelTarget(id, confirmed, r) {
+  const L = levelFromRating(r), [, lo, hi] = LEVELS[L.li], w = (hi - lo + 1) / 3;
+  const nextR = L.sub === 'III' ? (LEVELS[L.li + 1]?.[1] ?? null) : Math.ceil(lo + (ROMAN.indexOf(L.sub) + 1) * w);
+  if (nextR == null) return null;
+  const m = METRICS[id], up = m.dir === 'up', raw = rawForRating(id, nextR), gate = m.mmc(confirmed);
+  let at = up ? Math.max(raw, confirmed + gate) : Math.min(raw, confirmed - gate);       // must also clear the noise gate
+  const step = { s: 0.01, cm: 0.5, m: 40, '×BM': 0.01 }[m.unit] || 0.01;
+  at = up ? Math.ceil(at / step - 1e-9) * step : Math.floor(at / step + 1e-9) * step;
+  return { at: +at.toFixed(3), rating: rate(id, at), label: levelFromRating(Math.max(nextR, rate(id, at))).label };
+}
+
+// Series of results in a metric (all namespaces) → [{date, v, method, meta, source, obsId, familiarisation}]
+function metricSeries(id) {
+  const m = METRICS[id];
+  return Store.d.observations.filter(o => o.metric === m.obs).map(o => {
+    const v = m.derive ? m.derive(o) : (typeof o.value === 'number' ? o.value : (typeof o.value?.v === 'number' ? o.value.v : null));
+    return { date: parseObsDate(o.date), rawDate: o.date, v, method: o.method || null, meta: o.meta || null, value: o.value, source: o.source, obsId: o.id, fam: !!o.familiarisation, approx: /~/.test(o.date || '') };
+  }).filter(x => x.v != null && isFinite(x.v) && x.date).sort((a, b) => a.date.localeCompare(b.date) || 0);
+}
+const better = (m, a, b) => m.dir === 'down' ? a < b : a > b;
+
+// Full metric state: confirmed value with noise gate, observed vs confirmed PB, baselines, rating, staleness
+function metricState(id, asOf) {
+  const m = METRICS[id], ref = asOf || today();
+  const all = metricSeries(id).filter(x => x.date <= ref);
+  if (!all.length) return { id, status: 'untested' };
+  const ratedNs = m.rated?.length ? all.filter(x => m.rated.includes(x.method) && !x.fam) : all.filter(x => !x.fam);
+  const pool = ratedNs.length ? ratedNs : [];
+  const out = { id, all, count: all.length, latest: all[all.length - 1] };
+  if (!pool.length) { out.status = m.rated?.length ? 'namespace' : 'personal'; return out; }
+  // Noise-gated confirmed value
+  let conf = pool[0], confPB = pool[0], change = 'baseline', trail = [];
+  for (let i = 1; i < pool.length; i++) {
+    const x = pool[i], gate = m.mmc(conf.v), d = m.dir === 'down' ? conf.v - x.v : x.v - conf.v;
+    if (Math.abs(d) >= gate) { trail.push({ from: conf, to: x, kind: d > 0 ? 'improved' : 'declined' }); conf = x; change = d > 0 ? 'confirmed improvement' : 'confirmed decline'; if (better(m, x.v, confPB.v)) confPB = x; }
+    else change = 'within measurement noise';
+  }
+  const obsPB = pool.reduce((a, b) => better(m, b.v, a.v) ? b : a);
+  const prebreak = all.find(x => x.approx || String(x.source).startsWith('baseline'));
+  const pinned = pool.find(x => !x.approx && !String(x.source).startsWith('baseline')) || pool[0];
+  const stale = daysBetween(pool[pool.length - 1].date, ref) > (m.retest?.[1] || 56) + 28;
+  Object.assign(out, { pool, confirmed: conf, confirmedPB: confPB, observedPB: obsPB, pinned, prebreak, change, trail, last3: pool.slice(-3),
+    status: stale ? 'stale' : (m.tier === 'core' ? 'measured' : 'personal'), stale,
+    retestDue: addDays(pool[pool.length - 1].date, m.retest?.[0] || 42),
+    protocolMatch: pool.length < 2 || JSON.stringify(pool[pool.length - 1].meta || {}) === JSON.stringify(pool[pool.length - 2].meta || {}) });
+  if (m.anchors) { out.rating = rate(id, conf.v); out.level = levelFromRating(out.rating); out.next = nextLevelTarget(id, conf.v, out.rating); }
+  return out;
+}
+
+// ── Composites (0.8 · weighted mean + 0.2 · min) with coverage rules ──
+function composite(parts, opts = {}) {
+  const tot = parts.reduce((a, p) => a + p.w, 0), have = parts.filter(p => p.r != null);
+  const cov = have.reduce((a, p) => a + p.w, 0) / tot;
+  if ((opts.required || []).some(k => !have.find(p => p.k === k))) return { r: null, cov, status: 'UNRATED', reason: 'needs ' + opts.required.filter(k => !have.find(p => p.k === k)).join(' + ') };
+  if (cov < 0.8 || !have.length) return { r: null, cov, status: 'UNRATED', reason: `${Math.round(cov * 100)}% evidence coverage (needs 80%)` };
+  const wsum = have.reduce((a, p) => a + p.w, 0), mean = have.reduce((a, p) => a + p.r * p.w, 0) / wsum, min = Math.min(...have.map(p => p.r));
+  const subjW = have.filter(p => p.subj).reduce((a, p) => a + p.w, 0) / wsum;
+  return { r: Math.round(0.8 * mean + 0.2 * min), cov, status: cov < 0.999 ? 'PROVISIONAL' : 'RATED', confidence: subjW > 0.5 ? 'LOW — subjective' : have.some(p => p.stale) ? 'LOW — stale' : cov < 0.999 ? 'MODERATE' : 'HIGH' };
+}
+// Structured subjective ratings (1–5, behaviourally anchored; ≥3 observations)
+const SUBJ_ANCHORS = { 1: 'Consistently weak / rarely demonstrated', 2: 'Below current competitive level', 3: 'Functional / inconsistent', 4: 'Consistently strong', 5: 'Standout strength in current playing environment' };
+const SUBJ_TO_99 = v => Math.round(10 + (v - 1) * 18);   // 1→10 … 5→82: cosmetic, LOW confidence
+function subjState(attr) {
+  const obs = (Store.d.subjective || []).filter(x => x.attr === attr).sort((a, b) => a.date.localeCompare(b.date));
+  if (obs.length < 3) return { n: obs.length, r: null, status: obs.length ? `${obs.length}/3 observations` : 'UNRATED' };
+  const last = obs.slice(-5), mean = last.reduce((a, x) => a + x.v, 0) / last.length;
+  return { n: obs.length, mean: Math.round(mean * 10) / 10, r: SUBJ_TO_99(mean), status: 'LOW — subjective' };
+}
+// Card model. kind: m = measured metric, s = structured subjective, x = not validly measurable (unrated)
+const CARD = {
+  PAC: { name:'Pace', required:['acceleration','sprint_speed'], parts:[['acceleration','Acceleration','m','accel_10m',.5],['sprint_speed','Sprint Speed','m','fly_10m',.5]] },
+  SHO: { name:'Shooting', parts:[['finishing','Finishing','s',null,.40],['positioning','Positioning','s',null,.20],['long_shots','Long Shots','s',null,.15],['penalties','Penalties','s',null,.15],['volleys','Volleys','s',null,.10],['shot_power','Shot Power','x',null,0]] },
+  PAS: { name:'Passing', parts:[['short_passing','Short Passing','s',null,.40],['long_passing','Long Passing','s',null,.25],['crossing','Crossing','s',null,.15],['fk_accuracy','Free-Kick Accuracy','s',null,.10],['vision','Vision','s',null,.10],['curve','Curve','x',null,0]] },
+  DRI: { name:'Dribbling', parts:[['cod','Agility → COD (505, not reactive)','m','cod_505',.20],['dribbling','Dribbling','s',null,.40],['ball_control','Ball Control','s',null,.40],['balance','Balance','x',null,0],['reactions','Reactions','x',null,0],['composure','Composure','s',null,0]] },
+  DEF: { name:'Defending', parts:[['interceptions','Interceptions','s',null,.25],['def_awareness','Defensive Awareness','s',null,.25],['standing_tackle','Standing Tackle','s',null,.25],['sliding_tackle','Sliding Tackle','s',null,.15],['heading','Heading Accuracy','s',null,.10]] },
+  PHY: { name:'Physical', parts:[['stamina','Stamina (Yo-Yo IR1)','m','yoyo_ir1',.35],['strength','Strength (5RM squat ÷ BM)','m','squat_5rm',.30],['jumping','Jumping (CMJ)','m','cmj',.20],['rsa','Repeat Sprint','m',null,.15],['aggression','Aggression','s',null,0]] },
+};
+const ATHLETIC = [['acceleration','Acceleration','accel_10m',.15],['max_velocity','Max velocity','fly_10m',.10],['cod','Change of direction','cod_505',.15],['power','CMJ power','cmj',.15],['strength','Relative squat strength','squat_5rm',.15],['engine','Yo-Yo endurance','yoyo_ir1',.20],['rsa','Repeat sprint (secondary)',null,.10]];
+const MID_WEIGHTS = { PAC:.15, SHO:.15, PAS:.25, DRI:.2, DEF:.1, PHY:.15 };
+
+function computeCard(asOf) {
+  const doms = {};
+  for (const [k, d] of Object.entries(CARD)) {
+    const parts = d.parts.map(([key, name, kind, metric, w]) => {
+      if (kind === 'm') { const s = metric ? metricState(metric, asOf) : { status: 'untested' }; return { k: key, name, kind, w, metric, r: s.rating ?? null, stale: s.stale, state: s }; }
+      if (kind === 's') { const s = subjState(key); return { k: key, name, kind, w, r: w ? s.r : null, subj: true, state: s, display: s }; }
+      return { k: key, name, kind, w: 0, r: null, state: { status: 'NOT VALIDLY MEASURABLE SOLO' } };
+    });
+    const c = composite(parts.filter(p => p.w > 0), { required: d.required });
+    doms[k] = { name: d.name, ...c, parts };
+  }
+  const ath = composite(ATHLETIC.map(([k, name, metric, w]) => { const s = metric ? metricState(metric, asOf) : { status: 'untested' }; return { k, name, w, metric, r: s.rating ?? null, stale: s.stale, state: s }; }));
+  ath.parts = ATHLETIC.map(([k, name, metric, w]) => ({ k, name, metric, w, state: metric ? metricState(metric, asOf) : { status: 'secondary — no global rating yet' } }));
+  const allRated = Object.values(doms).every(d => d.r != null);
+  const ovr = allRated ? Math.round(Object.entries(doms).reduce((a, [k, d]) => a + d.r * MID_WEIGHTS[k], 0)) : null;
+  return { doms, ath, ovr, ratedDomains: Object.values(doms).filter(d => d.r != null).length };
+}
+
+// ── Adherence, streak, XP ───────────────────────────────────────────
+function v2Start() { const ds = [...Store.d.sessions.map(s => s.scheduledDate), ...Store.d.readiness.filter(r => r.v2).map(r => r.date)].sort(); const b = P()?.block?.start || today(); return ds[0] && ds[0] > b ? ds[0] : b; }
+function adherence(windowDays) {
+  const start = windowDays ? addDays(today(), -windowDays) : v2Start(), from = start < v2Start() ? v2Start() : start; let due = 0, done = 0;
+  Object.values(scheduleMap()).forEach(x => { if (!x.session || P().sessions[x.session].optional || x.date < from || x.date > today()) return; if (x.date === today() && !completedOn(x.date).length) return; due++; if (completedOn(x.date).length) done++; });
+  return { due, done, pct: due ? Math.round(done / due * 100) : 0 };
+}
+function adherenceRange(a, b) { let due = 0, done = 0; Object.values(scheduleMap()).forEach(x => { if (!x.session || P().sessions[x.session].optional || x.date < a || x.date > b || x.date < v2Start()) return; due++; if (completedOn(x.date).length) done++; }); return { due, done, pct: due ? Math.round(done / due * 100) : 0 }; }
+function streak() {
+  const m = scheduleMap(); let n = 0, used = {}, d = today();
+  if (m[d]?.session && !P().sessions[m[d].session].optional && !completedOn(d).length) d = addDays(d, -1);
+  for (const start = v2Start(); d >= start; d = addDays(d, -1)) {
+    const x = m[d]; if (!x) break; if (!x.session) { n++; continue; } if (completedOn(d).length) { n++; continue; }
+    if (P().sessions[x.session].optional) continue; const wk = weekOf(d)?.week; if (!used[wk]) { used[wk] = 1; continue; } break;
+  }
+  return n;
+}
+function xpEvents() {
+  const ev = [], add = (key, date, xp, label, kind = 'xp') => ev.push({ key, date, xp, label, kind });
+  const m = scheduleMap(), start = v2Start(), t = today();
+  Store.d.sessions.forEach(s => {
+    const opt = P().sessions[s.sessionKey]?.optional, planned = m[s.scheduledDate]?.session === s.sessionKey;
+    if (!planned && !opt) { add('s:' + s.id, s.scheduledDate, 25, `${s.name} (unplanned)`); return; }
+    add('s:' + s.id, s.scheduledDate, opt ? 40 : 100, (opt ? 'Optional: ' : 'Mission: ') + s.name + (s.adaptation?.changes?.length ? ' (adapted)' : ''));
+    if (s.slots.some(x => x.intent === 'durability' && x.sets.some(y => y.done))) add('d:' + s.id, s.scheduledDate, 20, 'Durability work');
+  });
+  Object.values(m).forEach(x => { if (!x.session && x.date >= start && x.date <= t) add('r:' + x.date, x.date, 20, 'Recovery day honoured'); });
+  (P()?.weeks || []).forEach(w => { const ds = Array.from({ length: 7 }, (_, i) => addDays(w.start, i)), core = ds.filter(d => m[d]?.session && !P().sessions[m[d].session].optional); if (core.length && core.every(d => completedOn(d).length)) add('w:' + w.week, ds[6] < t ? ds[6] : t, 100, `Week ${w.week}: all missions complete`); });
+  const mw = {}; (Store.d.micro || []).forEach(x => { const w = weekOf(x.date)?.week || 0; mw[w] = (mw[w] || 0) + 1; if (mw[w] <= 3) add('m:' + x.id, x.date, 20, 'Micro-session: ' + x.name); });
+  Store.d.readiness.filter(r => r.v2).forEach(r => add('q:' + r.date, r.date, 5, 'Readiness check-in'));
+  const bw = {}; Store.d.body.filter(b => b.source === 'user').forEach(b => { const k = b.date.slice(0, 8) + Math.floor(+b.date.slice(8) / 7); if (!bw[k]) { bw[k] = 1; add('b:' + b.date, b.date, 10, 'Body check-in'); } });
+  // Performance: benchmark recorded, CONFIRMED improvements only (noise-gated), level-ups from confirmed ratings
+  const pbDay = {};
+  Object.keys(METRICS).forEach(id => {
+    const mm = METRICS[id], s = metricState(id); if (!s.pool) return;
+    const fresh = x => !x.approx && !String(x.source || '').startsWith('baseline') && x.date >= start;
+    if (s.pool[0] && fresh(s.pool[0]) && mm.tier === 'core') add(`bm:${id}:${s.pool[0].date}`, s.pool[0].date, 50, `Baseline: ${mm.name}`, 'benchmark');
+    let lvl = mm.anchors ? levelFromRating(rate(id, s.pool[0].v)) : null;
+    s.trail.filter(t => t.kind === 'improved').forEach(tr => {
+      if (!fresh(tr.to)) return;
+      pbDay[tr.to.date] = (pbDay[tr.to.date] || 0) + 1;
+      if (pbDay[tr.to.date] <= 2) add(`pb:${id}:${tr.to.date}`, tr.to.date, 50, `Confirmed improvement: ${mm.name} ${mm.fmt(tr.from.v)} → ${mm.fmt(tr.to.v)}`, 'pb');
+      if (mm.anchors) { const nl = levelFromRating(rate(id, tr.to.v)); if (nl.label !== lvl.label && (nl.li > lvl.li || (nl.li === lvl.li && ROMAN.indexOf(nl.sub) > ROMAN.indexOf(lvl.sub)))) { add(`lv:${id}:${nl.label}`, tr.to.date, 100, `Level up: ${mm.name} → ${nl.label}`, 'level'); lvl = nl; } }
+    });
+  });
+  quests().filter(q => q.done && q.doneDate).forEach(q => add('qu:' + q.id, q.doneDate, q.xp, 'Quest: ' + q.name, 'quest'));
+  const blk = P()?.block; if (blk && t > blk.end) { const a = adherenceRange(blk.start, blk.end); if (a.due && a.pct >= 90) add('blk:' + blk.id, blk.end, 300, `${blk.name} complete — ${a.pct}% adherence`, 'block'); }
+  return ev.sort((a, b) => a.date.localeCompare(b.date));
+}
+const athleteLevel = xp => { const lv = Math.floor(Math.sqrt(xp / 100)) + 1, cur = (lv - 1) ** 2 * 100, nxt = lv ** 2 * 100; return { lv, xp, into: xp - cur, need: nxt - cur }; };
+const totalXP = () => xpEvents().reduce((a, e) => a + e.xp, 0);
+
+// ── Quests ──────────────────────────────────────────────────────────
+function quests() {
+  const q = [], start = v2Start();
+  const ret = (id, name, metric, load, reps, rpe) => { const v2 = Store.d.observations.filter(o => o.metric === metric && String(o.source).startsWith('v2:')).sort((a, b) => a.date.localeCompare(b.date));
+    const hit = v2.find(o => o.value.load >= load && o.value.reps >= reps && (o.value.rpe == null || o.value.rpe <= rpe)), cur = [...v2].sort((a, b) => b.e1rm - a.e1rm)[0];
+    q.push({ id, name, desc: `${load}kg × ${reps} at RPE ≤ ${rpe} — your pre-break training level`, xp: 150, done: !!hit, doneDate: hit?.date, progress: cur ? Math.min(1, epley(cur.value.load, cur.value.reps) / epley(load, reps)) : 0 }); };
+  ret('back60', 'Back to 60', 'front_squat_set', 60, 5, 8); ret('deadlift90', 'Ninety Club', 'deadlift_set', 90, 5, 8); ret('bench56', 'Press Return', 'bench_press_set', 56, 5, 8);
+  const field = ['cmj', 'accel_10m', 'fly_10m', 'cod_505'], fieldDone = field.filter(id => metricState(id).pool?.some(x => x.date >= start));
+  q.push({ id: 'fieldbattery', name: 'Field Battery', desc: 'CMJ, 10m, flying 10m and 505 (both sides) — video, fresh, one session', xp: 150, done: fieldDone.length === 4, doneDate: fieldDone.length === 4 ? field.map(id => metricState(id).pool.find(x => x.date >= start).date).sort().pop() : null, progress: fieldDone.length / 4 });
+  const cap = ['heelrise', 'wblt'].filter(id => metricSeries(id).some(x => x.date >= start));
+  q.push({ id: 'capacity', name: 'Capacity Check', desc: 'Heel-rise and knee-to-wall, both legs — your monitoring baseline', xp: 60, done: cap.length === 2, doneDate: cap.length === 2 ? metricSeries('wblt').filter(x => x.date >= start).pop()?.date : null, progress: cap.length / 2 });
+  const yy = metricSeries('yoyo_ir1').filter(x => x.date >= start), yb = yy.filter(x => !x.fam);
+  q.push({ id: 'engine', name: 'Engine Baseline', desc: 'Yo-Yo IR1: one familiarisation run, then a baseline (block 1B)', xp: 150, done: yy.some(x => x.fam) && yb.length > 0, doneDate: yb[0]?.date, progress: (yy.some(x => x.fam) ? .5 : 0) + (yb.length ? .5 : 0) });
+  const sq = metricSeries('squat_5rm').filter(x => x.date >= start);
+  q.push({ id: 'strengthbase', name: 'Strength Baseline', desc: '5RM high-bar back squat, video-checked depth (block 1B, after familiarisation)', xp: 100, done: sq.length > 0, doneDate: sq[0]?.date, progress: sq.length ? 1 : 0 });
+  const r5 = metricSeries('run_5k').filter(x => x.date >= start), best5 = r5.length ? Math.min(...r5.map(x => x.v)) : null;
+  q.push({ id: 'break30', name: 'Break 30', desc: 'Continuous 5km under 30:00 (personal goal)', xp: 200, done: !!r5.find(x => x.v < 1800), doneDate: r5.find(x => x.v < 1800)?.date, progress: best5 ? Math.min(1, 1800 / best5) : 0 });
+  const pu = metricSeries('pullup_max'); q.push({ id: 'pull6', name: 'Six Strict', desc: '6 strict pull-ups in one set', xp: 150, done: !!pu.find(x => x.v >= 6), doneDate: pu.find(x => x.v >= 6)?.date, progress: pu.length ? Math.min(1, Math.max(...pu.map(x => x.v)) / 6) : 0 });
+  const hr = metricState('heelrise'); const hrUp = hr.trail?.find(t => t.kind === 'improved');
+  q.push({ id: 'calfplus', name: 'Calf Capacity +7', desc: 'Improve heel-rise reps by ≥7 (beyond measurement error) — capacity, not an injury guarantee', xp: 100, done: !!hrUp, doneDate: hrUp?.to.date, progress: hr.pool?.length > 1 ? Math.min(1, Math.max(0, (hr.latest.v - hr.pool[0].v) / 7)) : 0 });
+  const blk = P()?.block; if (blk) { const a = adherenceRange(blk.start, blk.end); q.push({ id: 'perfect', name: 'Perfect Block', desc: `≥90% of ${blk.name} core sessions`, xp: 0, done: false, progress: a.due ? a.done / a.due : 0, note: `${a.done}/${a.due}` }); }
+  const b2b = Object.keys(METRICS).find(id => { const tr = metricState(id).trail || []; for (let i = 1; i < tr.length; i++) if (tr[i].kind === 'improved' && tr[i - 1].kind === 'improved' && tr[i].from === tr[i - 1].to) return true; return false; });
+  q.push({ id: 'b2b', name: 'Back to Back', desc: 'Two confirmed improvements in a row on the same test', xp: 150, done: !!b2b, doneDate: b2b ? metricState(b2b).trail.slice(-1)[0].to.date : null, progress: b2b ? 1 : 0 });
+  return q;
+}
+function closestLevelUp() {
+  return Object.keys(METRICS).filter(id => METRICS[id].tier === 'core').map(id => { const s = metricState(id); if (!s.next || s.stale) return null; const m = METRICS[id];
+    const span = Math.abs((rawForRating(id, Math.min(99, s.rating + 10)) ?? s.next.at) - s.confirmed.v) || 1; return { id, s, rel: Math.abs(s.next.at - s.confirmed.v) / span }; })
+    .filter(Boolean).sort((a, b) => a.rel - b.rel)[0] || null;
+}
+function sessionsTraining(id) {
+  const ex = { accel_10m: ['sprint_10m_2pt'], fly_10m: ['sprint_flying'], cod_505: ['cod_drills'], cmj: ['broad_jump'], squat_5rm: ['front_squat'], yoyo_ir1: ['bikeerg_intervals', 'run_walk'], heelrise: ['sl_calf_raise'], copenhagen: ['copenhagen_short'] }[id] || [];
+  const m = scheduleMap(); return Object.values(m).filter(x => x.date >= today() && x.session && P().sessions[x.session].slots.some(s => ex.includes(s.exercise))).sort((a, b) => a.date.localeCompare(b.date)).slice(0, 2);
+}
+function snapCard() {
+  const d = Store.d; d.cardSnaps = d.cardSnaps || []; const last = d.cardSnaps[d.cardSnaps.length - 1];
+  if (last && last.v === 3 && daysBetween(last.date, today()) < 7) return;
+  const c = computeCard(), doms = {}; Object.entries(c.doms).forEach(([k, v]) => doms[k] = v.r); d.cardSnaps.push({ v: 3, date: today(), doms, ath: c.ath.r, ovr: c.ovr }); Store.save();
+}
+
+// ── Stage 4 v3 UI ───────────────────────────────────────────────────
+const STATUS_CHIP = { RATED: 'g', PROVISIONAL: 'b', UNRATED: '' };
+function tierClass(r) { return r == null ? 't0' : r >= 90 ? 't4' : r >= 75 ? 't3' : r >= 60 ? 't2' : r >= 40 ? 't1' : 't0'; }
+const pctTxt = c => Math.round(c * 100) + '%';
+
+function playerCardHTML(c) {
+  const a = Store.d.athlete, snaps = (Store.d.cardSnaps || []).filter(s => s.v === 3), first = snaps[0];
+  const order = ['PAC', 'SHO', 'PAS', 'DRI', 'DEF', 'PHY'];
+  return `<div class="pcard ${tierClass(c.ath.r)}">
+    <div class="pc-top"><button class="pc-left" onclick="athleticSheet()"><div class="pc-ovr">${c.ath.r ?? '—'}</div><div class="pc-pos">ATH</div></button>
+      <div class="pc-name"><div>${esc((a.name || '').toUpperCase())}</div>
+        <div class="pc-sub">Athletic Index · ${c.ath.r != null ? `${c.ath.status.toLowerCase()} · ${pctTxt(c.ath.cov)} coverage` : `unrated · ${pctTxt(c.ath.cov)} of 80% evidence`}</div>
+        <div class="pc-sub">${c.ovr != null ? `Card overall ${c.ovr} (game-style)` : `Card overall unpublished · ${c.ratedDomains}/6 domains rated`}</div></div></div>
+    <div class="pc-grid">${order.map(k => { const d = c.doms[k]; const delta = first && first.doms[k] != null && d.r != null ? d.r - first.doms[k] : null;
+      return `<button class="pc-stat" onclick="domainSheet('${k}')"><span class="pc-v">${d.r ?? '—'}</span><span class="pc-k">${k}</span>
+        <span class="pc-c">${d.r == null ? 'unrated' : d.confidence?.startsWith('LOW') ? 'low · subjective' : d.status.toLowerCase()}${delta ? ` <b class="${delta > 0 ? 'up' : 'dn'}">${delta > 0 ? '+' : ''}${delta}</b>` : ''}</span></button>`; }).join('')}</div>
+    <div class="pc-foot">1–99 is an Apex scale, not a percentile. Ratings move only on confirmed change beyond measurement error.</div></div>`;
+}
+
+function evidenceRow(p) {
+  const s = p.state || {};
+  if (p.kind === 'x') return `<span class="chip">NOT VALIDLY MEASURABLE SOLO</span>`;
+  if (p.kind === 's') return s.r != null ? `<span class="mono">${s.r}</span> <span class="chip a">LOW · SUBJ ${s.mean}/5 · n=${s.n}</span>` : `<span class="chip">${esc(s.status)}</span>`;
+  if (!p.metric) return `<span class="chip">SECONDARY — NO GLOBAL RATING YET</span>`;
+  if (s.rating != null) return `<span class="mono">${s.rating}</span> <span class="chip ${s.stale ? 'a' : 'g'}">${s.stale ? 'STALE' : 'MEASURED'}</span>`;
+  return `<span class="chip">${s.status === 'namespace' ? 'NO RATED-METHOD RESULT' : 'UNTESTED'}</span>`;
+}
+function domainSheet(k) {
+  const c = computeCard(), d = c.doms[k];
+  openSheet(`<div class="eyebrow">${k} · ${esc(d.name)}</div><h2 style="margin-top:4px">${d.r ?? 'Unrated'} <span class="chip ${STATUS_CHIP[d.status]}">${d.status}</span></h2>
+    <p class="muted" style="font-size:13px;margin-top:6px">${d.r != null ? `Confidence ${esc(d.confidence)} · ${pctTxt(d.cov)} evidence coverage.` : esc(d.reason || '')} Composite = 0.8 × weighted mean + 0.2 × weakest component.</p>
+    ${d.parts.map(p => `<div class="list-item" ${p.metric ? `onclick="metricSheet('${p.metric}')" style="cursor:pointer"` : ''}><div style="flex:1"><b>${esc(p.name)}</b><div class="dim" style="font-size:12px">${p.w ? 'weight ' + Math.round(p.w * 100) + '%' : 'shown, not weighted'}${p.metric ? ' · ' + esc(METRICS[p.metric].name) : p.kind === 's' ? ' · structured match/video rating' : ''}</div></div><div style="text-align:right">${evidenceRow(p)}</div></div>`).join('')}
+    ${d.parts.some(p => p.kind === 's') ? `<button class="btn" style="width:100%;margin-top:14px" onclick="subjSheet('${k}')">Add match / video ratings</button>` : ''}
+    ${d.parts.some(p => p.metric) ? `<button class="btn primary" style="width:100%;margin-top:8px" onclick="testSheet()">Log a test</button>` : ''}`);
+}
+function athleticSheet() {
+  const c = computeCard(), a = c.ath;
+  openSheet(`<div class="eyebrow">Apex Athletic Index</div><h2 style="margin-top:4px">${a.r ?? 'Unrated'} <span class="chip ${STATUS_CHIP[a.status]}">${a.status}</span></h2>
+    <p class="muted" style="font-size:13px;margin-top:6px">Physical profile only — the scientifically defensible core. ${pctTxt(a.cov)} evidence coverage${a.r == null ? ' (needs 80%)' : ''}. Repeat-sprint stays secondary until better norms exist, so the index tops out at "provisional, 90%".</p>
+    ${a.parts.map(p => { const s = p.state; return `<div class="list-item" ${p.metric ? `onclick="metricSheet('${p.metric}')" style="cursor:pointer"` : ''}><div style="flex:1"><b>${esc(p.name)}</b><div class="dim" style="font-size:12px">${Math.round(p.w * 100)}%${s.level ? ' · ' + esc(s.level.label) : ''}</div></div><div>${s.rating != null ? `<span class="mono">${s.rating}</span>` : `<span class="chip">${p.metric ? (s.status === 'untested' ? 'UNTESTED' : 'NO RATED RESULT') : 'SECONDARY'}</span>`}</div></div>`; }).join('')}
+    <button class="btn primary" style="width:100%;margin-top:14px" onclick="testSheet()">Log a test</button>`);
+}
+function subjSheet(dom) {
+  const parts = CARD[dom].parts.filter(p => p[2] === 's'), st = { attr: parts[0][0], v: null, ctx: 'match' };
+  const draw = () => openSheet(`<div class="eyebrow">${esc(CARD[dom].name)} · structured rating</div><h2 style="margin-top:4px">Rate one observed match or video</h2>
+    <p class="muted" style="font-size:13px;margin-top:6px">A rating appears after 3 observations (mean of the last 5), always badged LOW · subjective. Rate what you actually saw, not what you hope.</p>
+    <div class="pick wrapflex" style="margin-top:12px;flex-wrap:wrap">${parts.map(([k, n]) => `<button class="${st.attr === k ? 'sel' : ''}" style="flex:1 0 45%" onclick="window._subj.attr='${k}';window._subjDraw()">${esc(n)} <span class="dim">(${subjState(k).n})</span></button>`).join('')}</div>
+    <div style="margin-top:14px">${[1, 2, 3, 4, 5].map(v => `<button class="list-item" style="width:100%;text-align:left;${st.v === v ? 'background:var(--accD)' : ''}" onclick="window._subj.v=${v};window._subjDraw()"><b class="mono" style="width:24px">${v}</b><span>${esc(SUBJ_ANCHORS[v])}</span></button>`).join('')}</div>
+    <div class="pick" style="margin-top:10px">${['match', 'video', 'training'].map(x => `<button class="${st.ctx === x ? 'sel' : ''}" onclick="window._subj.ctx='${x}';window._subjDraw()">${x}</button>`).join('')}</div>
+    <button class="btn primary big" style="margin-top:14px" onclick="saveSubj()">Save observation</button>`);
+  window._subj = st; window._subjDraw = draw; window._subjDom = dom; draw();
+}
+function saveSubj() { const s = window._subj; if (!s.v) return toast('Pick 1–5', true); Store.d.subjective = Store.d.subjective || []; Store.d.subjective.push({ id: uid('j'), attr: s.attr, v: s.v, ctx: s.ctx, rater: 'self', date: today() }); Store.save(); toast(`Saved · ${subjState(s.attr).n}/3 observations`); s.v = null; window._subjDraw(); }
+
+// ── Metric screen: four layers ─────────────────────────────────────
+function metricSheet(id) {
+  const m = METRICS[id], s = metricState(id), R = REFS[id], fmt = x => esc(m.fmt(x));
+  const pct = (a, b) => { const p = m.dir === 'down' ? (a - b) / a * 100 : (b - a) / a * 100; return (p >= 0 ? '+' : '') + p.toFixed(1) + '%'; };
+  let me = '';
+  if (s.status === 'untested') me = '<div class="reason">No results yet.</div>';
+  else {
+    const cur = s.confirmed || s.latest;
+    me = `<table class="t">
+      <tr><td>Current${s.confirmed ? ' (confirmed)' : ''}</td><td class="mono">${fmt(cur.v)}</td></tr>
+      ${s.observedPB ? `<tr><td>Observed PB</td><td class="mono">${fmt(s.observedPB.v)}</td></tr><tr><td>Confirmed PB</td><td class="mono">${fmt(s.confirmedPB.v)}</td></tr>` : ''}
+      ${s.pinned ? `<tr><td>Baseline (${esc(s.pinned.rawDate)})</td><td class="mono">${fmt(s.pinned.v)}${s.confirmed && s.pinned !== s.confirmed ? ' · ' + pct(s.pinned.v, s.confirmed.v) : ''}</td></tr>` : ''}
+      ${s.prebreak ? `<tr><td>Pre-break</td><td class="mono">${fmt(s.prebreak.v)}</td></tr>` : ''}
+      ${s.change ? `<tr><td>Last change</td><td>${esc(s.change)} <span class="dim">(gate ${esc(m.fmt(m.mmc(cur.v)).replace(/ ·.*/, ''))})</span></td></tr>` : ''}
+      ${s.pool ? `<tr><td>Protocol match</td><td>${s.protocolMatch ? 'Yes' : '<b style="color:var(--warn)">Conditions differ from last test</b>'}</td></tr><tr><td>Next retest</td><td class="mono">${esc(fmtDay(s.retestDue))}</td></tr>` : ''}
+      ${s.status === 'namespace' ? `<tr><td colspan="2" class="dim">Results exist only in an un-rated method (e.g. hand-timed). They're kept as personal history.</td></tr>` : ''}
+    </table>
+    ${s.all.length > 1 ? `<div style="margin-top:10px">${sparkline(s.all.map(x => m.dir === 'down' ? -x.v : x.v), 320, 52)}</div>` : ''}
+    <details style="margin-top:8px"><summary class="dim" style="font-size:13px">All results (${s.all.length})</summary><table class="t">${[...s.all].reverse().map(x => `<tr><td class="mono">${esc(x.rawDate)}</td><td class="mono">${fmt(x.v)}</td><td style="font-size:12px">${esc(x.method || '')}${x.fam ? ' · familiarisation' : ''}${m.rated?.length && !m.rated.includes(x.method) ? ' · <span class="dim">not rated</span>' : ''}${x.meta?.surface ? ' · ' + esc(x.meta.surface) : ''}</td></tr>`).join('')}</table></details>`;
+  }
+  const lvl = m.anchors ? (s.rating != null ? `<div class="row between"><b>${esc(s.level.label)}</b><span class="mono" style="font-size:22px;font-weight:800">${s.rating}</span></div>
+      ${anchorBar(id, s.confirmed.v, s.observedPB?.v)}
+      ${s.next ? `<div class="reason" style="color:var(--tx)">Next: <b>${esc(s.next.label)}</b> at <b class="mono">${fmt(s.next.at)}</b> — includes the ${esc(m.fmt(m.mmc(s.confirmed.v)).replace(/ ·.*/, ''))} noise gate</div>` : '<div class="reason">Top of the scale.</div>'}`
+      : `<div class="reason">No rated result yet${m.rated?.length ? ' — only ' + m.rated.map(x => m.methods[x]).join(' / ') + ' results are rated' : ''}.</div>`)
+    : `<div class="reason">${esc(m.status)}. ${m.tier === 'capacity' ? 'Capacity monitor: raw values, symmetry and trend only — no 1–99 score and no injury-risk label.' : 'Tracked against yourself only.'}</div>`;
+  let ext = `<div class="reason"><b>Men 30–35 (age peers):</b> insufficient compatible normative evidence.</div>`;
+  if (R) {
+    const v = s.confirmed?.v, rows = R.rows.map(r => ({ label: r[0], n: r[1], age: r[2], mean: r[3], sd: r[4] }));
+    let place = '';
+    if (R.place && v != null) { const sorted = [...rows].sort((a, b) => m.dir === 'down' ? b.mean - a.mean : a.mean - b.mean);
+      const below = sorted.filter(r => !better(m, r.mean, v)).pop(), above = sorted.find(r => better(m, r.mean, v));
+      place = `<div class="reason" style="color:var(--tx)">You (${fmt(v)}): ${below && above ? `between <b>${esc(below.label)}</b> and <b>${esc(above.label)}</b> reference means` : above ? `below the <b>${esc(above.label)}</b> reference mean` : `at or beyond the <b>${esc(below.label)}</b> reference mean`} — context, not a percentile.</div>`; }
+    ext = `<div class="chip ${R.compat.startsWith('SAME') ? 'g' : 'a'}" style="margin-bottom:6px">${esc(R.compat.replace(/_/g, ' '))}</div>
+      <table class="t"><tr><th>Reference</th><th>n</th><th>Age</th><th>Mean</th></tr>${rows.map(r => `<tr><td style="font-size:12px">${esc(r.label)}</td><td class="mono">${r.n ?? '—'}</td><td class="mono">${esc(r.age)}</td><td class="mono">${m.unit === 's' ? r.mean.toFixed(2) : r.mean}${r.sd ? ' ±' + r.sd : ''}</td></tr>`).join('')}</table>
+      ${place}<div class="reason">${esc(R.note)} Source: ${esc(SRC[R.src].cite)}${SRC[R.src].doi ? ' · doi ' + esc(SRC[R.src].doi) : ''}.</div>` + ext;
+  }
+  if (m.anchors && m.anchorBasis) ext += `<div class="reason">Published anchors on the Apex scale: ${Object.entries(m.anchorBasis).map(([raw, b]) => `${raw}m = ${esc(b)} (rating ${rate(id, +raw)})`).join('; ')}. Other anchors are Apex interpolation.</div>`;
+  const ev = `<table class="t"><tr><td>Benchmark type</td><td>${esc(m.benchmarkType || 'Personal history')}</td></tr><tr><td>Rating model</td><td>${esc(m.status)}</td></tr>
+    ${m.evidence ? `<tr><td>Evidence</td><td>${esc(m.evidence)}</td></tr>` : ''}<tr><td>Protocol</td><td class="mono" style="font-size:12px">${esc(m.protocolId)}</td></tr>
+    ${m.methods ? `<tr><td>Rated namespace</td><td style="font-size:12px">${m.rated?.length ? m.rated.map(x => esc(m.methods[x])).join(', ') : 'none (personal)'}</td></tr>` : ''}
+    ${(m.sources || []).map(k => `<tr><td>Source</td><td style="font-size:12px">${esc(SRC[k].cite)}${SRC[k].doi ? '<br><span class="mono">doi ' + esc(SRC[k].doi) + '</span>' : ''}</td></tr>`).join('')}</table>`;
+  openSheet(`<div class="eyebrow">${esc(m.group)} · ${esc(m.tier)}</div><h2 style="margin-top:4px">${esc(m.name)}</h2>
+    <div class="layer"><div class="eyebrow">Me vs past me</div>${me}</div>
+    <div class="layer"><div class="eyebrow">Apex performance level</div>${lvl}</div>
+    <div class="layer"><div class="eyebrow">Comparable external reference</div>${ext}</div>
+    <div class="layer"><div class="eyebrow">Evidence & method confidence</div>${ev}</div>
+    <details class="layer"><summary class="eyebrow">Protocol</summary><div class="reason" style="color:var(--tx)">${esc(m.protocol)}</div></details>
+    <button class="btn primary" style="width:100%;margin-top:14px" onclick="testSheet('${id}')">Log a new result</button>`);
+}
+function anchorBar(id, v, pb) {
+  const m = METRICS[id], ticks = LEVELS.map(([n, lo]) => ({ n, r: lo, raw: rawForRating(id, Math.max(lo, 1)) })).filter(t => t.raw != null);
+  const pos = r => Math.max(0, Math.min(100, r));
+  return `<div class="lvbar">${ticks.map(t => `<div class="lvseg" style="left:${pos(t.r)}%"><span>${esc(t.n.split(' ')[0].slice(0, 5).toUpperCase())}</span><i></i><em>${esc(m.fmt(t.raw).replace(/ ·.*/, ''))}</em></div>`).join('')}
+    ${pb != null && pb !== v ? `<div class="lvprev" style="left:${pos(rate(id, pb))}%" title="observed PB"></div>` : ''}<div class="lvyou" style="left:${pos(rate(id, v))}%"><b>YOU</b></div></div>`;
+}
+
+// ── Test entry (protocol-aware forms) ───────────────────────────────
+function testSheet(id) {
+  if (!id) {
+    openSheet(`<h2>Log a test</h2><p class="muted" style="font-size:13px;margin-top:4px">Same surface, footwear, warm-up and time of day as last time. Test fresh — not after hard football or legs.</p>
+      ${TEST_GROUPS.map(([g, f]) => `<div class="eyebrow" style="margin-top:16px">${g}</div>${Object.entries(METRICS).filter(([, m]) => f(m)).map(([k, m]) => { const s = metricState(k); return `<button class="list-item" style="width:100%;text-align:left" onclick="testSheet('${k}')"><div style="flex:1"><b>${esc(m.name)}</b><div class="dim" style="font-size:12px">${s.status === 'untested' ? 'Untested' : (s.level ? esc(s.level.label) + ' · ' : '') + esc(m.fmt((s.confirmed || s.latest).v))}${s.retestDue && s.retestDue > today() ? ' · retest from ' + esc(fmtDay(s.retestDue).slice(0, 10)) : ''}</div></div><span class="dim">›</span></button>`; }).join('')}`).join('')}`);
+    return;
+  }
+  const m = METRICS[id], f = m.form, methods = m.methods ? Object.entries(m.methods) : null;
+  const num = (k, ph, mode = 'decimal') => `<input class="num" data-k="${k}" inputmode="${mode}" placeholder="${ph}">`;
+  let fields = '';
+  if (f === 'trials') fields = `<div class="lbl dim">Trials (s) — fill what you did; best is used, all are kept</div><div class="grid3">${num('t1', 'Trial 1')}${num('t2', 'Trial 2')}${num('t3', 'Trial 3')}</div>`;
+  else if (f === '505') fields = `<div class="lbl dim">Turning off LEFT leg (s)</div><div class="grid2">${num('l1', 'Trial 1')}${num('l2', 'Trial 2')}</div><div class="lbl dim" style="margin-top:8px">Turning off RIGHT leg (s)</div><div class="grid2">${num('r1', 'Trial 1')}${num('r2', 'Trial 2')}</div>`;
+  else if (f === 'cmj') fields = `<div class="lbl dim">Best 3 jumps — enter height (cm) OR flight time (ms)</div><div class="grid3">${num('h1', 'cm / ms')}${num('h2', 'cm / ms')}${num('h3', 'cm / ms')}</div><div class="reason">Values over 150 are read as flight time in ms (h = g·t²/8).</div>`;
+  else if (f === 'squat') { const bw = Store.d.body.filter(b => b.weightKg && daysBetween(b.date, today()) <= 7).pop(); fields = `<div class="grid2"><div><div class="lbl dim">5RM load (kg)</div>${num('load', 'e.g. 80')}</div><div><div class="lbl dim">Body mass today (kg)</div><input class="num" data-k="bw" inputmode="decimal" value="${bw?.weightKg ?? ''}" placeholder="required"></div></div><label class="row" style="margin-top:10px;gap:8px"><input type="checkbox" data-k="depth"> Depth checked on video (hip crease ≥ top of knee)</label>`; }
+  else if (f === 'yoyo') { const first = !metricSeries('yoyo_ir1').length; fields = `<div class="lbl dim">Total distance (m)</div>${num('v', 'e.g. 1440', 'numeric')}<label class="row" style="margin-top:10px;gap:8px"><input type="checkbox" data-k="fam" ${first ? 'checked' : ''}> Familiarisation run (stored, not rated)</label>`; }
+  else if (f === 'rsa') fields = `<div class="lbl dim">Six 40m shuttle times (s)</div><div class="grid3">${[1, 2, 3, 4, 5, 6].map(i => num('s' + i, 'Rep ' + i)).join('')}</div><div class="pick" style="margin-top:8px" data-k="rec">${['active', 'passive'].map((x, i) => `<button data-v="${x}" class="${i ? '' : 'sel'}">${x} recovery</button>`).join('')}</div>`;
+  else if (f === 'lr') fields = `<div class="grid2"><div><div class="lbl dim">Left (${esc(m.unit)})</div>${num('L', '')}</div><div><div class="lbl dim">Right (${esc(m.unit)})</div>${num('R', '')}</div></div>`;
+  else fields = `<div class="lbl dim">Result (${m.unit === 'time' ? 'mm:ss' : esc(m.unit)})</div>${num('v', m.input === 'time' ? '28:45' : '', m.input === 'time' ? 'text' : m.input)}`;
+  const envPick = (k, opts) => `<div class="pick" data-k="${k}" style="margin-top:6px">${opts.map(x => `<button data-v="${x}">${x}</button>`).join('')}</div>`;
+  openSheet(`<div class="eyebrow">${esc(m.protocolId)}</div><h2 style="margin-top:4px">${esc(m.name)}</h2>
+    <details class="layer" open><summary class="eyebrow">Protocol</summary><div class="reason" style="color:var(--tx)">${esc(m.protocol)}</div></details>
+    <div style="margin-top:12px">${fields}</div>
+    ${methods && methods.length > 1 ? `<div class="lbl dim" style="margin-top:12px">Method</div><div class="pick" data-k="method" style="flex-wrap:wrap">${methods.map(([k, l], i) => `<button data-v="${k}" class="${i ? '' : 'sel'}" style="flex:1 0 30%;font-size:12px">${esc(l.split(' (')[0])}</button>`).join('')}</div>` : ''}
+    ${['Speed', 'Power', 'Engine'].includes(m.group) ? `<div class="lbl dim" style="margin-top:12px">Conditions (protocol match)</div>${envPick('surface', ['grass', 'turf', 'track', 'indoor'])}${envPick('ground', ['dry', 'wet'])}${envPick('shoe', ['boots', 'trainers'])}` : ''}
+    <input class="num" data-k="note" style="font-size:15px;margin-top:12px" placeholder="Note (optional)">
+    <button class="btn primary big" style="margin-top:14px" id="tSave">Save result</button>`);
+  const sel = {}; document.querySelectorAll('#sheetBody .pick[data-k]').forEach(p => { const pre = p.querySelector('.sel'); if (pre) sel[p.dataset.k] = pre.dataset.v; p.onclick = e => { const b = e.target.closest('button'); if (!b) return; p.querySelectorAll('button').forEach(x => x.classList.toggle('sel', x === b)); sel[p.dataset.k] = b.dataset.v; }; });
+  const val = k => { const el = document.querySelector(`#sheetBody [data-k="${k}"]`); return el ? (el.type === 'checkbox' ? el.checked : el.value.trim()) : ''; };
+  const nums = ks => ks.map(k => parseFloat(val(k))).filter(x => isFinite(x) && x > 0);
+  $('#tSave').onclick = () => {
+    let v = null, value = null, extra = {};
+    if (f === 'trials') { const t = nums(['t1', 't2', 't3']); if (!t.length) return toast('Enter at least one trial', true); v = Math.min(...t); value = v; extra.trials = t; }
+    else if (f === '505') { const L = nums(['l1', 'l2']), R = nums(['r1', 'r2']); if (!L.length || !R.length) return toast('Need at least one valid trial each side', true); const bl = Math.min(...L), br = Math.min(...R); v = (bl + br) / 2; value = v; extra = { left: bl, right: br, asymmetryPct: Math.round(Math.abs(bl - br) / Math.min(bl, br) * 1000) / 10, trials: { L, R } }; }
+    else if (f === 'cmj') { const h = nums(['h1', 'h2', 'h3']).map(x => x > 150 ? 9.81 * (x / 1000) ** 2 / 8 * 100 : x); if (!h.length) return toast('Enter at least one jump', true); v = Math.max(...h); value = Math.round(v * 10) / 10; extra.trialsCm = h.map(x => Math.round(x * 10) / 10); }
+    else if (f === 'squat') { const load = parseFloat(val('load')), bw = parseFloat(val('bw')); if (!(load > 0) || !(bw > 0)) return toast('Load and body mass are both required', true); if (!val('depth')) return toast('Confirm depth on video — otherwise it isn\'t this test', true); value = { load, bw, rel: Math.round(load / bw * 1000) / 1000 }; v = value.rel; if (!Store.d.body.some(b => b.date === today())) mergeBody({ date: today(), weightKg: bw, source: 'user' }); }
+    else if (f === 'yoyo') { v = parseFloat(val('v')); if (!(v > 0)) return toast('Enter distance', true); value = v; extra.familiarisation = !!val('fam'); }
+    else if (f === 'rsa') { const t = nums(['s1', 's2', 's3', 's4', 's5', 's6']); if (t.length < 6) return toast('Enter all six times', true); const best = Math.min(...t), mean = t.reduce((a, b) => a + b, 0) / 6; v = mean; value = Math.round(mean * 1000) / 1000; extra = { best, total: Math.round(t.reduce((a, b) => a + b, 0) * 100) / 100, decrementPct: Math.round((mean / best - 1) * 1000) / 10, times: t, recovery: sel.rec }; }
+    else if (f === 'lr') { const L = parseFloat(val('L')), R = parseFloat(val('R')); if (!(L >= 0) || !(R >= 0) || isNaN(L) || isNaN(R)) return toast('Enter both sides', true); v = Math.min(L, R); value = { v, L, R, asymmetry: Math.round(Math.abs(L - R) * 10) / 10 }; }
+    else { v = m.input === 'time' ? secParse(val('v')) : parseFloat(val('v')); if (v == null || !isFinite(v) || v <= 0) return toast('Enter a valid result', true); value = m.input === 'time' ? val('v') : v; if (m.input === 'time') extra.seconds = v; }
+    const before = new Set(xpEvents().map(e => e.key));
+    const meta = (sel.surface || sel.ground || sel.shoe) ? { surface: sel.surface || null, ground: sel.ground || null, shoe: sel.shoe || null } : null;
+    addObs({ metric: m.obs, value, ...(extra.seconds ? { seconds: extra.seconds } : {}), familiarisation: !!extra.familiarisation, extra, meta, unit: m.unit, date: today(),
+      method: sel.method || (m.rated?.[0]) || 'test', source: 'test:' + id, protocolId: m.protocolId, quality: 'verified', note: val('note') || null });
+    Store.save();
+    const s = metricState(id), fresh = xpEvents().filter(e => !before.has(e.key));
+    closeSheet(); render();
+    setTimeout(() => {
+      if (fresh.length) return celebrate(fresh);
+      const latest = s.latest;
+      if (s.observedPB === latest && s.confirmed !== latest) toast('Observed PB — within measurement noise, so the rating holds');
+      else if (m.rated?.length && !m.rated.includes(latest.method)) toast('Saved to personal history — this method isn\'t rated');
+      else toast(extra.familiarisation ? 'Familiarisation saved — next run sets your baseline' : 'Saved');
+    }, 230);
+  };
+}
+function celebrate(evs) {
+  const xp = evs.reduce((a, e) => a + e.xp, 0), big = evs.filter(e => ['pb', 'level', 'benchmark', 'quest'].includes(e.kind));
+  openSheet(`${big.map(e => `<div class="pb"><div class="eyebrow ok">${{ pb: 'Confirmed improvement', level: 'Level up', benchmark: 'Baseline recorded', quest: 'Quest complete' }[e.kind]}</div><div style="font-weight:700;font-size:17px;margin-top:4px">${esc(e.label.replace(/^(Confirmed improvement|Level up|Baseline|Quest): /, ''))}</div><div class="mono dim" style="margin-top:4px">+${e.xp} XP</div></div>`).join('')}
+    <div class="mono ok" style="text-align:center;margin-top:14px;font-size:18px">+${xp} XP</div>
+    <div class="grid2" style="margin-top:14px"><button class="btn" onclick="closeSheet();goTab('progress')">View progress</button><button class="btn primary" onclick="closeSheet()">Continue</button></div>`);
+}
+function goTab(t) { tab = t; document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('on', x.dataset.tab === t)); render(); window.scrollTo(0, 0); }
+
+// ── Today pieces ────────────────────────────────────────────────────
+function todayHeaderHTML() {
+  const al = athleteLevel(totalXP()), st = streak(), ad = adherence();
+  return `<div class="row wrapflex" style="margin-top:10px;gap:6px"><span class="chip g">LV ${al.lv} · ${al.into}/${al.need} XP</span><span class="chip">STREAK ${st}</span>${ad.due ? `<span class="chip ${ad.pct >= 90 ? 'g' : ad.pct >= 70 ? 'a' : 'r'}">BLOCK ${ad.pct}%</span>` : ''}</div>`;
+}
+function missionsHTML() {
+  const t = today(), wd = weekDates(t); if (!wd.length) return '';
+  const wk = weekOf(t), core = wd.filter(d => dayPlan(d)?.session && !dayPlan(d).optional);
+  const micro = (Store.d.micro || []).filter(x => wd.includes(x.date)).length, bodyWk = Store.d.body.some(b => b.source === 'user' && wd.includes(b.date));
+  const items = core.map(d => ({ label: dayPlan(d).def.name, done: !!completedOn(d).length, xp: 100, sub: fmtDay(d).slice(0, 6) }));
+  const bonus = [{ label: '2 durability micro-sessions', done: micro >= 2, xp: 40, sub: `${Math.min(micro, 2)}/2` }, { label: 'Body check-in', done: bodyWk, xp: 10, sub: '' }];
+  if (wk?.benchmarks) { const ids = ['cmj', 'accel_10m', 'fly_10m', 'cod_505']; bonus.push({ label: 'Field battery: CMJ · 10m · flying 10 · 505', done: ids.every(id => metricSeries(id).some(x => wd.includes(x.date))), xp: 150, sub: `${ids.filter(id => metricSeries(id).some(x => wd.includes(x.date))).length}/4` }); bonus.push({ label: 'Capacity check: heel rise + knee-to-wall', done: ['heelrise', 'wblt'].every(id => metricSeries(id).some(x => wd.includes(x.date))), xp: 60, sub: '' }); }
+  const all = [...items, ...bonus], done = all.filter(x => x.done).length, avail = all.filter(x => !x.done).reduce((a, x) => a + x.xp, 0) + (items.every(x => x.done) ? 0 : 100);
+  return `<div class="card"><div class="row between"><div class="eyebrow">Week ${wk.week} · ${esc(wk.label)}</div><span class="mono" style="font-size:13px">${done}/${all.length}</span></div>
+    ${items.map(x => `<div class="mission ${x.done ? 'on' : ''}"><i>${x.done ? '✓' : ''}</i><span>${esc(x.label)}</span><em>${esc(x.sub)}</em></div>`).join('')}
+    <div class="eyebrow" style="margin-top:10px">Bonus</div>${bonus.map(x => `<div class="mission ${x.done ? 'on' : ''}"><i>${x.done ? '✓' : ''}</i><span>${esc(x.label)}</span><em>${esc(x.sub)}</em></div>`).join('')}
+    <div class="reason">${avail} XP still available this week</div>
+    <div class="weekstrip">${wd.map(d => { const p = dayPlan(d), st = dayStatus(d); return `<div class="day${d === t ? ' today' : ''}" onclick="dayActions('${d}')"><div class="d">${DOW[parseD(d).getDay()].toUpperCase()}</div><div class="s">${p?.session ? esc(p.session) : '·'}</div><div class="st ${st === 'done' ? 'done' : st === 'missed' ? 'miss' : st === 'optional' || st === 'skipped' ? 'opt' : ''}"></div></div>`; }).join('')}</div></div>`;
+}
+function closestHTML() {
+  const c = closestLevelUp();
+  if (!c) return `<div class="card"><div class="eyebrow">Closest level-up</div><div class="reason">No core test results yet. Week 3 (15–21 Oct) runs the field battery: CMJ, 10m, flying 10m and 505. Yo-Yo IR1 and the 5RM squat follow in block 1B.</div><button class="btn sm" style="margin-top:10px" onclick="testSheet()">See the tests</button></div>`;
+  const m = METRICS[c.id], ss = sessionsTraining(c.id);
+  return `<div class="card" onclick="metricSheet('${c.id}')" style="cursor:pointer"><div class="eyebrow">Closest level-up</div>
+    <div class="row between" style="margin-top:8px"><b>${esc(m.name)}</b><span class="chip">${esc(c.s.level.label)}</span></div>
+    <div class="mono" style="margin-top:6px">${esc(m.fmt(c.s.confirmed.v).replace(/ ·.*/, ''))} → <b class="ok">${esc(m.fmt(c.s.next.at).replace(/ ·.*/, ''))}</b> <span class="dim">(${esc(c.s.next.label)})</span></div>
+    <div class="reason">Target includes the noise gate, so reaching it is a real change.${ss.length ? ' Trained next: ' + ss.map(x => `${fmtDay(x.date).slice(0, 6)} — ${esc(P().sessions[x.session].name)}`).join(' · ') : ''}</div></div>`;
+}
+function logMicro(id, name) { Store.d.micro = Store.d.micro || []; if (Store.d.micro.some(x => x.date === today() && x.mid === id)) return toast('Already logged today'); const before = new Set(xpEvents().map(e => e.key)); Store.d.micro.push({ id: uid('m'), mid: id, name, date: today() }); Store.save(); const f = xpEvents().filter(e => !before.has(e.key)); render(); toast(f.length ? `+${f.reduce((a, e) => a + e.xp, 0)} XP · ${name}` : 'Logged (weekly micro XP cap reached)'); }
+
+// ── Progress ────────────────────────────────────────────────────────
+const TEST_SCHEDULE = [['Field (fresh)', 'CMJ → 10m → flying 10 → 505', '6–8 wk', ['cmj', 'accel_10m', 'fly_10m', 'cod_505']], ['Strength / capacity', '5RM HB squat, heel rise, WBLT, body', '6–8 wk / 4–6 wk', ['squat_5rm', 'heelrise', 'wblt']], ['Engine', 'Yo-Yo IR1 (standalone, fresh)', '8–12 wk', ['yoyo_ir1']]];
+function renderProgress() {
+  snapCard();
+  const c = computeCard(), d = Store.d, evs = xpEvents(), recent = evs.filter(e => ['pb', 'level', 'benchmark'].includes(e.kind)).slice(-6).reverse();
+  const qs = quests(), active = qs.filter(q => !q.done).sort((a, b) => b.progress - a.progress).slice(0, 4), doneQ = qs.filter(q => q.done);
+  const core = Object.keys(METRICS).filter(id => METRICS[id].tier === 'core').map(id => ({ id, s: metricState(id) }));
+  const rated = core.filter(x => x.s.rating != null), weakest = [...rated].sort((a, b) => a.s.rating - b.s.rating)[0];
+  const biggest = core.filter(x => x.s.trail?.some(t => t.kind === 'improved')).map(x => { const t = x.s.trail.filter(t => t.kind === 'improved').pop(); return { ...x, g: Math.abs(t.to.v - x.s.pool[0].v) / x.s.pool[0].v }; }).sort((a, b) => b.g - a.g)[0];
+  const cap = ['heelrise', 'wblt', 'copenhagen'].map(id => ({ id, s: metricState(id) }));
+  const personal = Object.keys(METRICS).filter(id => ['secondary', 'skill'].includes(METRICS[id].tier)).map(id => ({ id, s: metricState(id) })).filter(x => x.s.status !== 'untested');
+  let h = `<div class="eyebrow">Progress</div><h1 style="margin-top:4px">Am I a better athlete?</h1>
+  <div class="pgrid"><div>${playerCardHTML(c)}
+    <div class="card"><div class="row between"><div class="eyebrow">Core battery — rated</div><button class="btn sm" onclick="testSheet()">+ Log test</button></div>
+      ${core.map(({ id, s }) => { const m = METRICS[id]; return `<div class="list-item" onclick="metricSheet('${id}')" style="cursor:pointer"><div style="flex:1"><b>${esc(m.name)}</b><div class="dim" style="font-size:12px">${s.rating != null ? `${esc(s.level.label)}${s.next ? ' · next ' + esc(m.fmt(s.next.at).replace(/ ·.*/, '')) : ''}${s.stale ? ' · <span class="warn-t">retest due</span>' : ''}` : s.status === 'namespace' ? 'personal history only (un-rated method)' : 'untested'}</div></div><div class="mono" style="text-align:right">${s.confirmed ? esc(m.fmt(s.confirmed.v).replace(/ ·.*/, '')) : '—'}<div class="dim" style="font-size:11px">${s.rating ?? ''}</div></div></div>`; }).join('')}
+      <div class="reason">RSA 6×40 is secondary (no global rating). Levels: Foundation 1–19 · Recreational 20–39 · Trained 40–59 · Competitive 60–74 · Advanced 75–89 · High Performance 90–99.</div></div>
+    <div class="card"><div class="eyebrow">Testing schedule</div>${TEST_SCHEDULE.map(([n, t, cad, ids]) => { const due = ids.map(id => metricState(id)).map(s => s.retestDue).filter(Boolean).sort()[0]; return `<div class="list-item"><div style="flex:1"><b>${esc(n)}</b><div class="dim" style="font-size:12px">${esc(t)} · every ${esc(cad)}</div></div><span class="mono dim" style="font-size:12px">${due ? 'from ' + esc(fmtDay(due).slice(0, 10)) : 'not yet'}</span></div>`; }).join('')}
+      <div class="reason">Leave ~48h between demanding test sessions. Testing more often mostly measures noise and fatigue.</div></div></div>
+  <div>
+    <div class="grid2"><div class="card" style="margin-top:12px" ${biggest ? `onclick="metricSheet('${biggest.id}')"` : ''}><div class="eyebrow">Biggest confirmed gain</div>${biggest ? `<b style="display:block;margin-top:6px">${esc(METRICS[biggest.id].name)}</b><div class="mono ok">+${(biggest.g * 100).toFixed(1)}%</div>` : '<div class="reason">Needs a confirmed change.</div>'}</div>
+      <div class="card" style="margin-top:12px" ${weakest ? `onclick="metricSheet('${weakest.id}')"` : ''}><div class="eyebrow">Biggest opportunity</div>${weakest ? `<b style="display:block;margin-top:6px">${esc(METRICS[weakest.id].name)}</b><div class="mono">${esc(weakest.s.level.label)}</div>` : '<div class="reason">Untested.</div>'}</div></div>
+    ${closestHTML()}
+    <div class="card"><div class="eyebrow">Quests</div>${active.map(q => `<div style="margin-top:10px"><div class="row between"><b>${esc(q.name)}</b><span class="dim mono" style="font-size:12px">${q.xp ? '+' + q.xp + ' XP' : esc(q.note || '')}</span></div><div class="dim" style="font-size:12px">${esc(q.desc)}</div><div class="bar"><i style="width:${Math.round(q.progress * 100)}%"></i></div></div>`).join('')}${doneQ.length ? `<div class="reason">Completed: ${doneQ.map(q => esc(q.name)).join(', ')}</div>` : ''}</div>
+    <div class="card"><div class="eyebrow">Recent confirmed changes & baselines</div>${recent.length ? recent.map(e => `<div class="list-item"><div style="flex:1"><b>${esc(e.label)}</b><div class="dim" style="font-size:12px">${esc(fmtDay(e.date))}</div></div><span class="chip g">+${e.xp}</span></div>`).join('') : '<div class="reason">None yet.</div>'}</div>
+    <div class="card"><div class="eyebrow">Capacity dashboard — monitors, not scores</div>
+      ${cap.map(({ id, s }) => { const m = METRICS[id], last = s.latest?.value; return `<div class="list-item" onclick="metricSheet('${id}')" style="cursor:pointer"><div style="flex:1"><b>${esc(m.name)}</b><div class="dim" style="font-size:12px">${s.status === 'untested' ? 'untested' : `L ${esc(m.fmt(last.L))} · R ${esc(m.fmt(last.R))} · diff ${last.asymmetry}${m.unit === 'cm' ? 'cm' : ''}${s.change && s.change !== 'baseline' ? ' · ' + esc(s.change) : ''}`}</div></div><span class="dim">›</span></div>`; }).join('')}
+      <div class="reason">These track capacity over time. No result here means you are or aren't "injury-proof" — individual injury prediction from screening tests doesn't work (Bahr 2016).</div></div>
+    ${personal.length ? `<div class="card"><div class="eyebrow">Personal performance (not rated)</div>${personal.map(({ id, s }) => `<div class="list-item" onclick="metricSheet('${id}')" style="cursor:pointer"><div style="flex:1"><b>${esc(METRICS[id].name)}</b><div class="dim" style="font-size:12px">${s.count} result${s.count > 1 ? 's' : ''}${s.change && s.change !== 'baseline' ? ' · ' + esc(s.change) : ''}</div></div><span class="mono">${esc(METRICS[id].fmt((s.confirmed || s.latest).v))}</span></div>`).join('')}</div>` : ''}
+  </div></div>`;
+  const rs = returnStatus(), known = rs.filter(x => x.current);
+  h += `<div class="card"><div class="eyebrow">Return to pre-break training capacity</div>${rs.map(r => `<div style="margin-top:10px"><div class="row between"><b>${esc(r.name)}</b><span class="mono">${r.current ? r.pct + '%' : 'not yet'}</span></div>${r.current ? `<div class="bar"><i style="width:${r.pct}%"></i></div><div class="reason">Now ${esc(r.currentText)} · reference ${esc(r.refText)} (estimated 1RM — training data, not a test)</div>` : ''}</div>`).join('')}
+    <div class="sep"></div><div class="row between"><b>Strength (training)</b><span class="mono">${known.length ? Math.round(known.reduce((a, b) => a + b.pct, 0) / known.length) + '% (' + known.length + '/3)' : 'INSUFFICIENT DATA'}</span></div>
+    <div class="row between" style="margin-top:6px"><b>Training capacity</b><span class="mono dim">${(() => { const a = adherence(28); return a.due >= 4 ? a.pct + '% of planned (28d)' : 'INSUFFICIENT DATA'; })()}</span></div></div>`;
+  h += bodyHealthHTML();
+  const ss = [...d.sessions].sort((a, b) => b.endedAt - a.endedAt).slice(0, 8);
+  h += `<div class="card"><div class="eyebrow">Recent sessions</div>${ss.length ? ss.map(s => `<div class="list-item"><div style="flex:1"><b>${esc(s.sessionKey)} · ${esc(s.name)}</b><div class="dim" style="font-size:13px">${esc(fmtDay(s.scheduledDate))} · ${s.durationMin} min · RPE ${s.sessionRpe} · ${s.load} AU${s.adaptation?.changes?.length ? ' · adapted' : ''}</div></div><span class="chip ${s.status === 'completed' ? 'g' : 'a'}">${esc(s.status)}</span></div>`).join('') : '<div class="reason">No sessions yet.</div>'}${loadHTML()}</div>`;
+  $('#view').innerHTML = h;
+}
+function bodyHealthHTML() {
+  const b = Store.d.body.filter(x => x.weightKg).sort((a, c) => a.date.localeCompare(c.date)); if (!b.length) return '';
+  const last = b[b.length - 1], wk = b.filter(x => daysBetween(x.date, last.date) <= 6), mean7 = wk.reduce((a, x) => a + x.weightKg, 0) / wk.length;
+  const ht = Store.d.athlete.heightCm, w = [...b].reverse().find(x => x.waistCm), whtr = w && ht ? w.waistCm / ht : null;
+  const band = whtr == null ? null : whtr < 0.5 ? ['Below 0.5 — NICE target range', 'g'] : whtr < 0.6 ? ['0.5–0.59 — increased central adiposity (NICE)', 'a'] : ['≥0.6 — high central adiposity (NICE)', 'r'];
+  return `<div class="card"><div class="row between"><div class="eyebrow">Body — health context</div><span class="dim mono" style="font-size:12px">last ${esc(fmtDay(last.date))}</span></div>
+    <div class="grid3" style="margin-top:10px"><div><div class="dim" style="font-size:12px">${wk.length > 1 ? '7-day mean' : 'Latest'}</div><div class="mono" style="font-size:20px;font-weight:700">${fmtKg(Math.round(mean7 * 10) / 10)}kg</div></div><div><div class="dim" style="font-size:12px">Waist</div><div class="mono" style="font-size:20px;font-weight:700">${w?.waistCm ?? '—'}</div></div><div><div class="dim" style="font-size:12px">Waist ÷ height</div><div class="mono" style="font-size:20px;font-weight:700">${whtr ? whtr.toFixed(2) : '—'}</div></div></div>
+    ${band ? `<div class="chip ${band[1]}" style="margin-top:10px">${esc(band[0])}</div>` : ''}
+    <div style="margin-top:10px">${sparkline(b.map(x => x.weightKg))}</div>
+    <div class="reason">${daysBetween(last.date, today()) > 7 ? '<b class="warn-t">Weigh-in overdue.</b> ' : ''}Waist every 4 weeks; weight as often as you like — the 7-day mean is what matters. Health context only: never part of PAC, PHY or the Athletic Index. Source: ${esc(SRC.nice.cite)}.</div></div>`;
+}
+function loadHTML() {
+  const wks = Array.from({ length: 6 }, (_, i) => { const end = addDays(today(), -7 * i), start = addDays(end, -6); return { label: i ? `-${i}w` : 'this', load: Store.d.sessions.filter(s => s.scheduledDate >= start && s.scheduledDate <= end).reduce((a, s) => a + (s.load || 0), 0) }; }).reverse();
+  if (!wks.some(w => w.load)) return '';
+  const mx = Math.max(...wks.map(w => w.load)), cur = wks[5].load, chronic = wks.slice(1, 5).reduce((a, w) => a + w.load, 0) / 4;
+  return `<div class="sep"></div><div class="eyebrow">Weekly load (session RPE × min)</div><div class="loadbars">${wks.map(w => `<div><i style="height:${mx ? Math.round(w.load / mx * 100) : 0}%"></i><span>${w.label}</span></div>`).join('')}</div>
+    <div class="reason">${chronic ? `This week is ${Math.round(cur / chronic * 100)}% of your 4-week average.` : 'Building history.'} Context only — not an injury prediction.${chronic && cur > chronic * 1.5 ? ' <b class="warn-t">Sharp rise: check soreness and sleep before adding more.</b>' : ''}</div>`;
+}
+function exportCalendar(hhmm) {
+  const [H, M] = hhmm.split(':').map(Number), dt = (d, h, m) => d.replace(/-/g, '') + 'T' + pad(h) + pad(m) + '00';
+  const ev = Object.values(scheduleMap()).filter(x => x.session && x.date >= today()).map(x => { const s = P().sessions[x.session], end = new Date(2000, 0, 1, H, M + (s.estMin || 50));
+    return ['BEGIN:VEVENT', `UID:apex-${x.date}-${x.session}@apex`, `DTSTAMP:${dt(today(), 0, 0)}`, `DTSTART:${dt(x.date, H, M)}`, `DTEND:${dt(x.date, end.getHours(), end.getMinutes())}`, `SUMMARY:Apex ${x.session} — ${s.name}${s.optional ? ' (optional)' : ''}`, 'DESCRIPTION:Open Apex and tap START.', 'BEGIN:VALARM', 'TRIGGER:-PT30M', 'ACTION:DISPLAY', 'DESCRIPTION:Apex session in 30 min', 'END:VALARM', 'END:VEVENT'].join('\r\n'); });
+  const ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Apex//EN', 'CALSCALE:GREGORIAN', ...ev, 'END:VCALENDAR'].join('\r\n'), file = new File([ics], 'apex-sessions.ics', { type: 'text/calendar' });
+  if (navigator.canShare?.({ files: [file] })) navigator.share({ files: [file], title: 'Apex sessions' }).catch(() => {}); else { const u = URL.createObjectURL(file), a = document.createElement('a'); a.href = u; a.download = 'apex-sessions.ics'; document.body.appendChild(a); a.click(); a.remove(); }
+  toast(`${ev.length} sessions exported with 30-min reminders`);
+}
+function calendarSheet() {
+  openSheet(`<h2>Calendar reminders</h2><p class="muted" style="font-size:14px;margin-top:6px">iOS web apps can't schedule their own notifications without a push server. This exports your planned sessions to your calendar with a 30-minute alert — reliable and offline.</p>
+    <div class="pick" style="margin-top:14px">${['06:00', '06:30', '17:30', '18:00'].map(t => `<button onclick="closeSheet();exportCalendar('${t}')">${t}</button>`).join('')}</div>
+    <div class="reason">After moving sessions, export again — events keep stable IDs.</div>`);
+}
+
+// ════════════════════════════════════════════════════════════════════
+// APPEARANCE — theme, accent, status palette, text size, motion
+// ════════════════════════════════════════════════════════════════════
+const UI_DEFAULT = { theme: 'auto', accent: 'green', status: 'standard', text: 'm', motion: 'auto' };
+function uiPrefs() { return { ...UI_DEFAULT, ...(Store.d?.ui || {}) }; }
+function applyUI() {
+  const u = uiPrefs(), mq = window.matchMedia?.('(prefers-color-scheme: light)'), r = document.documentElement;
+  const theme = u.theme === 'auto' ? (mq?.matches ? 'light' : 'dark') : u.theme;
+  r.dataset.theme = theme; r.dataset.accent = u.accent; r.dataset.status = u.status; r.dataset.text = u.text;
+  r.dataset.motion = u.motion === 'reduce' || (u.motion === 'auto' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) ? 'reduce' : 'full';
+  document.querySelector('meta[name=theme-color]')?.setAttribute('content', getComputedStyle(r).getPropertyValue('--bg').trim() || '#09090e');
+}
+function setUI(k, v) { Store.d.ui = { ...uiPrefs(), [k]: v }; Store.save(); applyUI(); renderMe(); }
+function appearanceHTML() {
+  const u = uiPrefs(), row = (k, label, opts) => `<div style="margin-top:12px"><div class="dim" style="font-size:12px;margin-bottom:6px">${label}</div><div class="pick" style="flex-wrap:wrap">${opts.map(([v, l]) => `<button class="${u[k] === v ? 'sel' : ''}" style="flex:1 0 22%" onclick="setUI('${k}','${v}')">${l}</button>`).join('')}</div></div>`;
+  return `<div class="card"><div class="eyebrow">Appearance</div>
+    ${row('theme', 'Theme', [['auto', 'Auto'], ['dark', 'Dark'], ['light', 'Light'], ['contrast', 'High contrast']])}
+    ${row('accent', 'Accent', [['green', '<i class="sw" style="background:#22c55e"></i>Green'], ['blue', '<i class="sw" style="background:#4c8dff"></i>Blue'], ['amber', '<i class="sw" style="background:#f2a541"></i>Amber'], ['violet', '<i class="sw" style="background:#a78bfa"></i>Violet']])}
+    ${row('status', 'Status colours', [['standard', 'Standard'], ['cvd', 'Colour-blind safe']])}
+    ${row('text', 'Text size', [['m', 'Default'], ['l', 'Large'], ['xl', 'Extra large']])}
+    ${row('motion', 'Motion', [['auto', 'Follow iPhone'], ['reduce', 'Reduce']])}
+    <div class="reason">Auto follows your iPhone's light/dark setting. Light or High contrast reads best outdoors in sun (field testing); dark suits evening sessions. Every theme meets WCAG AA contrast, and status is never shown by colour alone.</div></div>`;
+}
+
+// ════════════════════════════════════════════════════════════════════
 // UI — TABS
 // ════════════════════════════════════════════════════════════════════
 let tab = 'today';
@@ -813,7 +1505,7 @@ function renderToday() {
   if (!P()) { v.innerHTML = `<h1>Apex</h1><div class="card">No program loaded. Go to <b>Me → Data</b> and import one.</div>`; return; }
   const plan = dayPlan(t), wk = weekOf(t), def = plan?.def, done = completedOn(t);
   const r = readinessToday(), active = Store.d.activeWorkout;
-  let html = `<div class="row between"><div><div class="eyebrow">${esc(P().block.name)}${wk ? ' · Week ' + wk.week + ' · ' + esc(wk.label) : ''}</div><h1 style="margin-top:4px">${fmtDay(t)}</h1></div></div>`;
+  let html = `<div class="row between"><div><div class="eyebrow">${esc(P().block.name)}${wk ? ' · Week ' + wk.week + ' · ' + esc(wk.label) : ''}</div><h1 style="margin-top:4px">${fmtDay(t)}</h1></div></div>${todayHeaderHTML()}`;
 
   if (Store.d.legacy == null && !Store.d.sessions.length) html += `<div class="warn">Your history isn't here yet. <b>Me → Data → Import</b> the <span class="mono">apex-import-luke.json</span> file once.</div>`;
 
@@ -823,12 +1515,12 @@ function renderToday() {
       <button class="btn primary big" style="margin-top:14px" onclick="openPlayer()">RESUME WORKOUT</button></div>`;
   } else if (!plan) {
     const next = (P().schedule || []).find(x => x.date > t && x.session);
-    html += `<div class="card"><h2>Outside the current block</h2><p class="muted" style="margin-top:6px">${esc(P().block.name)} runs ${fmtDay(P().block.start)} – ${fmtDay(P().block.end)}. ${next ? '' : 'Travel mode and block 1B arrive in the next build.'}</p>
+    html += `<div class="card"><h2>Outside the current block</h2><p class="muted" style="margin-top:6px">${esc(P().block.name)} runs ${fmtDay(P().block.start)} – ${fmtDay(P().block.end)}. ${next ? '' : 'Block 1B is built from your 1A results — export a backup, send it over, and import the new program in Me → Data.'}</p>
       <button class="btn" style="margin-top:12px;width:100%" onclick="pickSession(today())">Train anyway — choose a session</button></div>`;
   } else if (!plan.session) {
     html += `<div class="card"><div class="eyebrow">Rest day</div><h2 style="margin-top:6px">Recovery is part of the plan</h2>
       <p class="muted" style="margin-top:6px">Rest days count toward adherence. Optional: an 8-min micro-session.</p>
-      <div class="sep"></div>${(P().microSessions||[]).map(m=>`<div class="list-item"><div style="flex:1"><b>${esc(m.name)}</b><div class="muted" style="font-size:13px;margin-top:2px">${m.items.map(esc).join(' · ')}</div></div></div>`).join('')}</div>`;
+      <div class="sep"></div>${(P().microSessions||[]).map(m=>{ const did=(Store.d.micro||[]).some(x=>x.date===t&&x.mid===m.id); return `<div class="list-item"><div style="flex:1"><b>${esc(m.name)}</b><div class="muted" style="font-size:13px;margin-top:2px">${m.items.map(esc).join(' · ')}</div></div><button class="btn sm ${did?'':'primary'}" onclick="logMicro('${m.id}','${esc(m.name)}')">${did?'✓':'Done'}</button></div>`; }).join('')}</div>`;
   } else if (done.length) {
     const s = done[done.length-1];
     html += `<div class="card hero"><div class="eyebrow" style="color:var(--green)">Mission complete ✓</div><h2 style="margin-top:6px">${esc(s.name)}</h2>
@@ -849,8 +1541,8 @@ function renderToday() {
     </div>`;
   }
 
-  // Week strip
-  const wd = weekDates(t);
+  html += missionsHTML() + closestHTML();
+  const wd = [];
   if (wd.length) {
     const core = wd.filter(d => dayPlan(d)?.session && !dayPlan(d).optional);
     const coreDone = core.filter(d => completedOn(d).length).length;
@@ -858,8 +1550,7 @@ function renderToday() {
       <div class="weekstrip">${wd.map(d => { const p = dayPlan(d), st = dayStatus(d); return `<div class="day${d===t?' today':''}" onclick="dayActions('${d}')"><div class="d">${DOW[parseD(d).getDay()].toUpperCase()}</div><div class="s">${p?.session ? esc(p.session) : '·'}</div><div class="st ${st==='done'?'done':st==='missed'?'miss':st==='optional'||st==='skipped'?'opt':''}"></div></div>`; }).join('')}</div></div>`;
   }
 
-  // Closest return-to-baseline target
-  const ret = returnStatus().filter(x => x.current && x.pct < 100).sort((a,b) => b.pct - a.pct)[0];
+  const ret = null && returnStatus().filter(x => x.current && x.pct < 100).sort((a,b) => b.pct - a.pct)[0];
   if (ret) html += `<div class="card"><div class="eyebrow">Closest to pre-break level</div><div class="row between" style="margin-top:8px"><b>${esc(ret.name)}</b><span class="mono">${ret.pct}%</span></div>
     <div class="bar"><i style="width:${ret.pct}%"></i></div><div class="reason">Now ${esc(ret.currentText)} · pre-break ${esc(ret.refText)} <span class="dim">(e1RM comparison, estimated)</span></div></div>`;
   v.innerHTML = html;
@@ -1056,13 +1747,7 @@ function drawScale(sl, key, label, vals) {
 function drawCheck(sl) {
   const wk = sl.wk;
   let h = drawTaps(sl, i => i+1, wk.sets ? `${wk.sets} ${wk.distanceM ? '× ' + wk.distanceM + 'm' : wk.reps ? '× ' + esc(String(wk.reps)) : 'rounds'}${wk.intensityPct ? ' @ ' + wk.intensityPct.join('–') + '%' : ''}` : (wk.durationMin ? wk.durationMin + ' min' : 'Complete'));
-  // Benchmarks (week 3 speed / broad jump)
-  if (sl.slotId === 'speed' && W.week === 3) h += `<div class="editor"><div class="lbl">Benchmark times (seconds) — video-timed</div><div class="grid2">
-      <input class="num" inputmode="decimal" placeholder="Flying 10m" value="${sl.measures.fly10 ?? ''}" onchange="SL().measures.fly10=parseFloat(this.value)||null;persist()">
-      <input class="num" inputmode="decimal" placeholder="10m standing" value="${sl.measures.s10 ?? ''}" onchange="SL().measures.s10=parseFloat(this.value)||null;persist()"></div>
-      <div class="pick" style="margin-top:8px">${['video','hand','gates'].map(m => `<button class="${(sl.measures.method||'video')===m?'sel':''}" onclick="SL().measures.method='${m}';persist();drawPlayer()">${m}</button>`).join('')}</div>
-      <div class="dim" style="font-size:12px;margin-top:6px">Best time only. Method is stored with the result and never compared across methods.</div></div>`;
-  if (sl.slotId === 'broad' && W.week === 3) h += `<div class="editor"><div class="lbl">Best broad jump (cm)</div><input class="num" inputmode="numeric" placeholder="e.g. 230" value="${sl.measures.broad ?? ''}" onchange="SL().measures.broad=parseInt(this.value)||null;persist()"></div>`;
+  if (wk.tests) h += `<div class="editor"><div class="lbl">Record results (protocol shown on each)</div>${wk.tests.map(id => { const done = metricSeries(id).some(x => x.date === today()); return `<button class="btn ${done ? '' : 'primary'}" style="width:100%;margin-top:8px;justify-content:space-between" onclick="testSheet('${id}')"><span>${esc(METRICS[id].name)}</span><span>${done ? '✓ logged' : 'Record ›'}</span></button>`; }).join('')}</div>`;
   return h;
 }
 
@@ -1155,9 +1840,11 @@ function saveWorkout(rpe, feel) {
   const s = W; s.endedAt = Date.now(); s.durationMin = Math.max(1, Math.round((s.endedAt - s.startedAt)/60000));
   s.sessionRpe = rpe; s.feel = feel; s.load = rpe * s.durationMin; s.status = s.slots.every(x => x.skipped || x.sets.some(y => y.done)) ? 'completed' : 'partial';
   delete s._lock; delete s.idx;
+  const before = new Set(xpEvents().map(e => e.key));
   const pbs = extractObservations(s);
   Store.d.sessions.push(s); Store.d.activeWorkout = null; Store.save();
-  W = null; closeSheet(); closePlayer(); showSummary(s, pbs);
+  const gained = xpEvents().filter(e => !before.has(e.key));
+  W = null; closeSheet(); closePlayer(); showSummary(s, pbs, gained);
 }
 function extractObservations(s) {
   const out = [];
@@ -1189,7 +1876,7 @@ function extractObservations(s) {
   Store.save();
   return out;
 }
-function showSummary(s, pbs) {
+function showSummary(s, pbs, gained = []) {
   const nextKey = (P().schedule || []).find(x => x.date > s.scheduledDate && x.session && !P().sessions[x.session].optional);
   const nextMain = MAIN_LIFTS.map(ex => { const sl = s.slots.find(x => x.exercise === ex && !x.skipped); if (!sl) return null;
     const def = P().sessions[s.sessionKey].slots.find(x => x.slotId === sl.slotId || x.id === sl.slotId);
@@ -1200,7 +1887,10 @@ function showSummary(s, pbs) {
     <div class="grid3" style="margin-top:12px">${[['MIN',s.durationMin],['RPE',s.sessionRpe],['LOAD AU',s.load]].map(([k,v])=>`<div class="card" style="margin:0;padding:12px;text-align:center"><div class="eyebrow">${k}</div><div class="mono" style="font-size:22px;font-weight:700;margin-top:4px">${v}</div></div>`).join('')}</div>
     ${s.adaptation?.changes?.length ? `<div class="chip b" style="margin-top:10px">ADAPTED · ${esc(s.adaptation.equip)} · ${s.adaptation.changes.length} change(s) — counts as completed as planned</div>` : ''}
     <div class="muted" style="margin-top:10px">${done}/${s.slots.length} exercises completed${s.slots.some(x=>x.skipped)?' · '+s.slots.filter(x=>x.skipped).length+' skipped':''}</div>
-    ${devChips(P().sessions[s.sessionKey])}
+    <div class="pb" style="text-align:center"><div class="eyebrow" style="color:var(--green)">${gained.some(e => e.key.startsWith('s:')) ? 'Mission complete' : 'Session logged'}</div><div class="mono" style="font-size:26px;font-weight:800;margin-top:4px">+${gained.reduce((a, e) => a + e.xp, 0)} XP</div>
+      <div class="dim" style="font-size:12px;margin-top:4px">${gained.map(e => esc(e.label) + ' +' + e.xp).join(' · ')}</div>${s.painFlag ? '<div class="reason">Pain flagged — base XP only, no bonus. Look after it.</div>' : ''}</div>
+    <div class="eyebrow" style="margin-top:14px">Training stimulus (not rating changes)</div>${devChips(P().sessions[s.sessionKey])}
+    ${gained.filter(e => e.kind === 'level').map(e => `<div class="pb"><div class="eyebrow" style="color:var(--green)">Level up</div><div style="font-weight:700;font-size:17px;margin-top:4px">${esc(e.label.replace('Level up: ', ''))}</div></div>`).join('')}
     ${pbs.map(p => `<div class="pb"><div class="eyebrow" style="color:var(--green)">${p.kind==='pb'?'New PB':p.kind==='up'?'Progress':'Baseline set'}</div><div style="font-weight:700;font-size:18px;margin-top:4px">${esc(p.name)}</div><div class="mono" style="font-size:20px;margin-top:4px">${esc(p.text)}</div><div class="dim" style="font-size:13px">${esc(p.sub)}</div></div>`).join('')}
     ${nextMain.length ? `<div class="card"><div class="eyebrow">Next time</div>${nextMain.map(n => `<div style="margin-top:8px"><b>${esc(n.name)}</b> <span class="mono">${n.rx.mode==='find'?'find load':fmtKg(n.rx.load)+'kg'}</span><div class="reason">${esc(n.rx.reason)}</div></div>`).join('')}</div>` : ''}
     ${nextKey ? `<div class="card"><div class="eyebrow">Next mission</div><div style="margin-top:6px"><b>${fmtDay(nextKey.date)}</b> — ${esc(P().sessions[nextKey.session].name)}</div></div>` : ''}
@@ -1229,7 +1919,7 @@ function sparkline(vals, w=300, h=44) {
   const pts = vals.map((v,i) => `${(i/(vals.length-1))*w},${h - 4 - ((v-mn)/rg)*(h-8)}`).join(' ');
   return `<svg viewBox="0 0 ${w} ${h}" width="100%" height="${h}" preserveAspectRatio="none"><polyline points="${pts}" fill="none" stroke="var(--green)" stroke-width="2" vector-effect="non-scaling-stroke"/></svg>`;
 }
-function renderProgress() {
+function renderProgressStage2() {
   const d = Store.d, rs = returnStatus();
   const known = rs.filter(x => x.current);
   let h = `<div class="eyebrow">Progress</div><h1 style="margin-top:4px">Return to pre-break</h1>
@@ -1291,6 +1981,7 @@ function renderPlan() {
     h += `</div>`;
   });
   (p.block.next || []).forEach(n => h += `<div class="card"><div class="eyebrow">${n.mode === 'travel' ? 'Travel' : 'Next block'}</div><b style="display:block;margin-top:6px">${esc(n.name)}</b><div class="reason">${fmtDay(n.start)}${n.end ? ' – ' + fmtDay(n.end) : ''}${n.note ? ' · ' + esc(n.note) : ''}</div></div>`);
+  h += `<button class="btn" style="width:100%;margin-top:12px" onclick="calendarSheet()">Add sessions to my calendar (reminders)</button>`;
   h += `<div class="card"><div class="eyebrow">Rules this block runs on</div>${(p.rules||[]).map(r => `<div class="reason">• ${esc(r.text)}</div>`).join('')}</div>`;
   $('#view').innerHTML = h;
 }
@@ -1311,10 +2002,12 @@ function renderMe() {
     <div class="card"><div class="row between"><div class="eyebrow">Location & equipment</div><button class="btn sm" onclick="adaptSheet()">Edit</button></div>
       <div class="reason" style="color:var(--tx)">Active: <b>${esc(activeEquip().name)}</b> · ${activeEquip().equip.length} items${activeEquip().equip.includes('dumbbells') ? ' · DBs to ' + fmtKg(activeEquip().maxDbKg) + 'kg' : ''}</div>
       <div class="reason">Stays active until you change it — set Hotel gym on 22 Oct and every session adapts automatically (with review).</div></div>
+    ${appearanceHTML()}
     <div class="card"><div class="eyebrow">Settings</div><div class="row between" style="margin-top:10px"><span>Home-gym max barbell load</span>${stepperRaw('homeMax', d.settings.homeMaxKg)}</div></div>
     <div class="card"><div class="eyebrow">Data</div>
       <div class="reason">${d.sessions.length} V2 sessions · ${d.observations.length} performance records · ${d.body.length} body entries · ~${Math.round(bytes/1024)} KB<br>Last export: ${d.lastExportAt ? new Date(d.lastExportAt).toLocaleString('en-AU') : '<b style="color:var(--amber)">never</b>'}</div>
       <div class="grid2" style="margin-top:12px"><button class="btn" onclick="exportAll()">Export backup</button><button class="btn" onclick="$('#fileIn').click()">Import file</button></div>
+      <button class="btn" style="width:100%;margin-top:8px" onclick="calendarSheet()">Calendar reminders (.ics)</button>
       <div class="reason" style="margin-top:10px">Import accepts: your legacy Apex export, the Apex seed file, a program (apex.program/1) from a coach or AI, an athlete baseline, or a V2 backup. You always see a preview first.</div>
       ${snaps.length ? `<div class="sep"></div><div class="eyebrow">Snapshots on this device</div>${snaps.map(k => { const ts = +k.slice(SNAP_PREFIX.length); return `<div class="list-item"><div style="flex:1" class="mono dim">${new Date(ts).toLocaleString('en-AU',{day:'numeric',month:'short',hour:'numeric',minute:'2-digit'})}</div><button class="btn sm" onclick="restoreSnap('${k}')">Restore</button></div>`; }).join('')}` : ''}
       ${(d.migrations||[]).length ? `<div class="sep"></div><div class="eyebrow">Migration log</div>${d.migrations.map(m => `<div class="reason mono" style="font-size:12px">${new Date(m.at).toLocaleDateString('en-AU')} · ${esc(m.from)}${m.observations!=null?` · ${m.observations} records, ${m.body} body`:''}</div>`).join('')}` : ''}
@@ -1369,6 +2062,11 @@ function previewImport(j) {
   else if (j.format === 'apex-export' || (Array.isArray(j.profiles))) { kind = 'Legacy Apex export'; const data = j.data || j; summary = `${data.profiles.length} profile(s), ${data.profiles[0]?.logs?.length || 0} logs`; apply = () => migrateLegacy(data, 'legacy-file'); }
   else if (j.schema === 'apex.program/1') { kind = 'Training program'; errs = validateProgram(j); summary = `${j.block?.name} · ${Object.keys(j.sessions||{}).length} sessions · ${j.schedule?.length || 0} days`; apply = () => { Store.d.program = j; Store.d.scheduleSwaps = {}; Store.d.migrations.push({ at: Date.now(), from: 'program-import', id: j.id }); }; }
   else if (j.schema === 'apex.athleteBaseline/1') { kind = 'Athlete baseline'; summary = `${j.verified?.length || 0} verified records`; apply = () => applyBaseline(j); }
+  else if (j.schema === 'apex.benchmarks/1') { kind = 'Benchmark dataset';
+    const req = ['metric','lens','source','population','sex','ageRange','protocol','year','values'];
+    (j.benchmarks || []).forEach((b, i) => { const miss = req.filter(k => b[k] == null); if (miss.length) errs.push(`benchmark ${i + 1}: missing ${miss.join(', ')}`); if (b.metric && !METRICS[b.metric]) errs.push(`benchmark ${i + 1}: unknown metric ${b.metric}`); if (b.lens && !['males30','football'].includes(b.lens)) errs.push(`benchmark ${i + 1}: lens must be males30 or football`); });
+    summary = `${(j.benchmarks || []).length} entries — every entry needs source, population, protocol, year`;
+    apply = () => { Store.d.benchmarks = [...(Store.d.benchmarks || []), ...j.benchmarks]; Store.d.migrations.push({ at: Date.now(), from: 'benchmarks', n: j.benchmarks.length }); }; }
   else if (j.format === 'apex-v3-export') { kind = 'Apex V2 backup (full restore)'; summary = `${j.data.sessions.length} sessions, ${j.data.observations.length} records — replaces everything on this device`; apply = () => { Store.d = j.data; }; }
   else errs.push('Unrecognised file. Expected an Apex export, seed, program or baseline.');
   openSheet(`<h2>Import preview</h2>${kind ? `<div class="chip b" style="margin-top:8px">${esc(kind)}</div><div class="reason">${esc(summary)}</div>` : ''}
@@ -1380,9 +2078,10 @@ function restoreSnap(k) { if (!confirm('Restore this snapshot? Current data is s
 // ════════════════════════════════════════════════════════════════════
 // BOOT
 // ════════════════════════════════════════════════════════════════════
-Store.load(); ensureEquip(); dailySnapshot();
+Store.load(); applyUI(); ensureEquip(); dailySnapshot();
+try { window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', applyUI); } catch(e) {}
 try { navigator.storage?.persist?.(); } catch(e) {}
-if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(()=>{});
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) navigator.serviceWorker.register('sw.js').catch(()=>{});
 document.addEventListener('visibilitychange', () => { if (!document.hidden && $('#rest').classList.contains('on')) tickRest(); });
 render();
 if (Store.d.activeWorkout) toast('Workout in progress — tap Resume');
