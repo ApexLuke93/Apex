@@ -231,6 +231,42 @@ table.t th{font:600 10px var(--mono);color:var(--tx3);text-transform:uppercase;l
   .wrap{max-width:760px;padding-top:32px}
   #player{left:220px}
 }
+
+/* Player v2 */
+.setrow .v{min-width:0}
+.setrow .lr,.setrow .tick,.setrow .ssl{flex-shrink:0}
+.lr button{width:44px}
+.numctl{display:flex;gap:4px;align-items:center}
+.numctl button{min-width:44px;height:48px;border-radius:10px;background:var(--bg4);font:650 13px var(--mono);padding:0 4px;color:var(--tx)}
+.numctl input{flex:1;min-width:56px;text-align:center;font-size:20px;padding:0 4px}
+.lr{display:flex;gap:6px}
+.lr button{width:46px;height:52px;border-radius:12px;background:var(--bg4);border:1px solid var(--line2);font:700 16px var(--mono);color:var(--tx)}
+.lr button.on{background:var(--green);color:#06210f;border-color:var(--green)}
+.setrow.cur .lr button:not(.on){border-color:var(--green)}
+.setrow.done .lr button{width:38px;height:40px;font-size:13px}
+.tick.tmrb{background:var(--bg3);color:var(--acc);border:1.5px solid var(--acc);width:46px;height:52px;font-size:18px}
+.setrow.cur .tick.tmrb{background:var(--bg3);color:var(--acc);border:1.5px solid var(--acc)}
+.xn{font:600 12px var(--font);color:var(--tx2);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:46vw}
+.ssl{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:8px;background:var(--bg4);color:var(--acc);font:800 14px var(--mono);flex-shrink:0}
+.ssl.sm{width:22px;height:22px;font-size:12px;border-radius:6px}
+.ssx{display:flex;gap:10px;align-items:flex-start;margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--bg2);border:1px solid var(--line)}
+.rnd{font:600 11px var(--mono);color:var(--tx3);letter-spacing:.1em;margin:16px 0 -2px}
+.items{margin-top:6px}
+.item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:15px}
+.item:last-child{border-bottom:none}
+.item.on > div:first-child{color:var(--tx2)}
+.chips{display:flex;gap:6px;flex-shrink:0}
+.chips button{width:40px;height:40px;border-radius:10px;border:1.5px solid var(--line2);background:var(--bg3);font:700 13px var(--mono);color:var(--tx2)}
+.chips button.on{background:var(--green);border-color:var(--green);color:#06210f}
+.mobt{text-align:center;background:var(--bg2);border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:12px}
+.mobt .t{font:800 52px/1.1 var(--mono);margin-top:6px}
+#tmr{display:none;position:fixed;left:12px;right:12px;bottom:calc(74px + var(--safeB));z-index:125;background:var(--bg2);border:2px solid var(--acc);border-radius:18px;padding:14px;box-shadow:0 10px 40px rgba(0,0,0,.45)}
+#tmr.on{display:block}
+#tmr[data-kind=switch],#tmr[data-kind=rest]{border-color:var(--amber)}
+#tmrL{text-align:center;font-weight:700;font-size:15px}
+#tmr .t{font:800 54px/1 var(--mono);text-align:center;margin:6px 0}
+#devFab{position:fixed;right:14px;bottom:calc(78px + var(--safeB));z-index:90;width:44px;height:44px;border-radius:50%;background:var(--bg3);border:1px solid var(--line2);color:var(--tx2);font-size:18px;box-shadow:0 4px 16px rgba(0,0,0,.3)}
+@media (min-width:900px){#tmr{left:232px;right:12px;max-width:520px}#devFab{bottom:20px}}
 </style>
 </head>
 <body>
@@ -259,10 +295,12 @@ table.t th{font:600 10px var(--mono);color:var(--tx3);text-transform:uppercase;l
   </div>
 </section>
 
-<div id="rest"><div class="row between"><div><div class="eyebrow" style="color:var(--green)">Rest</div><div class="t" id="restT">1:30</div></div>
-<div class="row"><button class="btn sm" id="restPlus">+30s</button><button class="btn sm" id="restSkip">Skip</button></div></div>
+<div id="rest"><div class="row between"><div><div class="eyebrow" style="color:var(--green)" id="restLbl">Rest</div><div class="row" style="gap:8px;align-items:baseline"><div class="t" id="restT">1:30</div><span class="dim mono" style="font-size:11px" id="restNote"></span></div></div>
+<div class="row" style="gap:6px"><button class="btn sm" id="restMinus" aria-label="5 seconds less">−5s</button><button class="btn sm" id="restPlus" aria-label="5 seconds more">+5s</button><button class="btn sm" id="restSkip">Skip</button></div></div>
 <div class="bar"><i id="restBar" style="width:100%"></i></div></div>
 
+<div id="tmr" data-kind="work"><div id="tmrL"></div><div class="t" id="tmrT">0:00</div><div class="bar"><i id="tmrBar" style="width:100%"></i></div>
+<div class="grid3" style="margin-top:10px"><button class="btn sm" id="tmrP" onclick="timerPause()">Pause</button><button class="btn sm primary" onclick="timerNext()">Done ›</button><button class="btn sm" onclick="stopTimer()">Cancel</button></div></div>
 <div class="sheet-bg" id="sheetBg"></div>
 <div class="sheet" id="sheet"><div class="handle"></div><div id="sheetBody"></div></div>
 <div class="toast" id="toast"></div>
@@ -273,12 +311,12 @@ table.t th{font:600 10px var(--mono);color:var(--tx3);text-transform:uppercase;l
 // ════════════════════════════════════════════════════════════════════
 // APEX V2 — Stage 1 (data layer + migration) + Stage 2 (execution)
 // ════════════════════════════════════════════════════════════════════
-const APP_VERSION = '2.5.0';
+const APP_VERSION = '2.6.0';
 const STORE_KEY = 'apex.store';           // schema v3
 const LEGACY_KEY = 'apex_v2';             // never written by V2
 const SNAP_PREFIX = 'apex.snap.';
 const SCHEMA = 3;
-const DEFAULT_PROGRAM = {"schema": "apex.program/1", "id": "fy27-foundation-1a", "version": 4, "createdAt": "2026-10-01", "season": {"id": "fy27", "name": "2027 Football Preparation"}, "phase": {"id": "p1", "name": "Phase 1 — Off-season Reconditioning + Foundation"}, "block": {"id": "1A", "name": "Foundation 1A", "start": "2026-10-01", "end": "2026-10-21", "objectives": ["Re-entry and training rhythm", "Establish current capacities from normal training (no max tests)", "Progressive running exposure", "Progressive sprint intensity", "Begin meaningful strength progression"], "next": [{"id": "travel", "name": "Travel / Maintenance", "start": "2026-10-22", "end": "2026-11-03", "mode": "travel"}, {"id": "1B", "name": "Foundation / Development 1B", "start": "2026-11-04", "note": "Built from 1A data. High-bar back squat becomes the main lower lift. Week 1: Yo-Yo IR1 familiarisation run + back squat build. Week 2: Yo-Yo IR1 baseline (standalone, fresh) and 5RM high-bar squat test (≥48h apart)."}]}, "weeks": [{"week": 1, "label": "Re-entry / Calibration", "start": "2026-10-01", "stressTargetPctOfPreBreak": [60, 70], "mainLiftRpe": [6, 7], "sprintIntensityPct": [70, 85]}, {"week": 2, "label": "Build", "start": "2026-10-08", "stressTargetPctOfPreBreak": [70, 80], "mainLiftRpe": [6.5, 7.5], "sprintIntensityPct": [80, 90]}, {"week": 3, "label": "Approach + Baseline", "start": "2026-10-15", "stressTargetPctOfPreBreak": [80, 90], "mainLiftRpe": [7, 8], "sprintIntensityPct": [90, 95], "benchmarks": ["cmj", "accel_10m", "fly_10m", "cod_505", "heelrise", "wblt"]}, {"week": 4, "label": "Travel — Maintenance", "start": "2026-10-22", "stressTargetPctOfPreBreak": [60, 75], "mainLiftRpe": [7, 8], "travel": true}, {"week": 5, "label": "Travel — Maintenance", "start": "2026-10-29", "stressTargetPctOfPreBreak": [65, 80], "mainLiftRpe": [7, 8], "travel": true}], "sessions": {"A": {"name": "Lower Strength + Acceleration", "estMin": 55, "intent": {"primary": ["acceleration", "lower_strength"], "secondary": ["unilateral_strength", "calf_soleus", "adductors", "trunk"]}, "develops": {"acceleration": 2, "strength": 2, "lower_body_power": 1, "calf_soleus": 1, "adductor": 1, "durability": 1}, "slots": [{"id": "prep", "exercise": "prep_general", "name": "Preparation", "priority": "P1", "intent": "prep", "progression": {"model": "none"}, "byWeek": {"1": {"durationMin": 10, "text": "3 min easy bike → leg swings, hip openers → knee-to-wall 1×10/side → pogos 2×10 → 3 build-ups 20m @ 60/70/80%"}, "2": {"durationMin": 10, "text": "As week 1; build-ups to 85%"}, "3": {"durationMin": 10, "text": "As week 1; build-ups to 90%"}}}, {"id": "accel", "exercise": "sprint_10m_2pt", "name": "Acceleration — 10–15m from 2-point start", "priority": "P1", "intent": "speed", "progression": {"model": "quality_gated"}, "byWeek": {"1": {"sets": 6, "distanceM": 10, "intensityPct": [75, 85], "restSec": 90, "text": "6 × 10m @ ~80%. Fast but relaxed. Walk back + 90s."}, "2": {"sets": 6, "distanceM": 15, "intensityPct": [85, 90], "restSec": 120}, "3": {"sets": 6, "distanceM": 15, "intensityPct": [90, 95], "restSec": 150, "text": "Stop the set if a rep feels slower or tighter."}}, "cues": "Full recovery. Quality over volume. Any hamstring/calf twinge → stop speed work for the day."}, {"id": "fsq", "exercise": "front_squat", "name": "Front Squat", "priority": "P1", "intent": "strength", "progression": {"model": "rpe_then_linear", "incrementKg": 2.5}, "byWeek": {"1": {"sets": 3, "reps": 5, "rpe": [6, 7], "load": {"mode": "find", "hint": "Ramp in sets of 5 from 20kg. Working load = first load that feels RPE 6–7. Likely 40–50kg — don't predetermine."}}, "2": {"sets": 3, "reps": 5, "rpe": [6.5, 7.5], "load": {"mode": "from_last", "rule": "+5kg if last week's final set ≤ RPE 6; +2.5kg if RPE 7; hold if ≥ RPE 8"}}, "3": {"sets": 4, "reps": 5, "rpe": [7, 8], "load": {"mode": "from_last", "rule": "Same rule. No grinding."}}}, "minSets": 2, "cues": "Historical reference 60×5 @8 — a destination, not this week's prescription."}, {"id": "split", "exercise": "db_split_squat", "name": "DB Split Squat", "priority": "P3", "intent": "unilateral_strength", "progression": {"model": "double_progression"}, "byWeek": {"1": {"sets": 2, "reps": 8, "perSide": true, "rpe": [6, 6]}, "2": {"sets": 3, "reps": 8, "perSide": true, "rpe": [6, 7]}, "3": {"sets": 3, "reps": 10, "perSide": true, "rpe": [7, 7]}}, "cues": "Low eccentric volume week 1 — split squats are the DOMS trap after a break."}, {"id": "calf", "exercise": "sl_calf_raise", "name": "Single-leg Calf Raise (straight knee) + Bent-knee Calf Raise", "priority": "P2", "intent": "durability", "progression": {"model": "capacity_standard"}, "byWeek": {"1": {"sets": 2, "reps": "12 + 15", "perSide": true}, "2": {"sets": 3, "reps": "15 + 15", "perSide": true}, "3": {"sets": 3, "reps": "15 + 20", "perSide": true, "text": "If you've just done the heel-rise test, do one set only."}}, "superset": "A5"}, {"id": "cop", "exercise": "copenhagen_short", "name": "Copenhagen Plank (short lever, knee support)", "priority": "P2", "intent": "durability", "progression": {"model": "capacity_standard"}, "byWeek": {"1": {"sets": 2, "holdSec": 15, "perSide": true}, "2": {"sets": 3, "holdSec": 20, "perSide": true}, "3": {"sets": 3, "holdSec": 25, "perSide": true}}, "superset": "A5"}, {"id": "trunk", "exercise": "dead_bug", "name": "Dead Bug", "priority": "P4", "intent": "trunk", "progression": {"model": "double_progression"}, "byWeek": {"1": {"sets": 2, "reps": 8, "perSide": true}, "2": {"sets": 2, "reps": 10, "perSide": true}, "3": {"sets": 3, "reps": 10, "perSide": true}}}, {"id": "capcheck", "exercise": "capacity_check", "name": "Capacity Check — heel rise + knee-to-wall", "priority": "P2", "intent": "test", "onlyWeeks": [3], "progression": {"model": "none"}, "byWeek": {"3": {"sets": 1, "tests": ["heelrise", "wblt"], "text": "Both legs. Heel rise on a ~10° board with a fixed metronome cadence you'll reuse every time. These are monitors — no score, no injury verdict."}}}]}, "B": {"name": "Upper Strength + Aerobic", "estMin": 55, "intent": {"primary": ["upper_strength", "aerobic"], "secondary": ["pulling_strength", "trunk"]}, "develops": {"upper_body_strength": 2, "aerobic_engine": 2, "stamina": 1, "trunk": 1}, "slots": [{"id": "prep", "exercise": "prep_upper", "name": "Preparation", "priority": "P1", "intent": "prep", "progression": {"model": "none"}, "byWeek": {"1": {"durationMin": 6, "text": "Band pull-aparts 2×15, scap push-ups 2×10, empty-bar bench 1×10"}, "2": {"durationMin": 6}, "3": {"durationMin": 6}}}, {"id": "bench", "exercise": "bench_press", "name": "Bench Press", "priority": "P1", "intent": "strength", "progression": {"model": "rpe_then_linear", "incrementKg": 2.5}, "byWeek": {"1": {"sets": 3, "reps": 5, "rpe": [6, 7], "load": {"mode": "find", "hint": "Ramp in sets of 5 from the bar. Working load = first load at RPE 6–7. Likely 40–47.5kg."}}, "2": {"sets": 3, "reps": 5, "rpe": [6.5, 7.5], "load": {"mode": "from_last", "rule": "+2.5kg if final set ≤ RPE 7; hold otherwise"}}, "3": {"sets": 3, "reps": 5, "rpe": [7, 8], "load": {"mode": "from_last", "rule": "Same rule"}}}, "minSets": 2, "cues": "Any pec symptom (not just pain — pulling, tightness) → stop pressing, log it, swap to DB floor press."}, {"id": "pull", "exercise": "pullup_strict", "name": "Strict Pull-up", "priority": "P1", "intent": "strength", "progression": {"model": "strict_reps"}, "byWeek": {"1": {"sets": "1 + 3", "reps": "max strict, then (max−1)", "text": "After warm-up: ONE set to the last strict rep (that's your baseline). Then 3 sets of max−1. Log STRICT reps only."}, "2": {"sets": 4, "reps": "baseline", "text": "4 sets at baseline strict reps. Add a set before adding reps."}, "3": {"sets": 5, "reps": "baseline", "text": "5 sets; if all strict, next week +1 rep on set 1"}}, "cues": "No kip. Rep ends when chin clears bar from a dead hang. The rep that kips doesn't count."}, {"id": "hbsq", "exercise": "back_squat_hb", "name": "High-bar Back Squat — technique", "priority": "P3", "intent": "strength", "onlyWeeks": [2, 3], "progression": {"model": "double_progression"}, "byWeek": {"2": {"sets": 3, "reps": 5, "rpe": [6, 6], "text": "Learn the test lift: bar high on the traps, hip crease to the top of the knee. Film one set side-on to check depth."}, "3": {"sets": 3, "reps": 5, "rpe": [6, 7], "text": "Same depth standard. Add load only if every rep hits depth on video."}}, "cues": "This is familiarisation for the 5RM test in block 1B — technique first, load second."}, {"id": "row", "exercise": "db_row", "name": "DB Row", "priority": "P3", "intent": "pulling", "progression": {"model": "double_progression"}, "byWeek": {"1": {"sets": 2, "reps": 10, "perSide": true, "rpe": [6, 7]}, "2": {"sets": 3, "reps": 10, "perSide": true, "rpe": [7, 7]}, "3": {"sets": 3, "reps": 12, "perSide": true, "rpe": [7, 8]}}, "superset": "B4"}, {"id": "ohp", "exercise": "hk_db_press", "name": "Half-kneeling DB Press", "priority": "P3", "intent": "upper_strength", "progression": {"model": "double_progression"}, "byWeek": {"1": {"sets": 2, "reps": 8, "perSide": true, "rpe": [6, 6]}, "2": {"sets": 3, "reps": 8, "perSide": true, "rpe": [6, 7]}, "3": {"sets": 3, "reps": 10, "perSide": true, "rpe": [7, 7]}}, "superset": "B4"}, {"id": "side", "exercise": "side_plank", "name": "Side Plank", "priority": "P4", "intent": "trunk", "progression": {"model": "capacity_standard"}, "byWeek": {"1": {"sets": 2, "holdSec": 30, "perSide": true}, "2": {"sets": 2, "holdSec": 40, "perSide": true}, "3": {"sets": 3, "holdSec": 40, "perSide": true}}}, {"id": "z2", "exercise": "bikeerg_z2", "name": "BikeErg — Zone 2", "priority": "P2", "intent": "aerobic", "progression": {"model": "time_distance"}, "byWeek": {"1": {"durationMin": 20, "rpe": [3, 4], "text": "Conversational. Nasal-breathing test: if you can't, back off. Log distance + avg pace (and HR if you have it)."}, "2": {"durationMin": 25, "rpe": [3, 4]}, "3": {"durationMin": 30, "rpe": [3, 4]}}, "cues": "Same damper setting every session so pace is comparable week to week."}]}, "C": {"name": "Speed + Power + Football", "estMin": 55, "intent": {"primary": ["max_velocity", "lower_body_power"], "secondary": ["change_of_direction", "hamstring_resilience", "football_technical"]}, "develops": {"sprint_speed": 2, "acceleration": 1, "lower_body_power": 2, "jumping": 2, "change_of_direction": 1, "hamstring": 1, "ball_control": 1}, "slots": [{"id": "prep", "exercise": "prep_speed", "name": "Comprehensive Preparation", "priority": "P1", "intent": "prep", "progression": {"model": "none"}, "byWeek": {"1": {"durationMin": 15, "text": "3 min jog → dynamic mobility → A-march, A-skip, B-skip 2×20m → straight-leg bounds 2×20m → pogos 2×15 → 3 build-ups 30m"}, "2": {"durationMin": 15}, "3": {"durationMin": 15}}}, {"id": "battery", "exercise": "field_battery", "name": "Field Battery — CMJ · 10m · Flying 10 · 505", "priority": "P1", "intent": "test", "onlyWeeks": [3], "progression": {"model": "none"}, "byWeek": {"3": {"sets": 4, "tests": ["cmj", "accel_10m", "fly_10m", "cod_505"], "text": "Fresh, after the full warm-up and one near-max rehearsal. Order: CMJ (3 jumps) → 10m (3 trials) → flying 10m (3 trials) → 505 (2 each side). Film everything at 240fps. Only do this if Weeks 1–2 felt good; otherwise run Week 2's session and test after travel."}}, "cues": "Same surface, footwear and time of day next time you test — the protocol is part of the result."}, {"id": "wall", "exercise": "wall_drill", "name": "Wall Drill (switches)", "priority": "P2", "intent": "speed", "progression": {"model": "none"}, "byWeek": {"1": {"sets": 3, "reps": "5 switches"}, "2": {"sets": 3, "reps": "5 switches"}, "3": {"sets": 3, "reps": "6 switches"}}}, {"id": "speed", "exercise": "sprint_flying", "name": "Speed — build-ups → flying sprints", "priority": "P1", "intent": "speed", "progression": {"model": "quality_gated"}, "byWeek": {"1": {"sets": 4, "distanceM": 30, "intensityPct": [70, 80], "restSec": 150, "text": "4 × 30m build-ups @ 70–80%. Relaxed face and shoulders."}, "2": {"sets": 4, "distanceM": 30, "intensityPct": [85, 90], "restSec": 180, "text": "4 × (20m build + 10m @ 85–90%)"}, "3": {"sets": 2, "distanceM": 30, "intensityPct": [70, 80], "restSec": 120, "text": "Battery done — 2 relaxed 30m build-ups to finish. No extra max-speed volume."}}, "minSets": 2, "cues": "Max speed is never done tired. If the warm-up feels flat, run Week 2's version instead."}, {"id": "broad", "exercise": "broad_jump", "name": "Broad Jump", "priority": "P2", "intent": "power", "progression": {"model": "quality_gated"}, "byWeek": {"1": {"sets": 3, "reps": 3, "text": "Submax ~80%, stick the landing"}, "2": {"sets": 3, "reps": 3, "text": "~90%, stick the landing"}, "3": {"sets": 3, "reps": 2, "text": "BENCHMARK: best of 6 max jumps, measured toe-to-heel with tape"}}, "onlyWeeks": [1, 2]}, {"id": "cod", "exercise": "cod_drills", "name": "Change of Direction", "priority": "P3", "intent": "cod", "progression": {"model": "quality_gated"}, "byWeek": {"1": {"sets": 4, "text": "Decel drills: 10m run → stop in 3 steps; 2 each side"}, "2": {"sets": 4, "text": "505-style turns @ 80%, 2 each side"}, "3": {"sets": 4, "text": "505 @ 90%, 2 each side — note which side feels better"}}, "onlyWeeks": [1, 2]}, {"id": "ham", "exercise": "hamstring_resilience", "name": "Hamstring Resilience", "priority": "P2", "intent": "durability", "progression": {"model": "capacity_standard"}, "byWeek": {"1": {"sets": 2, "holdSec": 20, "perSide": true, "text": "Single-leg hamstring bridge iso (heel on bench) — no eccentrics yet"}, "2": {"sets": 2, "reps": 3, "text": "Nordic — partial range, controlled, stop before you collapse"}, "3": {"sets": 2, "reps": 4, "text": "Nordic — same rules"}}}, {"id": "ball", "exercise": "ball_technical", "name": "Ball Work", "priority": "P4", "intent": "football_technical", "progression": {"model": "none"}, "byWeek": {"1": {"durationMin": 10, "text": "Wall passes both feet (L/R alternate), first touch out of feet"}, "2": {"durationMin": 10}, "3": {"durationMin": 10}}}]}, "D": {"name": "Posterior Chain + Work Capacity", "estMin": 55, "intent": {"primary": ["posterior_strength", "work_capacity"], "secondary": ["unilateral_strength", "hip_groin", "upper_pull"]}, "develops": {"strength": 2, "hamstring": 1, "stamina": 2, "repeat_sprint": 1, "adductor": 1}, "slots": [{"id": "prep", "exercise": "prep_general", "name": "Preparation", "priority": "P1", "intent": "prep", "progression": {"model": "none"}, "byWeek": {"1": {"durationMin": 10, "text": "3 min easy bike → leg swings, hip openers → knee-to-wall 1×10/side → pogos 2×10 → 3 build-ups 20m @ 60/70/80%"}, "2": {"durationMin": 10, "text": "As week 1; build-ups to 85%"}, "3": {"durationMin": 10, "text": "As week 1; build-ups to 90%"}}}, {"id": "dl", "exercise": "deadlift", "name": "Deadlift", "priority": "P1", "intent": "strength", "progression": {"model": "rpe_then_linear", "incrementKg": 5}, "byWeek": {"1": {"sets": 2, "reps": 5, "rpe": [6, 7], "load": {"mode": "find", "hint": "Ramp in sets of 5 from 40kg. Working load = first load at RPE 6–7. 2 working sets only."}}, "2": {"sets": 3, "reps": 5, "rpe": [6.5, 7.5], "load": {"mode": "from_last", "rule": "+5–10kg if final set ≤ RPE 6.5; +5kg if RPE 7; hold if ≥ RPE 8"}}, "3": {"sets": 3, "reps": 5, "rpe": [7, 8], "load": {"mode": "from_last", "rule": "Same rule; reference 90×5×3 @7"}}}, "minSets": 2, "cues": "90kg is your home-gym ceiling, not your ceiling. If it's easy before Week 4, Apex switches to pauses/tempo/reps."}, {"id": "rdl", "exercise": "bb_rdl", "name": "Romanian Deadlift", "priority": "P3", "intent": "posterior", "progression": {"model": "double_progression"}, "byWeek": {"1": {"sets": 2, "reps": 8, "rpe": [6, 6], "text": "Light (~40kg). This is the DOMS risk exercise — respect it."}, "2": {"sets": 3, "reps": 8, "rpe": [6, 7]}, "3": {"sets": 3, "reps": 10, "rpe": [7, 7], "text": "Heading toward 60×10×3 @7"}}}, {"id": "lat", "exercise": "lateral_lunge", "name": "Lateral Lunge (goblet)", "priority": "P3", "intent": "hip_groin", "progression": {"model": "double_progression"}, "byWeek": {"1": {"sets": 2, "reps": 6, "perSide": true}, "2": {"sets": 2, "reps": 8, "perSide": true}, "3": {"sets": 3, "reps": 8, "perSide": true}}, "superset": "D4"}, {"id": "bbrow", "exercise": "bb_row", "name": "Barbell Row", "priority": "P3", "intent": "pulling", "progression": {"model": "double_progression"}, "byWeek": {"1": {"sets": 2, "reps": 10, "rpe": [6, 6], "text": "~30kg"}, "2": {"sets": 3, "reps": 10, "rpe": [6, 7]}, "3": {"sets": 3, "reps": 10, "rpe": [7, 7], "text": "Heading toward 40×10×3"}}, "superset": "D4"}, {"id": "wc", "exercise": "bikeerg_intervals", "name": "BikeErg — Work Capacity", "priority": "P1", "intent": "work_capacity", "progression": {"model": "time_distance"}, "byWeek": {"1": {"sets": 6, "workSec": 60, "restSec": 60, "rpe": [7, 7], "text": "6 × 1 min hard (RPE 7) / 1 min easy. Log metres per rep."}, "2": {"sets": 4, "workSec": 180, "restSec": 90, "rpe": [7, 7], "text": "4 × 3 min @ threshold (RPE 7) / 90s easy"}, "3": {"sets": 5, "workSec": 180, "restSec": 90, "rpe": [7, 8], "text": "5 × 3 min @ threshold / 90s easy"}}, "cues": "Repeatability is the metric: last rep within ~5% of first rep's metres."}]}, "E": {"name": "Aerobic / Running Exposure (optional, low cost)", "estMin": 35, "optional": true, "intent": {"primary": ["aerobic", "running_tolerance"], "secondary": ["mobility"]}, "develops": {"aerobic_engine": 1, "stamina": 1, "durability": 1}, "slots": [{"id": "run", "exercise": "run_walk", "name": "Run–Walk on grass", "priority": "P1", "intent": "running_tolerance", "progression": {"model": "time_distance"}, "byWeek": {"1": {"sets": 6, "text": "6 × (3 min easy run / 1 min walk) = 18 min running"}, "2": {"sets": 5, "text": "5 × (5 min run / 1 min walk) = 25 min running"}, "3": {"sets": 3, "text": "3 × (8 min run / 1 min walk), or 25 min continuous if calves have been quiet"}}, "cues": "Lower-leg tightness ≥ 3/10 → walk the rest and log it. That's data, not failure."}, {"id": "mob", "exercise": "mobility_flow", "name": "Mobility", "priority": "P4", "intent": "mobility", "progression": {"model": "none"}, "byWeek": {"1": {"durationMin": 8}, "2": {"durationMin": 8}, "3": {"durationMin": 8}}}]}, "E2": {"name": "Zone 2 BikeErg (optional, low cost)", "estMin": 35, "optional": true, "intent": {"primary": ["aerobic"], "secondary": []}, "develops": {"aerobic_engine": 1}, "slots": [{"id": "z2", "exercise": "bikeerg_z2", "name": "BikeErg — Zone 2", "priority": "P1", "intent": "aerobic", "progression": {"model": "time_distance"}, "byWeek": {"1": {"durationMin": 30, "rpe": [3, 4]}, "2": {"durationMin": 35, "rpe": [3, 4]}, "3": {"durationMin": 40, "rpe": [3, 4]}, "4": {"durationMin": 30, "rpe": [3, 4]}, "5": {"durationMin": 35, "rpe": [3, 4]}}}]}, "T1": {"name": "Travel Strength A — Full Body", "estMin": 40, "travel": true, "intent": {"primary": ["lower_strength", "upper_strength"], "secondary": ["calf_soleus", "adductors"]}, "develops": {"strength": 2, "upper_body_strength": 1, "calf_soleus": 1, "adductor": 1, "durability": 1}, "slots": [{"id": "prep", "exercise": "prep_general", "name": "Preparation", "priority": "P1", "intent": "prep", "progression": {"model": "none"}, "byWeek": {"4": {"durationMin": 8, "text": "5 min easy cardio → leg swings, hip openers → knee-to-wall 1×10/side → pogos 2×15 (if floor allows)"}, "5": {"durationMin": 8}}}, {"id": "bss", "exercise": "db_bss", "name": "DB Bulgarian Split Squat", "priority": "P1", "intent": "strength", "progression": {"model": "double_progression"}, "byWeek": {"4": {"sets": 3, "reps": 8, "perSide": true, "rpe": [7, 8]}, "5": {"sets": 3, "reps": 10, "perSide": true, "rpe": [7, 8]}}, "cues": "Heaviest DBs that allow clean reps. If the rack tops out early, slow the lowering to 3s."}, {"id": "dbb", "exercise": "db_bench", "name": "DB Bench Press", "priority": "P1", "intent": "upper_strength", "progression": {"model": "double_progression"}, "byWeek": {"4": {"sets": 3, "reps": 8, "rpe": [7, 8]}, "5": {"sets": 3, "reps": 10, "rpe": [7, 8]}}}, {"id": "row", "exercise": "db_row", "name": "DB Row", "priority": "P2", "intent": "pulling", "progression": {"model": "double_progression"}, "byWeek": {"4": {"sets": 3, "reps": 10, "perSide": true, "rpe": [7, 8]}, "5": {"sets": 3, "reps": 12, "perSide": true, "rpe": [7, 8]}}}, {"id": "rdl", "exercise": "db_rdl", "name": "DB Romanian Deadlift", "priority": "P2", "intent": "posterior", "progression": {"model": "double_progression"}, "byWeek": {"4": {"sets": 3, "reps": 10, "rpe": [7, 7]}, "5": {"sets": 3, "reps": 12, "rpe": [7, 8]}}}, {"id": "cop", "exercise": "copenhagen_short", "name": "Copenhagen Plank (short lever)", "priority": "P2", "intent": "durability", "progression": {"model": "capacity_standard"}, "byWeek": {"4": {"sets": 2, "holdSec": 25, "perSide": true}, "5": {"sets": 2, "holdSec": 30, "perSide": true}}, "superset": "T1-5"}, {"id": "calf", "exercise": "sl_calf_raise", "name": "Single-leg Calf Raise", "priority": "P2", "intent": "durability", "progression": {"model": "capacity_standard"}, "byWeek": {"4": {"sets": 2, "reps": 15, "perSide": true}, "5": {"sets": 3, "reps": 15, "perSide": true}}, "superset": "T1-5"}]}, "T2": {"name": "Travel Conditioning + Durability", "estMin": 35, "travel": true, "intent": {"primary": ["aerobic", "work_capacity"], "secondary": ["hamstring_resilience", "trunk"]}, "develops": {"aerobic_engine": 2, "stamina": 2, "hamstring": 1, "trunk": 1}, "slots": [{"id": "prep", "exercise": "prep_general", "name": "Preparation", "priority": "P1", "intent": "prep", "progression": {"model": "none"}, "byWeek": {"4": {"durationMin": 8, "text": "5 min easy cardio → leg swings, hip openers → knee-to-wall 1×10/side → pogos 2×15 (if floor allows)"}, "5": {"durationMin": 8}}}, {"id": "int", "exercise": "cardio_intervals", "name": "Intervals — any cardio machine", "priority": "P1", "intent": "work_capacity", "progression": {"model": "time_distance"}, "byWeek": {"4": {"sets": 6, "workSec": 120, "restSec": 60, "rpe": [7, 8], "text": "6 × 2 min hard / 1 min easy on whatever exists: bike, rower, treadmill (incline OK)"}, "5": {"sets": 7, "workSec": 120, "restSec": 60, "rpe": [7, 8]}}, "cues": "Log the machine used. Output isn't compared across machines."}, {"id": "ham", "exercise": "sl_ham_bridge", "name": "Single-leg Hamstring Bridge (heel on bench)", "priority": "P2", "intent": "durability", "progression": {"model": "double_progression"}, "byWeek": {"4": {"sets": 2, "reps": 10, "perSide": true}, "5": {"sets": 3, "reps": 10, "perSide": true}}}, {"id": "pogo", "exercise": "pogo_skips", "name": "Pogos + Skips", "priority": "P3", "intent": "durability", "progression": {"model": "none"}, "byWeek": {"4": {"sets": 3, "text": "3 × (20 pogos + 20m skips) — only if floor/space allows"}, "5": {"sets": 3}}}, {"id": "trunk", "exercise": "dead_bug", "name": "Dead Bug", "priority": "P4", "intent": "trunk", "progression": {"model": "double_progression"}, "byWeek": {"4": {"sets": 2, "reps": 10, "perSide": true}, "5": {"sets": 3, "reps": 10, "perSide": true}}}]}, "T3": {"name": "Travel Strength B — Full Body", "estMin": 40, "travel": true, "intent": {"primary": ["lower_strength", "pulling_strength"], "secondary": ["hip_groin", "trunk"]}, "develops": {"strength": 2, "upper_body_strength": 2, "hamstring": 1, "adductor": 1, "trunk": 1}, "slots": [{"id": "prep", "exercise": "prep_general", "name": "Preparation", "priority": "P1", "intent": "prep", "progression": {"model": "none"}, "byWeek": {"4": {"durationMin": 8, "text": "5 min easy cardio → leg swings, hip openers → knee-to-wall 1×10/side → pogos 2×15 (if floor allows)"}, "5": {"durationMin": 8}}}, {"id": "gob", "exercise": "goblet_squat", "name": "Goblet Squat (3s lowering)", "priority": "P1", "intent": "strength", "progression": {"model": "double_progression"}, "byWeek": {"4": {"sets": 3, "reps": 10, "rpe": [7, 8]}, "5": {"sets": 4, "reps": 10, "rpe": [7, 8]}}}, {"id": "pull", "exercise": "pullup_strict", "name": "Strict Pull-up", "priority": "P1", "intent": "strength", "progression": {"model": "strict_reps"}, "byWeek": {"4": {"sets": 4, "reps": "baseline", "text": "4 sets at your strict baseline"}, "5": {"sets": 5, "reps": "baseline"}}}, {"id": "push", "exercise": "pushup_fe", "name": "Push-up (feet elevated)", "priority": "P2", "intent": "upper_strength", "progression": {"model": "double_progression"}, "byWeek": {"4": {"sets": 3, "reps": 12, "rpe": [7, 8]}, "5": {"sets": 3, "reps": 15, "rpe": [7, 8]}}}, {"id": "slrdl", "exercise": "db_sl_rdl", "name": "Single-leg DB RDL", "priority": "P2", "intent": "posterior", "progression": {"model": "double_progression"}, "byWeek": {"4": {"sets": 3, "reps": 8, "perSide": true, "rpe": [7, 7]}, "5": {"sets": 3, "reps": 10, "perSide": true, "rpe": [7, 8]}}}, {"id": "lat", "exercise": "lateral_lunge", "name": "Lateral Lunge", "priority": "P3", "intent": "hip_groin", "progression": {"model": "double_progression"}, "byWeek": {"4": {"sets": 2, "reps": 8, "perSide": true}, "5": {"sets": 3, "reps": 8, "perSide": true}}}, {"id": "side", "exercise": "side_plank", "name": "Side Plank", "priority": "P4", "intent": "trunk", "progression": {"model": "capacity_standard"}, "byWeek": {"4": {"sets": 2, "holdSec": 40, "perSide": true}, "5": {"sets": 3, "holdSec": 40, "perSide": true}}}]}}, "microSessions": [{"id": "m_ankle", "name": "Ankle / calf durability (8 min)", "items": ["Knee-to-wall 1×10/side", "Single-leg balance 30s eyes closed/side", "Tibialis raises 2×20", "Pogos 2×15"]}, {"id": "m_groin", "name": "Hip / groin (6 min)", "items": ["Copenhagen short lever 2×15s/side", "Banded marches 2×20 (2s hold)", "Side-lying adduction 1×12/side"]}, {"id": "m_ball", "name": "Ball touches (10 min)", "items": ["Sole rolls, inside-outside, both feet", "Wall passes L/R, two-touch then one-touch"]}], "schedule": [{"date": "2026-10-01", "week": 1, "session": "B", "type": "core"}, {"date": "2026-10-02", "week": 1, "session": "E", "type": "optional"}, {"date": "2026-10-03", "week": 1, "session": "A", "type": "core"}, {"date": "2026-10-04", "week": 1, "session": null, "type": "rest"}, {"date": "2026-10-05", "week": 1, "session": "C", "type": "core"}, {"date": "2026-10-06", "week": 1, "session": "E2", "type": "optional"}, {"date": "2026-10-07", "week": 1, "session": "D", "type": "core"}, {"date": "2026-10-08", "week": 2, "session": "B", "type": "core"}, {"date": "2026-10-09", "week": 2, "session": "E", "type": "optional"}, {"date": "2026-10-10", "week": 2, "session": "A", "type": "core"}, {"date": "2026-10-11", "week": 2, "session": null, "type": "rest"}, {"date": "2026-10-12", "week": 2, "session": "C", "type": "core"}, {"date": "2026-10-13", "week": 2, "session": "E2", "type": "optional"}, {"date": "2026-10-14", "week": 2, "session": "D", "type": "core"}, {"date": "2026-10-15", "week": 3, "session": "B", "type": "core"}, {"date": "2026-10-16", "week": 3, "session": "E", "type": "optional"}, {"date": "2026-10-17", "week": 3, "session": "A", "type": "core"}, {"date": "2026-10-18", "week": 3, "session": null, "type": "rest"}, {"date": "2026-10-19", "week": 3, "session": "C", "type": "core"}, {"date": "2026-10-20", "week": 3, "session": "E2", "type": "optional"}, {"date": "2026-10-21", "week": 3, "session": "D", "type": "core"}, {"date": "2026-10-22", "week": 4, "session": null, "type": "rest", "note": "Travel day"}, {"date": "2026-10-23", "week": 4, "session": "T1", "type": "core"}, {"date": "2026-10-24", "week": 4, "session": "E2", "type": "optional"}, {"date": "2026-10-25", "week": 4, "session": "T2", "type": "core"}, {"date": "2026-10-26", "week": 4, "session": null, "type": "rest"}, {"date": "2026-10-27", "week": 4, "session": "T3", "type": "core"}, {"date": "2026-10-28", "week": 4, "session": "E2", "type": "optional"}, {"date": "2026-10-29", "week": 5, "session": "T1", "type": "core"}, {"date": "2026-10-30", "week": 5, "session": null, "type": "rest"}, {"date": "2026-10-31", "week": 5, "session": "T2", "type": "core"}, {"date": "2026-11-01", "week": 5, "session": "E2", "type": "optional"}, {"date": "2026-11-02", "week": 5, "session": "T3", "type": "core"}, {"date": "2026-11-03", "week": 5, "session": null, "type": "rest", "note": "Travel day"}], "rules": [{"id": "autoreg_week", "text": "Week labels are a ceiling, not a timetable. Progress early if RPE supports it; repeat a week if it doesn't."}, {"id": "doms", "text": "Soreness ≥ 5/10 in the muscles you're about to train → keep P1 work, drop one set of every P3/P4 slot."}, {"id": "speed_gate", "text": "Any rep slower, tighter or 'off' → stop speed work for the day. Never sprint max after heavy lower-body work."}, {"id": "pain_gate", "text": "Pain ≥ 3/10 in a region an exercise loads → no load increase; offer substitute or regress."}, {"id": "spacing", "text": "Keep ≥ 48h between C (max speed) and the previous A or D. Moving D to the day before C triggers a warning."}, {"id": "travel", "text": "Travel weeks are maintenance, not failure. Two strength sessions + one conditioning session a week holds most of what 1A built. Walk daily."}, {"id": "optional", "text": "E sessions are optional and earn adherence credit only when done as prescribed (easy). Skip them if recovery is poor."}, {"id": "testing", "text": "Test fresh and under the same conditions. A result only moves a rating when it beats that test's measurement-error gate; smaller changes are logged as observed, not confirmed."}], "historicalTargets": "see apex-athlete-baseline.json → targets"};
+const DEFAULT_PROGRAM = {"schema": "apex.program/1", "id": "fy27-foundation-1a", "version": 5, "createdAt": "2026-10-01", "season": {"id": "fy27", "name": "2027 Football Preparation"}, "phase": {"id": "p1", "name": "Phase 1 — Off-season Reconditioning + Foundation"}, "block": {"id": "1A", "name": "Foundation 1A", "start": "2026-10-01", "end": "2026-10-21", "objectives": ["Re-entry and training rhythm", "Establish current capacities from normal training (no max tests)", "Progressive running exposure", "Progressive sprint intensity", "Begin meaningful strength progression"], "next": [{"id": "travel", "name": "Travel / Maintenance", "start": "2026-10-22", "end": "2026-11-03", "mode": "travel"}, {"id": "1B", "name": "Foundation / Development 1B", "start": "2026-11-04", "note": "Built from 1A data. High-bar back squat becomes the main lower lift. Week 1: Yo-Yo IR1 familiarisation run + back squat build. Week 2: Yo-Yo IR1 baseline (standalone, fresh) and 5RM high-bar squat test (≥48h apart)."}]}, "weeks": [{"week": 1, "label": "Re-entry / Calibration", "start": "2026-10-01", "stressTargetPctOfPreBreak": [60, 70], "mainLiftRpe": [6, 7], "sprintIntensityPct": [70, 85]}, {"week": 2, "label": "Build", "start": "2026-10-08", "stressTargetPctOfPreBreak": [70, 80], "mainLiftRpe": [6.5, 7.5], "sprintIntensityPct": [80, 90]}, {"week": 3, "label": "Approach + Baseline", "start": "2026-10-15", "stressTargetPctOfPreBreak": [80, 90], "mainLiftRpe": [7, 8], "sprintIntensityPct": [90, 95], "benchmarks": ["cmj", "accel_10m", "fly_10m", "cod_505", "heelrise", "wblt"]}, {"week": 4, "label": "Travel — Maintenance", "start": "2026-10-22", "stressTargetPctOfPreBreak": [60, 75], "mainLiftRpe": [7, 8], "travel": true}, {"week": 5, "label": "Travel — Maintenance", "start": "2026-10-29", "stressTargetPctOfPreBreak": [65, 80], "mainLiftRpe": [7, 8], "travel": true}], "sessions": {"A": {"name": "Lower Strength + Acceleration", "estMin": 61, "intent": {"primary": ["acceleration", "lower_strength"], "secondary": ["unilateral_strength", "calf_soleus", "adductors", "trunk"]}, "develops": {"acceleration": 2, "strength": 2, "lower_body_power": 1, "calf_soleus": 1, "adductor": 1, "durability": 1}, "slots": [{"id": "prep", "exercise": "prep_general", "name": "Preparation", "priority": "P1", "intent": "prep", "progression": {"model": "none"}, "byWeek": {"1": {"durationMin": 10, "text": "3 min easy bike → leg swings, hip openers → knee-to-wall 1×10/side → pogos 2×10 → 3 build-ups 20m @ 60/70/80%", "items": [{"t": "3 min easy bike", "n": 1, "side": false}, {"t": "Leg swings — front/back + side ×10", "n": 1, "side": true}, {"t": "Hip openers ×8", "n": 1, "side": true}, {"t": "Knee-to-wall ×10", "n": 1, "side": true}, {"t": "Pogos ×10", "n": 2, "side": false}, {"t": "Build-up 20m (60 → 70 → 80%)", "n": 3, "side": false}]}, "2": {"durationMin": 10, "text": "As week 1; build-ups to 85%", "items": [{"t": "3 min easy bike", "n": 1, "side": false}, {"t": "Leg swings — front/back + side ×10", "n": 1, "side": true}, {"t": "Hip openers ×8", "n": 1, "side": true}, {"t": "Knee-to-wall ×10", "n": 1, "side": true}, {"t": "Pogos ×10", "n": 2, "side": false}, {"t": "Build-up 20m (60 → 70 → 80%)", "n": 3, "side": false}]}, "3": {"durationMin": 10, "text": "As week 1; build-ups to 90%", "items": [{"t": "3 min easy bike", "n": 1, "side": false}, {"t": "Leg swings — front/back + side ×10", "n": 1, "side": true}, {"t": "Hip openers ×8", "n": 1, "side": true}, {"t": "Knee-to-wall ×10", "n": 1, "side": true}, {"t": "Pogos ×10", "n": 2, "side": false}, {"t": "Build-up 20m (60 → 70 → 80%)", "n": 3, "side": false}]}}}, {"id": "accel", "exercise": "sprint_10m_2pt", "name": "Acceleration — 10–15m from 2-point start", "priority": "P1", "intent": "speed", "progression": {"model": "quality_gated"}, "byWeek": {"1": {"sets": 6, "distanceM": 10, "intensityPct": [75, 85], "restSec": 90, "text": "6 × 10m @ ~80%. Fast but relaxed. Walk back + 90s."}, "2": {"sets": 6, "distanceM": 15, "intensityPct": [85, 90], "restSec": 120}, "3": {"sets": 6, "distanceM": 15, "intensityPct": [90, 95], "restSec": 150, "text": "Stop the set if a rep feels slower or tighter."}}, "cues": "Full recovery. Quality over volume. Any hamstring/calf twinge → stop speed work for the day."}, {"id": "fsq", "exercise": "front_squat", "name": "Front Squat", "priority": "P1", "intent": "strength", "progression": {"model": "rpe_then_linear", "incrementKg": 2.5}, "byWeek": {"1": {"sets": 3, "reps": 5, "rpe": [6, 7], "load": {"mode": "find", "hint": "Ramp in sets of 5 from 20kg. Working load = first load that feels RPE 6–7. Likely 40–50kg — don't predetermine."}}, "2": {"sets": 3, "reps": 5, "rpe": [6.5, 7.5], "load": {"mode": "from_last", "rule": "+5kg if last week's final set ≤ RPE 6; +2.5kg if RPE 7; hold if ≥ RPE 8"}}, "3": {"sets": 4, "reps": 5, "rpe": [7, 8], "load": {"mode": "from_last", "rule": "Same rule. No grinding."}}}, "minSets": 2, "cues": "Historical reference 60×5 @8 — a destination, not this week's prescription."}, {"id": "split", "exercise": "db_split_squat", "name": "DB Split Squat", "priority": "P3", "intent": "unilateral_strength", "progression": {"model": "double_progression"}, "byWeek": {"1": {"sets": 2, "reps": 8, "perSide": true, "rpe": [6, 6]}, "2": {"sets": 3, "reps": 8, "perSide": true, "rpe": [6, 7]}, "3": {"sets": 3, "reps": 10, "perSide": true, "rpe": [7, 7]}}, "cues": "Low eccentric volume week 1 — split squats are the DOMS trap after a break."}, {"id": "calf", "exercise": "sl_calf_raise", "name": "Single-leg Calf Raise (straight knee) + Bent-knee Calf Raise", "priority": "P2", "intent": "durability", "progression": {"model": "capacity_standard"}, "byWeek": {"1": {"sets": 2, "reps": "12 + 15", "perSide": true}, "2": {"sets": 3, "reps": "15 + 15", "perSide": true}, "3": {"sets": 3, "reps": "15 + 20", "perSide": true, "text": "If you've just done the heel-rise test, do one set only."}}, "superset": "A5"}, {"id": "cop", "exercise": "copenhagen_short", "name": "Copenhagen Plank (short lever, knee support)", "priority": "P2", "intent": "durability", "progression": {"model": "capacity_standard"}, "byWeek": {"1": {"sets": 2, "holdSec": 15, "perSide": true}, "2": {"sets": 3, "holdSec": 20, "perSide": true}, "3": {"sets": 3, "holdSec": 25, "perSide": true}}, "superset": "A5"}, {"id": "trunk", "exercise": "dead_bug", "name": "Dead Bug", "priority": "P4", "intent": "trunk", "progression": {"model": "double_progression"}, "byWeek": {"1": {"sets": 2, "reps": 8, "perSide": true}, "2": {"sets": 2, "reps": 10, "perSide": true}, "3": {"sets": 3, "reps": 10, "perSide": true}}}, {"id": "capcheck", "exercise": "capacity_check", "name": "Capacity Check — heel rise + knee-to-wall", "priority": "P2", "intent": "test", "onlyWeeks": [3], "progression": {"model": "none"}, "byWeek": {"3": {"sets": 1, "tests": ["heelrise", "wblt"], "text": "Both legs. Heel rise on a ~10° board with a fixed metronome cadence you'll reuse every time. These are monitors — no score, no injury verdict."}}}, {"id": "cool", "exercise": "mobility_post", "name": "Cool-down mobility", "priority": "P2", "intent": "mobility", "progression": {"model": "none"}, "cues": "Hips, calves, adductors after squats + acceleration. Timed: at least 5 minutes before it counts.", "byWeek": {"1": {"durationMin": 6, "minSec": 300, "items": [{"t": "Half-kneeling hip flexor stretch 45s", "n": 1, "side": true}, {"t": "Wall calf stretch — straight then bent knee 30s each", "n": 1, "side": true}, {"t": "Adductor rock-backs ×10", "n": 1, "side": false}, {"t": "90/90 hip switches ×8", "n": 1, "side": false}, {"t": "Child's pose breathing 60s", "n": 1, "side": false}]}, "2": {"durationMin": 6, "minSec": 300, "items": [{"t": "Half-kneeling hip flexor stretch 45s", "n": 1, "side": true}, {"t": "Wall calf stretch — straight then bent knee 30s each", "n": 1, "side": true}, {"t": "Adductor rock-backs ×10", "n": 1, "side": false}, {"t": "90/90 hip switches ×8", "n": 1, "side": false}, {"t": "Child's pose breathing 60s", "n": 1, "side": false}]}, "3": {"durationMin": 6, "minSec": 300, "items": [{"t": "Half-kneeling hip flexor stretch 45s", "n": 1, "side": true}, {"t": "Wall calf stretch — straight then bent knee 30s each", "n": 1, "side": true}, {"t": "Adductor rock-backs ×10", "n": 1, "side": false}, {"t": "90/90 hip switches ×8", "n": 1, "side": false}, {"t": "Child's pose breathing 60s", "n": 1, "side": false}]}}}]}, "B": {"name": "Upper Strength + Aerobic", "estMin": 61, "intent": {"primary": ["upper_strength", "aerobic"], "secondary": ["pulling_strength", "trunk"]}, "develops": {"upper_body_strength": 2, "aerobic_engine": 2, "stamina": 1, "trunk": 1}, "slots": [{"id": "prep", "exercise": "prep_upper", "name": "Preparation", "priority": "P1", "intent": "prep", "progression": {"model": "none"}, "byWeek": {"1": {"durationMin": 6, "text": "Band pull-aparts 2×15, scap push-ups 2×10, empty-bar bench 1×10", "items": [{"t": "Band pull-aparts ×15", "n": 2, "side": false}, {"t": "Scap push-ups ×10", "n": 2, "side": false}, {"t": "Empty-bar bench ×10", "n": 1, "side": false}]}, "2": {"durationMin": 6, "items": [{"t": "Band pull-aparts ×15", "n": 2, "side": false}, {"t": "Scap push-ups ×10", "n": 2, "side": false}, {"t": "Empty-bar bench ×10", "n": 1, "side": false}]}, "3": {"durationMin": 6, "items": [{"t": "Band pull-aparts ×15", "n": 2, "side": false}, {"t": "Scap push-ups ×10", "n": 2, "side": false}, {"t": "Empty-bar bench ×10", "n": 1, "side": false}]}}}, {"id": "bench", "exercise": "bench_press", "name": "Bench Press", "priority": "P1", "intent": "strength", "progression": {"model": "rpe_then_linear", "incrementKg": 2.5}, "byWeek": {"1": {"sets": 3, "reps": 5, "rpe": [6, 7], "load": {"mode": "find", "hint": "Ramp in sets of 5 from the bar. Working load = first load at RPE 6–7. Likely 40–47.5kg."}}, "2": {"sets": 3, "reps": 5, "rpe": [6.5, 7.5], "load": {"mode": "from_last", "rule": "+2.5kg if final set ≤ RPE 7; hold otherwise"}}, "3": {"sets": 3, "reps": 5, "rpe": [7, 8], "load": {"mode": "from_last", "rule": "Same rule"}}}, "minSets": 2, "cues": "Any pec symptom (not just pain — pulling, tightness) → stop pressing, log it, swap to DB floor press."}, {"id": "pull", "exercise": "pullup_strict", "name": "Strict Pull-up", "priority": "P1", "intent": "strength", "progression": {"model": "strict_reps"}, "byWeek": {"1": {"sets": "1 + 3", "reps": "max strict, then (max−1)", "text": "After warm-up: ONE set to the last strict rep (that's your baseline). Then 3 sets of max−1. Log STRICT reps only."}, "2": {"sets": 4, "reps": "baseline", "text": "4 sets at baseline strict reps. Add a set before adding reps."}, "3": {"sets": 5, "reps": "baseline", "text": "5 sets; if all strict, next week +1 rep on set 1"}}, "cues": "No kip. Rep ends when chin clears bar from a dead hang. The rep that kips doesn't count."}, {"id": "hbsq", "exercise": "back_squat_hb", "name": "High-bar Back Squat — technique", "priority": "P3", "intent": "strength", "onlyWeeks": [2, 3], "progression": {"model": "double_progression"}, "byWeek": {"2": {"sets": 3, "reps": 5, "rpe": [6, 6], "text": "Learn the test lift: bar high on the traps, hip crease to the top of the knee. Film one set side-on to check depth."}, "3": {"sets": 3, "reps": 5, "rpe": [6, 7], "text": "Same depth standard. Add load only if every rep hits depth on video."}}, "cues": "This is familiarisation for the 5RM test in block 1B — technique first, load second."}, {"id": "row", "exercise": "db_row", "name": "DB Row", "priority": "P3", "intent": "pulling", "progression": {"model": "double_progression"}, "byWeek": {"1": {"sets": 2, "reps": 10, "perSide": true, "rpe": [6, 7]}, "2": {"sets": 3, "reps": 10, "perSide": true, "rpe": [7, 7]}, "3": {"sets": 3, "reps": 12, "perSide": true, "rpe": [7, 8]}}, "superset": "B4"}, {"id": "ohp", "exercise": "hk_db_press", "name": "Half-kneeling DB Press", "priority": "P3", "intent": "upper_strength", "progression": {"model": "double_progression"}, "byWeek": {"1": {"sets": 2, "reps": 8, "perSide": true, "rpe": [6, 6]}, "2": {"sets": 3, "reps": 8, "perSide": true, "rpe": [6, 7]}, "3": {"sets": 3, "reps": 10, "perSide": true, "rpe": [7, 7]}}, "superset": "B4"}, {"id": "side", "exercise": "side_plank", "name": "Side Plank", "priority": "P4", "intent": "trunk", "progression": {"model": "capacity_standard"}, "byWeek": {"1": {"sets": 2, "holdSec": 30, "perSide": true}, "2": {"sets": 2, "holdSec": 40, "perSide": true}, "3": {"sets": 3, "holdSec": 40, "perSide": true}}}, {"id": "z2", "exercise": "bikeerg_z2", "name": "BikeErg — Zone 2", "priority": "P2", "intent": "aerobic", "progression": {"model": "time_distance"}, "byWeek": {"1": {"durationMin": 20, "rpe": [3, 4], "text": "Conversational. Nasal-breathing test: if you can't, back off. Log distance + avg pace (and HR if you have it)."}, "2": {"durationMin": 25, "rpe": [3, 4]}, "3": {"durationMin": 30, "rpe": [3, 4]}}, "cues": "Same damper setting every session so pace is comparable week to week."}, {"id": "cool", "exercise": "mobility_post", "name": "Cool-down mobility", "priority": "P2", "intent": "mobility", "progression": {"model": "none"}, "cues": "Chest, lats, upper back after pressing + pulling. Timed: at least 5 minutes before it counts.", "byWeek": {"1": {"durationMin": 6, "minSec": 300, "items": [{"t": "Doorway pec stretch 30s — gentle, stop on any pulling sensation", "n": 1, "side": true}, {"t": "Lat stretch on rack/bench 30s", "n": 1, "side": true}, {"t": "Thoracic open books ×8", "n": 1, "side": true}, {"t": "Cross-body shoulder stretch 30s", "n": 1, "side": true}, {"t": "Supine breathing, 90/90 legs 60s", "n": 1, "side": false}]}, "2": {"durationMin": 6, "minSec": 300, "items": [{"t": "Doorway pec stretch 30s — gentle, stop on any pulling sensation", "n": 1, "side": true}, {"t": "Lat stretch on rack/bench 30s", "n": 1, "side": true}, {"t": "Thoracic open books ×8", "n": 1, "side": true}, {"t": "Cross-body shoulder stretch 30s", "n": 1, "side": true}, {"t": "Supine breathing, 90/90 legs 60s", "n": 1, "side": false}]}, "3": {"durationMin": 6, "minSec": 300, "items": [{"t": "Doorway pec stretch 30s — gentle, stop on any pulling sensation", "n": 1, "side": true}, {"t": "Lat stretch on rack/bench 30s", "n": 1, "side": true}, {"t": "Thoracic open books ×8", "n": 1, "side": true}, {"t": "Cross-body shoulder stretch 30s", "n": 1, "side": true}, {"t": "Supine breathing, 90/90 legs 60s", "n": 1, "side": false}]}}}]}, "C": {"name": "Speed + Power + Football", "estMin": 61, "intent": {"primary": ["max_velocity", "lower_body_power"], "secondary": ["change_of_direction", "hamstring_resilience", "football_technical"]}, "develops": {"sprint_speed": 2, "acceleration": 1, "lower_body_power": 2, "jumping": 2, "change_of_direction": 1, "hamstring": 1, "ball_control": 1}, "slots": [{"id": "prep", "exercise": "prep_speed", "name": "Comprehensive Preparation", "priority": "P1", "intent": "prep", "progression": {"model": "none"}, "byWeek": {"1": {"durationMin": 15, "text": "3 min jog → dynamic mobility → A-march, A-skip, B-skip 2×20m → straight-leg bounds 2×20m → pogos 2×15 → 3 build-ups 30m", "items": [{"t": "3 min jog", "n": 1, "side": false}, {"t": "Dynamic mobility", "n": 1, "side": false}, {"t": "A-march 20m", "n": 2, "side": false}, {"t": "A-skip 20m", "n": 2, "side": false}, {"t": "B-skip 20m", "n": 2, "side": false}, {"t": "Straight-leg bounds 20m", "n": 2, "side": false}, {"t": "Pogos ×15", "n": 2, "side": false}, {"t": "Build-up 30m", "n": 3, "side": false}]}, "2": {"durationMin": 15, "items": [{"t": "3 min jog", "n": 1, "side": false}, {"t": "Dynamic mobility", "n": 1, "side": false}, {"t": "A-march 20m", "n": 2, "side": false}, {"t": "A-skip 20m", "n": 2, "side": false}, {"t": "B-skip 20m", "n": 2, "side": false}, {"t": "Straight-leg bounds 20m", "n": 2, "side": false}, {"t": "Pogos ×15", "n": 2, "side": false}, {"t": "Build-up 30m", "n": 3, "side": false}]}, "3": {"durationMin": 15, "items": [{"t": "3 min jog", "n": 1, "side": false}, {"t": "Dynamic mobility", "n": 1, "side": false}, {"t": "A-march 20m", "n": 2, "side": false}, {"t": "A-skip 20m", "n": 2, "side": false}, {"t": "B-skip 20m", "n": 2, "side": false}, {"t": "Straight-leg bounds 20m", "n": 2, "side": false}, {"t": "Pogos ×15", "n": 2, "side": false}, {"t": "Build-up 30m", "n": 3, "side": false}]}}}, {"id": "battery", "exercise": "field_battery", "name": "Field Battery — CMJ · 10m · Flying 10 · 505", "priority": "P1", "intent": "test", "onlyWeeks": [3], "progression": {"model": "none"}, "byWeek": {"3": {"sets": 4, "tests": ["cmj", "accel_10m", "fly_10m", "cod_505"], "text": "Fresh, after the full warm-up and one near-max rehearsal. Order: CMJ (3 jumps) → 10m (3 trials) → flying 10m (3 trials) → 505 (2 each side). Film everything at 240fps. Only do this if Weeks 1–2 felt good; otherwise run Week 2's session and test after travel."}}, "cues": "Same surface, footwear and time of day next time you test — the protocol is part of the result."}, {"id": "wall", "exercise": "wall_drill", "name": "Wall Drill (switches)", "priority": "P2", "intent": "speed", "progression": {"model": "none"}, "byWeek": {"1": {"sets": 3, "reps": "5 switches"}, "2": {"sets": 3, "reps": "5 switches"}, "3": {"sets": 3, "reps": "6 switches"}}}, {"id": "speed", "exercise": "sprint_flying", "name": "Speed — build-ups → flying sprints", "priority": "P1", "intent": "speed", "progression": {"model": "quality_gated"}, "byWeek": {"1": {"sets": 4, "distanceM": 30, "intensityPct": [70, 80], "restSec": 150, "text": "4 × 30m build-ups @ 70–80%. Relaxed face and shoulders."}, "2": {"sets": 4, "distanceM": 30, "intensityPct": [85, 90], "restSec": 180, "text": "4 × (20m build + 10m @ 85–90%)"}, "3": {"sets": 2, "distanceM": 30, "intensityPct": [70, 80], "restSec": 120, "text": "Battery done — 2 relaxed 30m build-ups to finish. No extra max-speed volume."}}, "minSets": 2, "cues": "Max speed is never done tired. If the warm-up feels flat, run Week 2's version instead."}, {"id": "broad", "exercise": "broad_jump", "name": "Broad Jump", "priority": "P2", "intent": "power", "progression": {"model": "quality_gated"}, "byWeek": {"1": {"sets": 3, "reps": 3, "text": "Submax ~80%, stick the landing"}, "2": {"sets": 3, "reps": 3, "text": "~90%, stick the landing"}, "3": {"sets": 3, "reps": 2, "text": "BENCHMARK: best of 6 max jumps, measured toe-to-heel with tape"}}, "onlyWeeks": [1, 2]}, {"id": "cod", "exercise": "cod_drills", "name": "Change of Direction", "priority": "P3", "intent": "cod", "progression": {"model": "quality_gated"}, "byWeek": {"1": {"sets": 4, "text": "Decel drills: 10m run → stop in 3 steps; 2 each side"}, "2": {"sets": 4, "text": "505-style turns @ 80%, 2 each side"}, "3": {"sets": 4, "text": "505 @ 90%, 2 each side — note which side feels better"}}, "onlyWeeks": [1, 2]}, {"id": "ham", "exercise": "hamstring_resilience", "name": "Hamstring Resilience", "priority": "P2", "intent": "durability", "progression": {"model": "capacity_standard"}, "byWeek": {"1": {"sets": 2, "holdSec": 20, "perSide": true, "text": "Single-leg hamstring bridge iso (heel on bench) — no eccentrics yet"}, "2": {"sets": 2, "reps": 3, "text": "Nordic — partial range, controlled, stop before you collapse"}, "3": {"sets": 2, "reps": 4, "text": "Nordic — same rules"}}}, {"id": "ball", "exercise": "ball_technical", "name": "Ball Work", "priority": "P4", "intent": "football_technical", "progression": {"model": "none"}, "byWeek": {"1": {"durationMin": 10, "text": "Wall passes both feet (L/R alternate), first touch out of feet"}, "2": {"durationMin": 10}, "3": {"durationMin": 10}}}, {"id": "cool", "exercise": "mobility_post", "name": "Cool-down mobility", "priority": "P2", "intent": "mobility", "progression": {"model": "none"}, "cues": "Hip flexors + hamstrings after sprinting. Timed: at least 5 minutes before it counts.", "byWeek": {"1": {"durationMin": 6, "minSec": 300, "items": [{"t": "Half-kneeling hip flexor stretch 45s", "n": 1, "side": true}, {"t": "Supine hamstring stretch (strap/towel) 45s", "n": 1, "side": true}, {"t": "Wall calf stretch 30s", "n": 1, "side": true}, {"t": "Adductor rock-backs ×10", "n": 1, "side": false}, {"t": "Breathing 60s", "n": 1, "side": false}]}, "2": {"durationMin": 6, "minSec": 300, "items": [{"t": "Half-kneeling hip flexor stretch 45s", "n": 1, "side": true}, {"t": "Supine hamstring stretch (strap/towel) 45s", "n": 1, "side": true}, {"t": "Wall calf stretch 30s", "n": 1, "side": true}, {"t": "Adductor rock-backs ×10", "n": 1, "side": false}, {"t": "Breathing 60s", "n": 1, "side": false}]}, "3": {"durationMin": 6, "minSec": 300, "items": [{"t": "Half-kneeling hip flexor stretch 45s", "n": 1, "side": true}, {"t": "Supine hamstring stretch (strap/towel) 45s", "n": 1, "side": true}, {"t": "Wall calf stretch 30s", "n": 1, "side": true}, {"t": "Adductor rock-backs ×10", "n": 1, "side": false}, {"t": "Breathing 60s", "n": 1, "side": false}]}}}]}, "D": {"name": "Posterior Chain + Work Capacity", "estMin": 61, "intent": {"primary": ["posterior_strength", "work_capacity"], "secondary": ["unilateral_strength", "hip_groin", "upper_pull"]}, "develops": {"strength": 2, "hamstring": 1, "stamina": 2, "repeat_sprint": 1, "adductor": 1}, "slots": [{"id": "prep", "exercise": "prep_general", "name": "Preparation", "priority": "P1", "intent": "prep", "progression": {"model": "none"}, "byWeek": {"1": {"durationMin": 10, "text": "3 min easy bike → leg swings, hip openers → knee-to-wall 1×10/side → pogos 2×10 → 3 build-ups 20m @ 60/70/80%", "items": [{"t": "3 min easy bike", "n": 1, "side": false}, {"t": "Leg swings — front/back + side ×10", "n": 1, "side": true}, {"t": "Hip openers ×8", "n": 1, "side": true}, {"t": "Knee-to-wall ×10", "n": 1, "side": true}, {"t": "Pogos ×10", "n": 2, "side": false}, {"t": "Build-up 20m (60 → 70 → 80%)", "n": 3, "side": false}]}, "2": {"durationMin": 10, "text": "As week 1; build-ups to 85%", "items": [{"t": "3 min easy bike", "n": 1, "side": false}, {"t": "Leg swings — front/back + side ×10", "n": 1, "side": true}, {"t": "Hip openers ×8", "n": 1, "side": true}, {"t": "Knee-to-wall ×10", "n": 1, "side": true}, {"t": "Pogos ×10", "n": 2, "side": false}, {"t": "Build-up 20m (60 → 70 → 80%)", "n": 3, "side": false}]}, "3": {"durationMin": 10, "text": "As week 1; build-ups to 90%", "items": [{"t": "3 min easy bike", "n": 1, "side": false}, {"t": "Leg swings — front/back + side ×10", "n": 1, "side": true}, {"t": "Hip openers ×8", "n": 1, "side": true}, {"t": "Knee-to-wall ×10", "n": 1, "side": true}, {"t": "Pogos ×10", "n": 2, "side": false}, {"t": "Build-up 20m (60 → 70 → 80%)", "n": 3, "side": false}]}}}, {"id": "dl", "exercise": "deadlift", "name": "Deadlift", "priority": "P1", "intent": "strength", "progression": {"model": "rpe_then_linear", "incrementKg": 5}, "byWeek": {"1": {"sets": 2, "reps": 5, "rpe": [6, 7], "load": {"mode": "find", "hint": "Ramp in sets of 5 from 40kg. Working load = first load at RPE 6–7. 2 working sets only."}}, "2": {"sets": 3, "reps": 5, "rpe": [6.5, 7.5], "load": {"mode": "from_last", "rule": "+5–10kg if final set ≤ RPE 6.5; +5kg if RPE 7; hold if ≥ RPE 8"}}, "3": {"sets": 3, "reps": 5, "rpe": [7, 8], "load": {"mode": "from_last", "rule": "Same rule; reference 90×5×3 @7"}}}, "minSets": 2, "cues": "90kg is your home-gym ceiling, not your ceiling. If it's easy before Week 4, Apex switches to pauses/tempo/reps."}, {"id": "rdl", "exercise": "bb_rdl", "name": "Romanian Deadlift", "priority": "P3", "intent": "posterior", "progression": {"model": "double_progression"}, "byWeek": {"1": {"sets": 2, "reps": 8, "rpe": [6, 6], "text": "Light (~40kg). This is the DOMS risk exercise — respect it."}, "2": {"sets": 3, "reps": 8, "rpe": [6, 7]}, "3": {"sets": 3, "reps": 10, "rpe": [7, 7], "text": "Heading toward 60×10×3 @7"}}}, {"id": "lat", "exercise": "lateral_lunge", "name": "Lateral Lunge (goblet)", "priority": "P3", "intent": "hip_groin", "progression": {"model": "double_progression"}, "byWeek": {"1": {"sets": 2, "reps": 6, "perSide": true}, "2": {"sets": 2, "reps": 8, "perSide": true}, "3": {"sets": 3, "reps": 8, "perSide": true}}, "superset": "D4"}, {"id": "bbrow", "exercise": "bb_row", "name": "Barbell Row", "priority": "P3", "intent": "pulling", "progression": {"model": "double_progression"}, "byWeek": {"1": {"sets": 2, "reps": 10, "rpe": [6, 6], "text": "~30kg"}, "2": {"sets": 3, "reps": 10, "rpe": [6, 7]}, "3": {"sets": 3, "reps": 10, "rpe": [7, 7], "text": "Heading toward 40×10×3"}}, "superset": "D4"}, {"id": "wc", "exercise": "bikeerg_intervals", "name": "BikeErg — Work Capacity", "priority": "P1", "intent": "work_capacity", "progression": {"model": "time_distance"}, "byWeek": {"1": {"sets": 6, "workSec": 60, "restSec": 60, "rpe": [7, 7], "text": "6 × 1 min hard (RPE 7) / 1 min easy. Log metres per rep."}, "2": {"sets": 4, "workSec": 180, "restSec": 90, "rpe": [7, 7], "text": "4 × 3 min @ threshold (RPE 7) / 90s easy"}, "3": {"sets": 5, "workSec": 180, "restSec": 90, "rpe": [7, 8], "text": "5 × 3 min @ threshold / 90s easy"}}, "cues": "Repeatability is the metric: last rep within ~5% of first rep's metres."}, {"id": "cool", "exercise": "mobility_post", "name": "Cool-down mobility", "priority": "P2", "intent": "mobility", "progression": {"model": "none"}, "cues": "Posterior chain after deadlifts + intervals. Timed: at least 5 minutes before it counts.", "byWeek": {"1": {"durationMin": 6, "minSec": 300, "items": [{"t": "Supine hamstring stretch (strap/towel) 45s", "n": 1, "side": true}, {"t": "Figure-4 glute stretch 45s", "n": 1, "side": true}, {"t": "Half-kneeling hip flexor stretch 45s", "n": 1, "side": true}, {"t": "Cat–cow ×8", "n": 1, "side": false}, {"t": "Breathing 60s", "n": 1, "side": false}]}, "2": {"durationMin": 6, "minSec": 300, "items": [{"t": "Supine hamstring stretch (strap/towel) 45s", "n": 1, "side": true}, {"t": "Figure-4 glute stretch 45s", "n": 1, "side": true}, {"t": "Half-kneeling hip flexor stretch 45s", "n": 1, "side": true}, {"t": "Cat–cow ×8", "n": 1, "side": false}, {"t": "Breathing 60s", "n": 1, "side": false}]}, "3": {"durationMin": 6, "minSec": 300, "items": [{"t": "Supine hamstring stretch (strap/towel) 45s", "n": 1, "side": true}, {"t": "Figure-4 glute stretch 45s", "n": 1, "side": true}, {"t": "Half-kneeling hip flexor stretch 45s", "n": 1, "side": true}, {"t": "Cat–cow ×8", "n": 1, "side": false}, {"t": "Breathing 60s", "n": 1, "side": false}]}}}]}, "E": {"name": "Aerobic / Running Exposure (optional, low cost)", "estMin": 35, "optional": true, "intent": {"primary": ["aerobic", "running_tolerance"], "secondary": ["mobility"]}, "develops": {"aerobic_engine": 1, "stamina": 1, "durability": 1}, "slots": [{"id": "run", "exercise": "run_walk", "name": "Run–Walk on grass", "priority": "P1", "intent": "running_tolerance", "progression": {"model": "time_distance"}, "byWeek": {"1": {"sets": 6, "text": "6 × (3 min easy run / 1 min walk) = 18 min running", "workSec": 180, "restSec": 60, "workLabel": "Run", "restLabel": "Walk"}, "2": {"sets": 5, "text": "5 × (5 min run / 1 min walk) = 25 min running", "workSec": 300, "restSec": 60, "workLabel": "Run", "restLabel": "Walk"}, "3": {"sets": 3, "text": "3 × (8 min run / 1 min walk), or 25 min continuous if calves have been quiet", "workSec": 480, "restSec": 60, "workLabel": "Run", "restLabel": "Walk"}}, "cues": "Lower-leg tightness ≥ 3/10 → walk the rest and log it. That's data, not failure."}, {"id": "mob", "exercise": "mobility_flow", "name": "Mobility", "priority": "P4", "intent": "mobility", "progression": {"model": "none"}, "byWeek": {"1": {"durationMin": 8, "minSec": 300}, "2": {"durationMin": 8, "minSec": 300}, "3": {"durationMin": 8, "minSec": 300}}}]}, "E2": {"name": "Zone 2 BikeErg (optional, low cost)", "estMin": 35, "optional": true, "intent": {"primary": ["aerobic"], "secondary": []}, "develops": {"aerobic_engine": 1}, "slots": [{"id": "z2", "exercise": "bikeerg_z2", "name": "BikeErg — Zone 2", "priority": "P1", "intent": "aerobic", "progression": {"model": "time_distance"}, "byWeek": {"1": {"durationMin": 30, "rpe": [3, 4]}, "2": {"durationMin": 35, "rpe": [3, 4]}, "3": {"durationMin": 40, "rpe": [3, 4]}, "4": {"durationMin": 30, "rpe": [3, 4]}, "5": {"durationMin": 35, "rpe": [3, 4]}}}]}, "T1": {"name": "Travel Strength A — Full Body", "estMin": 46, "travel": true, "intent": {"primary": ["lower_strength", "upper_strength"], "secondary": ["calf_soleus", "adductors"]}, "develops": {"strength": 2, "upper_body_strength": 1, "calf_soleus": 1, "adductor": 1, "durability": 1}, "slots": [{"id": "prep", "exercise": "prep_general", "name": "Preparation", "priority": "P1", "intent": "prep", "progression": {"model": "none"}, "byWeek": {"4": {"durationMin": 8, "text": "5 min easy cardio → leg swings, hip openers → knee-to-wall 1×10/side → pogos 2×15 (if floor allows)", "items": [{"t": "5 min easy cardio", "n": 1, "side": false}, {"t": "Leg swings + hip openers", "n": 1, "side": false}, {"t": "Knee-to-wall ×10", "n": 1, "side": true}, {"t": "Pogos ×15 (if floor allows)", "n": 2, "side": false}]}, "5": {"durationMin": 8, "items": [{"t": "5 min easy cardio", "n": 1, "side": false}, {"t": "Leg swings + hip openers", "n": 1, "side": false}, {"t": "Knee-to-wall ×10", "n": 1, "side": true}, {"t": "Pogos ×15 (if floor allows)", "n": 2, "side": false}]}}}, {"id": "bss", "exercise": "db_bss", "name": "DB Bulgarian Split Squat", "priority": "P1", "intent": "strength", "progression": {"model": "double_progression"}, "byWeek": {"4": {"sets": 3, "reps": 8, "perSide": true, "rpe": [7, 8]}, "5": {"sets": 3, "reps": 10, "perSide": true, "rpe": [7, 8]}}, "cues": "Heaviest DBs that allow clean reps. If the rack tops out early, slow the lowering to 3s."}, {"id": "dbb", "exercise": "db_bench", "name": "DB Bench Press", "priority": "P1", "intent": "upper_strength", "progression": {"model": "double_progression"}, "byWeek": {"4": {"sets": 3, "reps": 8, "rpe": [7, 8]}, "5": {"sets": 3, "reps": 10, "rpe": [7, 8]}}}, {"id": "row", "exercise": "db_row", "name": "DB Row", "priority": "P2", "intent": "pulling", "progression": {"model": "double_progression"}, "byWeek": {"4": {"sets": 3, "reps": 10, "perSide": true, "rpe": [7, 8]}, "5": {"sets": 3, "reps": 12, "perSide": true, "rpe": [7, 8]}}}, {"id": "rdl", "exercise": "db_rdl", "name": "DB Romanian Deadlift", "priority": "P2", "intent": "posterior", "progression": {"model": "double_progression"}, "byWeek": {"4": {"sets": 3, "reps": 10, "rpe": [7, 7]}, "5": {"sets": 3, "reps": 12, "rpe": [7, 8]}}}, {"id": "cop", "exercise": "copenhagen_short", "name": "Copenhagen Plank (short lever)", "priority": "P2", "intent": "durability", "progression": {"model": "capacity_standard"}, "byWeek": {"4": {"sets": 2, "holdSec": 25, "perSide": true}, "5": {"sets": 2, "holdSec": 30, "perSide": true}}, "superset": "T1-5"}, {"id": "calf", "exercise": "sl_calf_raise", "name": "Single-leg Calf Raise", "priority": "P2", "intent": "durability", "progression": {"model": "capacity_standard"}, "byWeek": {"4": {"sets": 2, "reps": 15, "perSide": true}, "5": {"sets": 3, "reps": 15, "perSide": true}}, "superset": "T1-5"}, {"id": "cool", "exercise": "mobility_post", "name": "Cool-down mobility", "priority": "P2", "intent": "mobility", "progression": {"model": "none"}, "cues": "Full-body reset. Timed: at least 5 minutes before it counts.", "byWeek": {"4": {"durationMin": 6, "minSec": 300, "items": [{"t": "Half-kneeling hip flexor stretch 45s", "n": 1, "side": true}, {"t": "Hamstring stretch 45s", "n": 1, "side": true}, {"t": "Wall calf stretch 30s", "n": 1, "side": true}, {"t": "Thoracic open books ×8", "n": 1, "side": true}, {"t": "Breathing 60s", "n": 1, "side": false}]}, "5": {"durationMin": 6, "minSec": 300, "items": [{"t": "Half-kneeling hip flexor stretch 45s", "n": 1, "side": true}, {"t": "Hamstring stretch 45s", "n": 1, "side": true}, {"t": "Wall calf stretch 30s", "n": 1, "side": true}, {"t": "Thoracic open books ×8", "n": 1, "side": true}, {"t": "Breathing 60s", "n": 1, "side": false}]}}}]}, "T2": {"name": "Travel Conditioning + Durability", "estMin": 41, "travel": true, "intent": {"primary": ["aerobic", "work_capacity"], "secondary": ["hamstring_resilience", "trunk"]}, "develops": {"aerobic_engine": 2, "stamina": 2, "hamstring": 1, "trunk": 1}, "slots": [{"id": "prep", "exercise": "prep_general", "name": "Preparation", "priority": "P1", "intent": "prep", "progression": {"model": "none"}, "byWeek": {"4": {"durationMin": 8, "text": "5 min easy cardio → leg swings, hip openers → knee-to-wall 1×10/side → pogos 2×15 (if floor allows)", "items": [{"t": "5 min easy cardio", "n": 1, "side": false}, {"t": "Leg swings + hip openers", "n": 1, "side": false}, {"t": "Knee-to-wall ×10", "n": 1, "side": true}, {"t": "Pogos ×15 (if floor allows)", "n": 2, "side": false}]}, "5": {"durationMin": 8, "items": [{"t": "5 min easy cardio", "n": 1, "side": false}, {"t": "Leg swings + hip openers", "n": 1, "side": false}, {"t": "Knee-to-wall ×10", "n": 1, "side": true}, {"t": "Pogos ×15 (if floor allows)", "n": 2, "side": false}]}}}, {"id": "int", "exercise": "cardio_intervals", "name": "Intervals — any cardio machine", "priority": "P1", "intent": "work_capacity", "progression": {"model": "time_distance"}, "byWeek": {"4": {"sets": 6, "workSec": 120, "restSec": 60, "rpe": [7, 8], "text": "6 × 2 min hard / 1 min easy on whatever exists: bike, rower, treadmill (incline OK)"}, "5": {"sets": 7, "workSec": 120, "restSec": 60, "rpe": [7, 8]}}, "cues": "Log the machine used. Output isn't compared across machines."}, {"id": "ham", "exercise": "sl_ham_bridge", "name": "Single-leg Hamstring Bridge (heel on bench)", "priority": "P2", "intent": "durability", "progression": {"model": "double_progression"}, "byWeek": {"4": {"sets": 2, "reps": 10, "perSide": true}, "5": {"sets": 3, "reps": 10, "perSide": true}}}, {"id": "pogo", "exercise": "pogo_skips", "name": "Pogos + Skips", "priority": "P3", "intent": "durability", "progression": {"model": "none"}, "byWeek": {"4": {"sets": 3, "text": "3 × (20 pogos + 20m skips) — only if floor/space allows"}, "5": {"sets": 3}}}, {"id": "trunk", "exercise": "dead_bug", "name": "Dead Bug", "priority": "P4", "intent": "trunk", "progression": {"model": "double_progression"}, "byWeek": {"4": {"sets": 2, "reps": 10, "perSide": true}, "5": {"sets": 3, "reps": 10, "perSide": true}}}, {"id": "cool", "exercise": "mobility_post", "name": "Cool-down mobility", "priority": "P2", "intent": "mobility", "progression": {"model": "none"}, "cues": "Full-body reset. Timed: at least 5 minutes before it counts.", "byWeek": {"4": {"durationMin": 6, "minSec": 300, "items": [{"t": "Half-kneeling hip flexor stretch 45s", "n": 1, "side": true}, {"t": "Hamstring stretch 45s", "n": 1, "side": true}, {"t": "Wall calf stretch 30s", "n": 1, "side": true}, {"t": "Thoracic open books ×8", "n": 1, "side": true}, {"t": "Breathing 60s", "n": 1, "side": false}]}, "5": {"durationMin": 6, "minSec": 300, "items": [{"t": "Half-kneeling hip flexor stretch 45s", "n": 1, "side": true}, {"t": "Hamstring stretch 45s", "n": 1, "side": true}, {"t": "Wall calf stretch 30s", "n": 1, "side": true}, {"t": "Thoracic open books ×8", "n": 1, "side": true}, {"t": "Breathing 60s", "n": 1, "side": false}]}}}]}, "T3": {"name": "Travel Strength B — Full Body", "estMin": 46, "travel": true, "intent": {"primary": ["lower_strength", "pulling_strength"], "secondary": ["hip_groin", "trunk"]}, "develops": {"strength": 2, "upper_body_strength": 2, "hamstring": 1, "adductor": 1, "trunk": 1}, "slots": [{"id": "prep", "exercise": "prep_general", "name": "Preparation", "priority": "P1", "intent": "prep", "progression": {"model": "none"}, "byWeek": {"4": {"durationMin": 8, "text": "5 min easy cardio → leg swings, hip openers → knee-to-wall 1×10/side → pogos 2×15 (if floor allows)", "items": [{"t": "5 min easy cardio", "n": 1, "side": false}, {"t": "Leg swings + hip openers", "n": 1, "side": false}, {"t": "Knee-to-wall ×10", "n": 1, "side": true}, {"t": "Pogos ×15 (if floor allows)", "n": 2, "side": false}]}, "5": {"durationMin": 8, "items": [{"t": "5 min easy cardio", "n": 1, "side": false}, {"t": "Leg swings + hip openers", "n": 1, "side": false}, {"t": "Knee-to-wall ×10", "n": 1, "side": true}, {"t": "Pogos ×15 (if floor allows)", "n": 2, "side": false}]}}}, {"id": "gob", "exercise": "goblet_squat", "name": "Goblet Squat (3s lowering)", "priority": "P1", "intent": "strength", "progression": {"model": "double_progression"}, "byWeek": {"4": {"sets": 3, "reps": 10, "rpe": [7, 8]}, "5": {"sets": 4, "reps": 10, "rpe": [7, 8]}}}, {"id": "pull", "exercise": "pullup_strict", "name": "Strict Pull-up", "priority": "P1", "intent": "strength", "progression": {"model": "strict_reps"}, "byWeek": {"4": {"sets": 4, "reps": "baseline", "text": "4 sets at your strict baseline"}, "5": {"sets": 5, "reps": "baseline"}}}, {"id": "push", "exercise": "pushup_fe", "name": "Push-up (feet elevated)", "priority": "P2", "intent": "upper_strength", "progression": {"model": "double_progression"}, "byWeek": {"4": {"sets": 3, "reps": 12, "rpe": [7, 8]}, "5": {"sets": 3, "reps": 15, "rpe": [7, 8]}}}, {"id": "slrdl", "exercise": "db_sl_rdl", "name": "Single-leg DB RDL", "priority": "P2", "intent": "posterior", "progression": {"model": "double_progression"}, "byWeek": {"4": {"sets": 3, "reps": 8, "perSide": true, "rpe": [7, 7]}, "5": {"sets": 3, "reps": 10, "perSide": true, "rpe": [7, 8]}}}, {"id": "lat", "exercise": "lateral_lunge", "name": "Lateral Lunge", "priority": "P3", "intent": "hip_groin", "progression": {"model": "double_progression"}, "byWeek": {"4": {"sets": 2, "reps": 8, "perSide": true}, "5": {"sets": 3, "reps": 8, "perSide": true}}}, {"id": "side", "exercise": "side_plank", "name": "Side Plank", "priority": "P4", "intent": "trunk", "progression": {"model": "capacity_standard"}, "byWeek": {"4": {"sets": 2, "holdSec": 40, "perSide": true}, "5": {"sets": 3, "holdSec": 40, "perSide": true}}}, {"id": "cool", "exercise": "mobility_post", "name": "Cool-down mobility", "priority": "P2", "intent": "mobility", "progression": {"model": "none"}, "cues": "Full-body reset. Timed: at least 5 minutes before it counts.", "byWeek": {"4": {"durationMin": 6, "minSec": 300, "items": [{"t": "Half-kneeling hip flexor stretch 45s", "n": 1, "side": true}, {"t": "Hamstring stretch 45s", "n": 1, "side": true}, {"t": "Wall calf stretch 30s", "n": 1, "side": true}, {"t": "Thoracic open books ×8", "n": 1, "side": true}, {"t": "Breathing 60s", "n": 1, "side": false}]}, "5": {"durationMin": 6, "minSec": 300, "items": [{"t": "Half-kneeling hip flexor stretch 45s", "n": 1, "side": true}, {"t": "Hamstring stretch 45s", "n": 1, "side": true}, {"t": "Wall calf stretch 30s", "n": 1, "side": true}, {"t": "Thoracic open books ×8", "n": 1, "side": true}, {"t": "Breathing 60s", "n": 1, "side": false}]}}}]}}, "microSessions": [{"id": "m_ankle", "name": "Ankle / calf durability (8 min)", "items": ["Knee-to-wall 1×10/side", "Single-leg balance 30s eyes closed/side", "Tibialis raises 2×20", "Pogos 2×15"]}, {"id": "m_groin", "name": "Hip / groin (6 min)", "items": ["Copenhagen short lever 2×15s/side", "Banded marches 2×20 (2s hold)", "Side-lying adduction 1×12/side"]}, {"id": "m_ball", "name": "Ball touches (10 min)", "items": ["Sole rolls, inside-outside, both feet", "Wall passes L/R, two-touch then one-touch"]}], "schedule": [{"date": "2026-10-01", "week": 1, "session": "B", "type": "core"}, {"date": "2026-10-02", "week": 1, "session": "E", "type": "optional"}, {"date": "2026-10-03", "week": 1, "session": "A", "type": "core"}, {"date": "2026-10-04", "week": 1, "session": null, "type": "rest"}, {"date": "2026-10-05", "week": 1, "session": "C", "type": "core"}, {"date": "2026-10-06", "week": 1, "session": "E2", "type": "optional"}, {"date": "2026-10-07", "week": 1, "session": "D", "type": "core"}, {"date": "2026-10-08", "week": 2, "session": "B", "type": "core"}, {"date": "2026-10-09", "week": 2, "session": "E", "type": "optional"}, {"date": "2026-10-10", "week": 2, "session": "A", "type": "core"}, {"date": "2026-10-11", "week": 2, "session": null, "type": "rest"}, {"date": "2026-10-12", "week": 2, "session": "C", "type": "core"}, {"date": "2026-10-13", "week": 2, "session": "E2", "type": "optional"}, {"date": "2026-10-14", "week": 2, "session": "D", "type": "core"}, {"date": "2026-10-15", "week": 3, "session": "B", "type": "core"}, {"date": "2026-10-16", "week": 3, "session": "E", "type": "optional"}, {"date": "2026-10-17", "week": 3, "session": "A", "type": "core"}, {"date": "2026-10-18", "week": 3, "session": null, "type": "rest"}, {"date": "2026-10-19", "week": 3, "session": "C", "type": "core"}, {"date": "2026-10-20", "week": 3, "session": "E2", "type": "optional"}, {"date": "2026-10-21", "week": 3, "session": "D", "type": "core"}, {"date": "2026-10-22", "week": 4, "session": null, "type": "rest", "note": "Travel day"}, {"date": "2026-10-23", "week": 4, "session": "T1", "type": "core"}, {"date": "2026-10-24", "week": 4, "session": "E2", "type": "optional"}, {"date": "2026-10-25", "week": 4, "session": "T2", "type": "core"}, {"date": "2026-10-26", "week": 4, "session": null, "type": "rest"}, {"date": "2026-10-27", "week": 4, "session": "T3", "type": "core"}, {"date": "2026-10-28", "week": 4, "session": "E2", "type": "optional"}, {"date": "2026-10-29", "week": 5, "session": "T1", "type": "core"}, {"date": "2026-10-30", "week": 5, "session": null, "type": "rest"}, {"date": "2026-10-31", "week": 5, "session": "T2", "type": "core"}, {"date": "2026-11-01", "week": 5, "session": "E2", "type": "optional"}, {"date": "2026-11-02", "week": 5, "session": "T3", "type": "core"}, {"date": "2026-11-03", "week": 5, "session": null, "type": "rest", "note": "Travel day"}], "rules": [{"id": "autoreg_week", "text": "Week labels are a ceiling, not a timetable. Progress early if RPE supports it; repeat a week if it doesn't."}, {"id": "doms", "text": "Soreness ≥ 5/10 in the muscles you're about to train → keep P1 work, drop one set of every P3/P4 slot."}, {"id": "speed_gate", "text": "Any rep slower, tighter or 'off' → stop speed work for the day. Never sprint max after heavy lower-body work."}, {"id": "pain_gate", "text": "Pain ≥ 3/10 in a region an exercise loads → no load increase; offer substitute or regress."}, {"id": "spacing", "text": "Keep ≥ 48h between C (max speed) and the previous A or D. Moving D to the day before C triggers a warning."}, {"id": "travel", "text": "Travel weeks are maintenance, not failure. Two strength sessions + one conditioning session a week holds most of what 1A built. Walk daily."}, {"id": "optional", "text": "E sessions are optional and earn adherence credit only when done as prescribed (easy). Skip them if recovery is poor."}, {"id": "testing", "text": "Test fresh and under the same conditions. A result only moves a rating when it beats that test's measurement-error gate; smaller changes are logged as observed, not confirmed."}], "historicalTargets": "see apex-athlete-baseline.json → targets"};
 
 // ── Utilities ───────────────────────────────────────────────────────
 const $ = s => document.querySelector(s);
@@ -472,6 +510,7 @@ function slotKind(slot, wk) {
   if (slot.exercise === 'pullup_strict') return 'strict';
   if ((slot.exercise || '').startsWith('bikeerg') || slot.exercise === 'cardio_intervals') return 'erg';
   if (slot.exercise === 'run_walk') return 'run';
+  if (slot.exercise === 'mobility_post' || slot.exercise === 'mobility_flow') return 'mobility';
   if (wk && wk.holdSec) return 'hold';
   if (MAIN_LIFTS.includes(slot.exercise)) return 'main';
   if (['none','quality_gated'].includes(slot.progression?.model) || slot.intent === 'prep') return 'check';
@@ -1161,6 +1200,7 @@ function xpEvents() {
     if (!planned && !opt) { add('s:' + s.id, s.scheduledDate, 25, `${s.name} (unplanned)`); return; }
     add('s:' + s.id, s.scheduledDate, opt ? 40 : 100, (opt ? 'Optional: ' : 'Mission: ') + s.name + (s.adaptation?.changes?.length ? ' (adapted)' : ''));
     if (s.slots.some(x => x.intent === 'durability' && x.sets.some(y => y.done))) add('d:' + s.id, s.scheduledDate, 20, 'Durability work');
+    if (s.slots.some(x => x.kind === 'mobility' && !x.skipped && x.sets[0]?.done)) add('mo:' + s.id, s.scheduledDate, 10, 'Cool-down mobility');
   });
   Object.values(m).forEach(x => { if (!x.session && x.date >= start && x.date <= t) add('r:' + x.date, x.date, 20, 'Recovery day honoured'); });
   (P()?.weeks || []).forEach(w => { const ds = Array.from({ length: 7 }, (_, i) => addDays(w.start, i)), core = ds.filter(d => m[d]?.session && !P().sessions[m[d].session].optional); if (core.length && core.every(d => completedOn(d).length)) add('w:' + w.week, ds[6] < t ? ds[6] : t, 100, `Week ${w.week}: all missions complete`); });
@@ -1934,37 +1974,11 @@ function openPlayer() {
   $('#player').classList.add('open'); document.body.style.overflow = 'hidden';
   try { navigator.wakeLock?.request('screen').then(l => W._lock = l).catch(()=>{}); } catch(e) {}
   clearInterval(clockH); clockH = setInterval(() => { $('#pClock').textContent = mmss((Date.now() - W.startedAt)/1000); }, 1000);
-  drawPlayer();
+  drawPlayer(); mobLoop();
 }
 function closePlayer() { $('#player').classList.remove('open'); document.body.style.overflow = ''; clearInterval(clockH); try { W?._lock?.release(); } catch(e){} render(); }
 function persist() { Store.d.activeWorkout = W; Store.save(); }
 const SL = () => W.slots[W.idx];
-
-function drawPlayer() {
-  const sl = SL();
-  $('#pTitle').textContent = `${W.sessionKey} · ${W.name}`;
-  $('#pDots').innerHTML = W.slots.map((s,i) => `<i class="${s.sets.some(x=>x.done)||s.skipped ? 'd' : i===W.idx ? 'c' : ''}"></i>`).join('');
-  $('#pPrev').disabled = W.idx === 0; $('#pPrev').style.opacity = W.idx === 0 ? .35 : 1;
-  $('#pNext').textContent = W.idx === W.slots.length - 1 ? 'Finish ✓' : 'Next ›';
-  const wk = sl.wk || {};
-  let h = `<div class="row between"><span class="chip ${sl.priority==='P1'?'g':sl.priority==='P2'?'b':''}">${esc(sl.priority)} · ${esc((sl.intent||'').replace(/_/g,' '))}</span>${sl.superset?`<span class="chip">SUPERSET ${esc(sl.superset)}</span>`:''}</div>
-    <h2 style="margin-top:10px;font-size:23px">${esc(sl.name)}</h2>`;
-  if (sl.adapted) h += `<div class="warn" style="margin-top:8px"><span class="chip ${FID_CHIP[sl.adapted.fid]}">${esc(sl.adapted.fid.toUpperCase())} MATCH</span> Replaces <b>${esc(sl.adapted.from)}</b>${sl.adapted.note ? '<br>' + esc(sl.adapted.note) : ''}</div>`;
-  if (sl.caution) h += `<div class="warn" style="margin-top:8px">Pain flag today: no load increase. Stop this exercise if pain rises above 3/10.</div>`;
-  if (wk.text) h += `<div class="reason" style="font-size:14px;color:var(--tx)">${esc(wk.text)}</div>`;
-  if (sl.cues) h += `<div class="reason">${esc(sl.cues)}</div>`;
-
-  if (sl.kind === 'main') h += drawMain(sl);
-  else if (sl.kind === 'lift') h += drawLift(sl);
-  else if (sl.kind === 'strict') h += drawStrict(sl);
-  else if (sl.kind === 'erg') h += drawErg(sl);
-  else if (sl.kind === 'hold') h += drawTaps(sl, i => `${sl.sets[i].holdSec}s`, `${wk.sets} × ${wk.holdSec}s${wk.perSide?' / side':''}`);
-  else if (sl.kind === 'run') h += drawTaps(sl, i => i+1, `${esc(wk.text||'')}`) + drawScale(sl, 'calf', 'Lower-leg tightness (0–10)', [0,1,2,3,4,5,6,7,8]);
-  else h += drawCheck(sl);
-
-  if (sl.skipped) h += `<div class="warn">Skipped${sl.skipReason?': '+esc(sl.skipReason):''}. <button class="btn sm" style="margin-top:8px" onclick="unskip()">Undo skip</button></div>`;
-  $('#pBody').innerHTML = h; $('#pBody').scrollTop = 0;
-}
 
 function prevLine(sl) {
   const lp = sl.kind === 'main' ? lastPerformance(sl.exercise) : sl.last;
@@ -1972,48 +1986,6 @@ function prevLine(sl) {
   return `<div class="dim mono" style="font-size:13px;margin-top:10px">Last (${esc(fmtDay(lp.date))}): ${lp.sets.map(s => `${s.load!=null?fmtKg(s.load)+'×':''}${s.reps ?? s.repsText ?? ''}${s.rpe?' @'+s.rpe:''}`).join(' · ')}</div>`;
 }
 
-function drawMain(sl) {
-  const wk = sl.wk; let h = '';
-  if (sl.finding) {
-    h += `<div class="target">Find load</div><div class="reason">${esc(sl.rx.reason)}</div>`;
-    const ramps = sl.sets.filter(s => s.ramp);
-    ramps.forEach((s,i) => h += `<div class="setrow done"><div class="n">RAMP ${i+1}</div><div class="v">${fmtKg(s.load)} × ${s.reps}</div><div class="tick">✓</div></div>`);
-    h += `<div class="editor"><div class="lbl">Next ramp set</div><div class="row between">${stepper('rampLoad', sl.rampLoad, 'kg')}<span class="mono dim">× ${wk.reps}</span></div>
-      <div class="grid2" style="margin-top:12px"><button class="btn" onclick="logRamp()">Log ramp set</button><button class="btn primary" onclick="setWorking()">This is my working load</button></div>
-      <div class="dim" style="font-size:12px;margin-top:8px">Log a set, then decide: if it felt RPE ${wk.rpe.join('–')}, tap "working load". Apex then lays out ${wk.sets}×${wk.reps} at that weight.</div></div>`;
-    return h + prevLine(sl);
-  }
-  const ws = sl.sets.filter(s => !s.ramp);
-  h += `<div class="target">${fmtKg(ws[0]?.load)}kg × ${wk.reps} × ${wk.sets}</div><div class="reason">Target RPE ${wk.rpe.join('–')} · ${esc(sl.rx?.reason || '')}</div>`;
-  h += prevLine(sl) + drawSetRows(sl, s => `${fmtKg(s.load)} × ${s.reps}`);
-  const allDone = ws.length && ws.every(s => s.done);
-  if (allDone) h += `<div class="editor"><div class="lbl">RPE of the final set</div>${rpePicker(sl.finalRpe)}</div>`;
-  return h;
-}
-function drawLift(sl) {
-  const wk = sl.wk;
-  let h = `<div class="target" style="font-size:24px">${wk.sets} × ${esc(String(wk.reps ?? ''))}${wk.perSide?' / side':''}</div>${wk.rpe?`<div class="reason">Target RPE ${wk.rpe.join('–')}</div>`:''}`;
-  return h + prevLine(sl) + drawSetRows(sl, s => `${s.load!=null?fmtKg(s.load)+'kg × ':''}${s.reps ?? s.repsText ?? ''}`);
-}
-function drawSetRows(sl, label) {
-  const sets = sl.sets.filter(s => !s.ramp), cur = sets.findIndex(s => !s.done);
-  let h = '';
-  sets.forEach((s, i) => {
-    const cls = s.done ? 'done' : i === cur ? 'cur' : '';
-    h += `<div class="setrow ${cls}"><div class="n">SET ${i+1}</div><div class="v" onclick="editSet(${i})">${label(s)}${s.rpe?` <span class="dim" style="font-size:14px">@${s.rpe}</span>`:''}</div><button class="tick" onclick="toggleSet(${i})">✓</button></div>`;
-    if (editing === i) h += setEditor(sl, s, i);
-  });
-  if (cur > 0 && cur !== -1) h += `<button class="btn ghost sm" style="width:100%;margin-top:8px" onclick="completeAll()">Complete remaining as prescribed</button>`;
-  return h;
-}
-function setEditor(sl, s, i) {
-  const loadStep = sl.exercise === 'deadlift' ? 5 : 2.5;
-  return `<div class="editor"><div class="grid2">
-    <div><div class="lbl">Load (kg)</div>${stepper('load', s.load ?? 0, '', loadStep, i)}</div>
-    ${typeof s.reps === 'number' || s.reps === null && !s.repsText ? `<div><div class="lbl">Reps</div>${stepper('reps', s.reps ?? 0, '', 1, i)}</div>` : '<div></div>'}
-  </div><div class="lbl" style="margin-top:12px">RPE (optional)</div>${rpePicker(s.rpe, i)}
-  <div class="grid2" style="margin-top:10px"><button class="btn sm" onclick="sameAsLast(${i})">Same as last set</button><button class="btn sm primary" onclick="editing=null;drawPlayer()">Done editing</button></div></div>`;
-}
 function stepper(field, val, unit, step=2.5, i) {
   return `<div class="stepper"><button onclick="step('${field}',-${step},${i ?? 'null'})">−</button><div class="val">${fmtKg(val)}${unit?`<span class="dim" style="font-size:13px"> ${unit}</span>`:''}</div><button onclick="step('${field}',${step},${i ?? 'null'})">+</button></div>`;
 }
@@ -2040,27 +2012,10 @@ function drawErg(sl) {
   if (!wk.workSec && sl.sets[0].metres) { const pace = (wk.durationMin*60) / (sl.sets[0].metres/1000); h += `<div class="reason">Average pace ≈ <b>${mmss(pace)}</b> /1000m</div>`; }
   return h;
 }
-function drawTaps(sl, lab, head) {
-  return `<div class="target" style="font-size:22px">${head}</div><div class="taps">${sl.sets.map((s,i) => `<button class="${s.done?'on':''}" onclick="toggleSet(${i})">${lab(i)}</button>`).join('')}</div>`;
-}
 function drawScale(sl, key, label, vals) {
   return `<div class="editor"><div class="lbl">${label}</div><div class="pick">${vals.map(v => `<button class="${sl.measures[key]===v?'sel':''}" onclick="SL().measures['${key}']=${v};persist();drawPlayer()">${v}</button>`).join('')}</div></div>`;
 }
-function drawCheck(sl) {
-  const wk = sl.wk;
-  let h = drawTaps(sl, i => i+1, wk.sets ? `${wk.sets} ${wk.distanceM ? '× ' + wk.distanceM + 'm' : wk.reps ? '× ' + esc(String(wk.reps)) : 'rounds'}${wk.intensityPct ? ' @ ' + wk.intensityPct.join('–') + '%' : ''}` : (wk.durationMin ? wk.durationMin + ' min' : 'Complete'));
-  if (wk.tests) h += `<div class="editor"><div class="lbl">Record results (protocol shown on each)</div>${wk.tests.map(id => { const done = metricSeries(id).some(x => x.date === today()); return `<button class="btn ${done ? '' : 'primary'}" style="width:100%;margin-top:8px;justify-content:space-between" onclick="testSheet('${id}')"><span>${esc(METRICS[id].name)}</span><span>${done ? '✓ logged' : 'Record ›'}</span></button>`; }).join('')}</div>`;
-  return h;
-}
-
-// ── Player actions ──────────────────────────────────────────────────
 function realIdx(sl, i) { let n = -1; for (let k = 0; k < sl.sets.length; k++) { if (!sl.sets[k].ramp) n++; if (n === i) return k; } return -1; }
-function toggleSet(i) {
-  const sl = SL(); const k = sl.kind === 'main' || sl.kind === 'lift' ? realIdx(sl, i) : i; const s = sl.sets[k]; if (!s) return;
-  s.done = !s.done; editing = null; persist(); drawPlayer();
-  if (s.done) { const rest = sl.wk.restSec || (sl.kind === 'main' ? 150 : sl.kind === 'lift' ? 75 : sl.kind === 'hold' ? 30 : 0); if (rest && sl.sets.some(x => !x.done && !x.ramp)) startRest(rest); }
-}
-function editSet(i) { editing = editing === i ? null : i; drawPlayer(); }
 function step(field, delta, i) {
   const sl = SL();
   if (field === 'rampLoad') sl.rampLoad = Math.max(0, (sl.rampLoad || 0) + delta);
@@ -2074,61 +2029,517 @@ function setRpe(r, i) {
   const ws = sl.sets.filter(s => !s.ramp && s.done); if (i === null && ws.length) ws[ws.length-1].rpe = r;
   persist(); drawPlayer();
 }
-function sameAsLast(i) { const sl = SL(); if (i < 1) return; const a = sl.sets[realIdx(sl, i-1)], b = sl.sets[realIdx(sl, i)]; b.load = a.load; b.reps = a.reps; persist(); drawPlayer(); }
-function completeAll() { const sl = SL(); sl.sets.forEach(s => { if (!s.ramp) s.done = true; }); persist(); drawPlayer(); }
-function logRamp() { const sl = SL(); sl.sets.push({ ramp: true, load: sl.rampLoad, reps: sl.wk.reps, done: true }); sl.rampLoad += sl.exercise === 'deadlift' ? 10 : 5; persist(); drawPlayer(); }
-function setWorking() {
-  const sl = SL(); const ramps = sl.sets.filter(s => s.ramp); if (!ramps.length) return toast('Log at least one ramp set first', true);
-  const load = ramps[ramps.length-1].load; ramps[ramps.length-1].ramp = false;      // that set becomes working set 1
-  const first = sl.sets.find(s => !s.ramp); first.rpe = null;
-  for (let k = 1; k < sl.wk.sets; k++) sl.sets.push({ load, reps: sl.wk.reps, done: false });
-  sl.finding = false; sl.rx = { ...sl.rx, mode: 'load', load, reason: `Working load found at ${fmtKg(load)}kg — this is your current baseline.` };
-  persist(); drawPlayer(); startRest(150);
-}
 function logStrict() { const sl = SL(); const r = sl._next ?? (sl.sets.length ? sl.sets[sl.sets.length-1].reps : (sl.baseline || 3)); sl.sets.push({ reps: r, strict: true, done: true }); if (sl.sets.length === 1 && W.week === 1) sl._next = Math.max(1, r - 1); persist(); drawPlayer(); startRest(120); }
 function setMetres(i, v) { const s = SL().sets[i]; s.metres = parseInt(v) || null; s.done = !!s.metres; persist(); drawPlayer(); }
-function unskip() { SL().skipped = false; persist(); drawPlayer(); }
-$('#pPrev').onclick = () => { if (W.idx > 0) { W.idx--; editing = null; persist(); drawPlayer(); } };
-$('#pNext').onclick = () => { if (W.idx < W.slots.length - 1) { W.idx++; editing = null; persist(); drawPlayer(); } else finishFlow(); };
-$('#pClose').onclick = () => { persist(); closePlayer(); toast('Workout paused — resume from Today'); };
-$('#pMore').onclick = () => {
-  const sl = SL();
-  openSheet(`<h2>${esc(sl.name)}</h2>
-    <button class="btn" style="width:100%;margin-top:12px" onclick="skipSlot('Equipment')">Skip — equipment not available</button>
-    <button class="btn" style="width:100%;margin-top:8px" onclick="skipSlot('Time')">Skip — short on time</button>
-    <button class="btn" style="width:100%;margin-top:8px;color:var(--red)" onclick="painFlag()">Pain during this exercise</button>
-    <div class="lbl dim" style="margin-top:14px;font-size:12px">Note</div><input class="num" style="font-size:15px" id="slNote" value="${esc(sl.note||'')}" placeholder="e.g. 2 extra kipped reps, left calf tight">
-    <button class="btn primary" style="width:100%;margin-top:10px" onclick="SL().note=$('#slNote').value;persist();closeSheet();toast('Note saved')">Save note</button>
-    <div class="sep"></div><button class="btn ghost" style="width:100%;color:var(--red)" onclick="abandonWorkout()">Discard whole workout</button>`);
-};
-function skipSlot(why) { const sl = SL(); sl.skipped = true; sl.skipReason = why; persist(); closeSheet(); $('#pNext').onclick(); }
-function painFlag() {
-  closeSheet();
-  setTimeout(() => openSheet(`<h2>Pain flag</h2><p class="muted" style="margin-top:6px">Apex won't diagnose. It will stop load increases for this exercise next time and note it for review.</p>
-    <div class="pick" style="margin-top:12px">${[2,3,4,5,6,7].map(n=>`<button onclick="SL().pain=${n};W.painFlag=true;persist();closeSheet();toast('Logged. Stop or reduce if ≥3/10.')">${n}${n===7?'+':''}</button>`).join('')}</div>`), 220);
+// ════════════════════════════════════════════════════════════════════
+// STAGE 7 — PLAYER v2: checklists, grouped supersets, L/R, timers, undo, fine load entry
+// ════════════════════════════════════════════════════════════════════
+const isSide = sl => !!sl.wk?.perSide && sl.kind !== 'check';
+const workSets = sl => sl.sets.filter(s => !s.ramp);
+const isLoadKind = sl => sl.kind === 'main' || sl.kind === 'lift';
+const isBW = sl => EX[sl.exercise]?.load === 'bw';
+function parseItems(text) {
+  return String(text).split(/→|,|;/).map(x => x.trim()).filter(Boolean).map(t => {
+    const m = t.match(/(\d+)\s*[×x]\s*\d+/), b = t.match(/^(\d+)\s+build-?ups?/i);
+    return { t, n: m ? Math.min(6, +m[1]) : b ? Math.min(6, +b[1]) : 1, side: /\/\s*side|each side/i.test(t) };
+  });
 }
-function abandonWorkout() { if (!confirm('Discard this workout? Nothing from it will be saved.')) return; Store.d.activeWorkout = null; Store.save(); W = null; closeSheet(); stopRest(); closePlayer(); }
+function ensureSlot(sl) {
+  if (sl._v === 2) return sl;
+  const wk = sl.wk || {};
+  if ((sl.kind === 'check' || sl.kind === 'mobility') && !sl.items) {
+    const src = wk.items || (sl.intent === 'prep' && wk.text ? parseItems(wk.text) : null);
+    if (src) sl.items = src.map(x => ({ t: x.t, n: x.n || 1, side: !!x.side, done: Array.from({ length: (x.n || 1) * (x.side ? 2 : 1) }, () => false) }));
+  }
+  if (sl.kind === 'mobility' && !sl.mob) sl.mob = { acc: 0, since: null, min: wk.minSec || 300, target: Math.max(wk.minSec || 300, (wk.durationMin || 5) * 60) };
+  if (wk.drops && sl.kind === 'lift' && !sl.sets.some(s => s.drop)) for (let k = 0; k < wk.drops; k++) sl.sets.push({ drop: true, load: null, reps: null, done: false });
+  sl._v = 2; return sl;
+}
+function groupAt(i) {
+  const s = W.slots[i]; if (!s?.superset) return [i];
+  let a = i, b = i; while (a > 0 && W.slots[a - 1].superset === s.superset) a--; while (b < W.slots.length - 1 && W.slots[b + 1].superset === s.superset) b++;
+  return Array.from({ length: b - a + 1 }, (_, k) => a + k);
+}
+const groupName = n => n === 2 ? 'Superset' : n === 3 ? 'Tri-set' : 'Circuit';
+const slotDone = sl => sl.skipped || (sl.sets.length > 0 && workSets(sl).length > 0 && workSets(sl).every(s => s.done));
 
-// ── Rest timer (timestamp-based: correct after backgrounding) ──────
-let restEnd = 0, restLen = 0, restH = null, audio = null;
-function startRest(sec) {
-  try { audio = audio || new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
-  restLen = sec; restEnd = Date.now() + sec*1000; $('#rest').classList.add('on'); tickRest();
-  clearInterval(restH); restH = setInterval(tickRest, 250);
+// ── Page ────────────────────────────────────────────────────────────
+function drawPlayer() {
+  W.slots.forEach(ensureSlot);
+  const g = groupAt(W.idx); if (g[0] !== W.idx) W.idx = g[0];
+  const last = g[g.length - 1];
+  $('#pTitle').textContent = `${W.sessionKey} · ${W.name}`;
+  $('#pDots').innerHTML = W.slots.map((s, i) => `<i class="${slotDone(s) || s.sets.some(x => x.done) ? 'd' : g.includes(i) ? 'c' : ''}"></i>`).join('');
+  $('#pPrev').disabled = W.idx === 0; $('#pPrev').style.opacity = W.idx === 0 ? .35 : 1;
+  $('#pNext').textContent = last === W.slots.length - 1 ? 'Finish ✓' : 'Next ›';
+  $('#pBody').innerHTML = g.length > 1 ? drawGroup(g) : drawSingle(W.idx);
+  if (!drawPlayer._keep) $('#pBody').scrollTop = 0; drawPlayer._keep = false;
+}
+function redraw() { drawPlayer._keep = true; const y = $('#pBody').scrollTop; drawPlayer(); $('#pBody').scrollTop = y; }
+function headHTML(sl) {
+  let h = `<div class="row between"><span class="chip ${sl.priority === 'P1' ? 'g' : sl.priority === 'P2' ? 'b' : ''}">${esc(sl.priority)} · ${esc((sl.intent || '').replace(/_/g, ' '))}</span>${isSide(sl) ? '<span class="chip">EACH SIDE</span>' : ''}</div>
+    <h2 style="margin-top:10px;font-size:23px">${esc(sl.name)}</h2>`;
+  if (sl.adapted) h += `<div class="warn" style="margin-top:8px"><span class="chip ${FID_CHIP[sl.adapted.fid]}">${esc(sl.adapted.fid.toUpperCase())} MATCH</span> Replaces <b>${esc(sl.adapted.from)}</b>${sl.adapted.note ? '<br>' + esc(sl.adapted.note) : ''}</div>`;
+  if (sl.caution) h += `<div class="warn" style="margin-top:8px">Pain flag today: no load increase. Stop this exercise if pain rises above 3/10.</div>`;
+  if (sl.wk?.text && !sl.items) h += `<div class="reason" style="font-size:14px;color:var(--tx)">${esc(sl.wk.text)}</div>`;
+  if (sl.cues) h += `<div class="reason">${esc(sl.cues)}</div>`;
+  return h;
+}
+function drawSingle(si) {
+  const sl = W.slots[si], wk = sl.wk || {};
+  let h = headHTML(sl);
+  if (sl.kind === 'main') h += drawMain2(si);
+  else if (sl.kind === 'lift') h += `<div class="target" style="font-size:24px">${wk.sets} × ${esc(String(wk.reps ?? ''))}${wk.perSide ? ' / side' : ''}</div>${wk.rpe ? `<div class="reason">Target RPE ${wk.rpe.join('–')}</div>` : ''}${prevLine(sl)}${rowsHTML([si])}`;
+  else if (sl.kind === 'strict') h += drawStrict(sl);
+  else if (sl.kind === 'erg') h += drawErg2(si);
+  else if (sl.kind === 'hold') h += `<div class="target" style="font-size:22px">${wk.sets} × ${wk.holdSec}s${wk.perSide ? ' / side' : ''}</div><div class="reason">Tap ▶ for a guided timer${wk.perSide ? ': left, 5s to switch, right' : ''}. Stop early and it records what you actually held.</div>${rowsHTML([si])}`;
+  else if (sl.kind === 'run') h += drawRun(si);
+  else if (sl.kind === 'mobility') h += drawMobility(si);
+  else h += drawCheck2(si);
+  if (sl.skipped) h += `<div class="warn">Skipped${sl.skipReason ? ': ' + esc(sl.skipReason) : ''}. <button class="btn sm" style="margin-top:8px" onclick="unskipAt(${si})">Undo skip</button></div>`;
+  return h;
+}
+function drawGroup(g) {
+  const sls = g.map(i => W.slots[i]);
+  let h = `<div class="row between"><span class="chip b">${groupName(g.length).toUpperCase()} · ${g.length} EXERCISES</span><span class="chip">${esc(sls[0].superset)}</span></div>
+    <h2 style="margin-top:10px;font-size:21px">${sls.map(s => esc(s.name)).join(' <span class="dim">+</span> ')}</h2>
+    <div class="reason">One set of each, back to back, then rest. Rest starts when the round is done.</div>`;
+  sls.forEach((sl, k) => { const wk = sl.wk; h += `<div class="ssx"><span class="ssl">${String.fromCharCode(65 + k)}</span><div style="flex:1"><b>${esc(sl.name)}</b><div class="dim" style="font-size:13px">${wk.sets} × ${esc(String(wk.reps ?? (wk.holdSec ? wk.holdSec + 's' : '')))}${wk.perSide ? ' / side' : ''}${wk.rpe ? ' · RPE ' + wk.rpe.join('–') : ''}${sl.adapted ? ' · replaces ' + esc(sl.adapted.from) : ''}</div>${sl.cues ? `<div class="dim" style="font-size:12px">${esc(sl.cues)}</div>` : ''}${prevLine(sl)}</div></div>`; });
+  h += rowsHTML(g);
+  const sk = sls.filter(s => s.skipped); if (sk.length) h += `<div class="warn">Skipped: ${sk.map(s => esc(s.name)).join(', ')}. ${sk.map(s => `<button class="btn sm" style="margin-top:6px" onclick="unskipAt(${W.slots.indexOf(s)})">Undo ${esc(s.name)}</button>`).join(' ')}</div>`;
+  return h;
+}
+
+// ── Set rows (single or grouped, round by round) ────────────────────
+function curPointer(g) {
+  const live = g.filter(si => !W.slots[si].skipped), rounds = Math.max(0, ...live.map(si => workSets(W.slots[si]).length));
+  for (let r = 0; r < rounds; r++) for (const si of live) { const s = workSets(W.slots[si])[r]; if (s && !s.done) return { si, i: r }; }
+  return null;
+}
+function rowsHTML(g) {
+  const live = g.filter(si => !W.slots[si].skipped), grouped = g.length > 1, cur = curPointer(g);
+  const rounds = Math.max(0, ...live.map(si => workSets(W.slots[si]).length)); let h = '';
+  for (let r = 0; r < rounds; r++) {
+    if (grouped) h += `<div class="rnd">ROUND ${r + 1}</div>`;
+    live.forEach((si, k) => {
+      const s = workSets(W.slots[si])[r]; if (!s) return;
+      const isCur = cur && cur.si === si && cur.i === r;
+      h += rowHTML(si, r, isCur, grouped ? String.fromCharCode(65 + g.indexOf(si)) : null);
+      const auto = isCur && isLoadKind(W.slots[si]) && !isBW(W.slots[si]) && s.load == null && !editing;
+      if ((editing && editing.si === si && editing.i === r) || auto) h += editorHTML(si, r);
+    });
+  }
+  const left = live.reduce((a, si) => a + workSets(W.slots[si]).filter(s => !s.done).length, 0), done = live.reduce((a, si) => a + workSets(W.slots[si]).filter(s => s.done).length, 0);
+  if (done && left) h += `<button class="btn ghost sm" style="width:100%;margin-top:10px" onclick="completeRest([${live}])">Complete remaining as prescribed</button>`;
+  return h;
+}
+function setLabel(sl, s) {
+  if (isLoadKind(sl)) {
+    const ld = s.load != null ? fmtKg(s.load) + 'kg × ' : isBW(sl) ? '' : '<span class="dim">kg?</span> × ', r = s.reps ?? s.repsText ?? '';
+    return `${ld}${esc(String(r))}${isBW(sl) && s.load == null ? ' <span class="dim" style="font-size:13px">reps</span>' : ''}${s.repsR != null && s.repsR !== s.reps ? `<span class="dim" style="font-size:14px"> · R ${s.repsR}</span>` : ''}${s.rpe ? ` <span class="dim" style="font-size:14px">@${s.rpe}</span>` : ''}`;
+  }
+  if (sl.kind === 'hold') { const h = s.held; return `${s.holdSec}s${h ? ` <span class="dim" style="font-size:13px">${isSide(sl) ? `L ${h.L ?? '–'} · R ${h.R ?? '–'}` : h.B ?? '–'}s held</span>` : ''}`; }
+  if (sl.kind === 'run') return `${esc(sl.wk.workLabel || 'Run')} ${mmss(sl.wk.workSec || 0)} / ${esc(sl.wk.restLabel || 'Walk')} ${mmss(sl.wk.restSec || 0)}`;
+  const wk = sl.wk; return esc(wk.distanceM ? `${wk.distanceM}m${wk.intensityPct ? ' @ ' + wk.intensityPct.join('–') + '%' : ''}` : wk.reps ? String(wk.reps) : 'Done');
+}
+function rowHTML(si, i, cur, tag) {
+  const sl = W.slots[si], s = workSets(sl)[i], side = isSide(sl);
+  const n = s.drop ? 'DROP' : (sl.kind === 'check' || sl.kind === 'run' ? 'REP ' : 'SET ') + (i + 1);
+  let ctl = '';
+  if (sl.kind === 'hold' && !s.done) ctl += `<button class="tick tmrb" aria-label="Start timer" onclick="holdTimer(${si},${i})">▶</button>`;
+  if (side) ctl += `<div class="lr"><button class="${s.L ? 'on' : ''}" onclick="tickSide(${si},${i},'L')">L</button><button class="${s.R ? 'on' : ''}" onclick="tickSide(${si},${i},'R')">R</button></div>`;
+  else ctl += `<button class="tick" aria-label="Done" onclick="tickSet(${si},${i})">✓</button>`;
+  return `<div class="setrow ${s.done ? 'done' : cur ? 'cur' : ''}">${tag ? `<span class="ssl sm">${tag}</span>` : `<div class="n">${n}</div>`}<div class="v" ${isLoadKind(sl) ? `onclick="editAt(${si},${i})"` : ''}>${tag ? `<div class="xn">${esc(sl.name)}</div>` : ''}${setLabel(sl, s)}${isLoadKind(sl) ? ' <span class="dim" style="font-size:13px">✎</span>' : ''}</div>${ctl}</div>`;
+}
+function numCtl(call, val, steps) {
+  const b = d => `<button onclick="${call}(${d})">${d > 0 ? '+' : '−'}${Math.abs(d)}</button>`;
+  return `<div class="numctl">${steps.filter(d => d < 0).map(b).join('')}<input class="num" inputmode="decimal" value="${val ?? ''}" placeholder="—" onchange="${call}(null,this.value)">${steps.filter(d => d > 0).map(b).join('')}</div>`;
+}
+function editorHTML(si, i) {
+  const sl = W.slots[si], s = workSets(sl)[i], big = sl.exercise === 'deadlift' ? 5 : 2.5, side = isSide(sl);
+  return `<div class="editor"><div class="lbl">${isBW(sl) ? 'Added load (kg) — optional' : 'Load (kg) — type any value'}</div>${numCtl(`ed.bind(null,${si},${i},'load')`, s.load, [-big, -0.5, 0.5, big])}
+    ${typeof s.reps === 'number' || (s.reps == null && !s.repsText) ? `<div class="lbl" style="margin-top:10px">Reps${side ? ' — left (right follows)' : ''}</div>${numCtl(`ed.bind(null,${si},${i},'reps')`, s.reps, [-1, 1])}` : ''}
+    ${side && typeof s.reps === 'number' ? `<div class="lbl" style="margin-top:10px">Reps — right</div>${numCtl(`ed.bind(null,${si},${i},'repsR')`, s.repsR ?? s.reps, [-1, 1])}` : ''}
+    <div class="lbl" style="margin-top:10px">RPE (optional)</div><div class="rpe">${[6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10].map(r => `<button class="${s.rpe === r ? 'sel' : ''}" onclick="ed(${si},${i},'rpe',null,${r})">${r}</button>`).join('')}</div>
+    <div class="grid2" style="margin-top:10px"><button class="btn sm" onclick="sameAsPrev(${si},${i})" ${i < 1 ? 'disabled style="opacity:.4"' : ''}>Same as last set</button><button class="btn sm primary" onclick="editing=null;redraw()">Done</button></div>
+    <div class="dim" style="font-size:12px;margin-top:6px">Changing the load also updates the remaining sets.</div></div>`;
+}
+function ed(si, i, field, delta, raw) {
+  const sl = W.slots[si], ws = workSets(sl), s = ws[i], old = s[field];
+  let v = raw != null ? parseFloat(raw) : (s[field] ?? (field === 'repsR' ? s.reps : 0) ?? 0) + delta;
+  if (field === 'rpe') { s.rpe = s.rpe === v ? null : v; persist(); return redraw(); }
+  if (raw != null && (raw === '' || isNaN(v))) v = null; else v = Math.max(0, Math.round(v * 100) / 100);
+  if (field === 'load' && v != null && v > 500) return toast('Check that load', true);
+  if (field === 'reps' || field === 'repsR') v = v == null ? null : Math.round(v);
+  s[field] = v;
+  if (field === 'load') ws.forEach((x, k) => { if (k > i && !x.done && !x.drop && (x.load === old || x.load == null)) x.load = v; });
+  if (field === 'reps' && s.repsR === old) s.repsR = null;
+  editing = { si, i }; persist(); redraw();
+}
+function editAt(si, i) { editing = editing && editing.si === si && editing.i === i ? null : { si, i }; redraw(); }
+function sameAsPrev(si, i) { const ws = workSets(W.slots[si]); if (i < 1) return; Object.assign(ws[i], { load: ws[i - 1].load, reps: ws[i - 1].reps, repsR: ws[i - 1].repsR ?? null }); persist(); redraw(); }
+
+// ── Ticking + rest flow ─────────────────────────────────────────────
+function tickSet(si, i) {
+  const s = workSets(W.slots[si])[i]; if (!s) return;
+  s.done = !s.done; if (W.slots[si].kind === 'hold' && !s.done) s.held = null;
+  editing = null; persist(); redraw(); if (s.done) afterTick(si, i);
+}
+function tickSide(si, i, side) {
+  const s = workSets(W.slots[si])[i]; s[side] = !s[side]; const was = s.done; s.done = !!(s.L && s.R);
+  editing = null; persist(); redraw();
+  if (s.done && !was) afterTick(si, i); else if (s[side] && !s.done) toast(side === 'L' ? 'Left done — now right' : 'Right done — now left');
+}
+function restDefault(sl) { return sl.wk?.restSec || { main: 150, lift: 75, hold: 30 }[sl.kind] || 0; }
+function restKeyFor(g) { const sl = W.slots[g[0]]; return g.length > 1 ? 'grp:' + (sl.superset || sl.exercise) : sl.exercise; }
+function restFor(g) { const k = restKeyFor(g), p = (Store.d.restPrefs || {})[k]; return p ?? (g.length > 1 ? (W.slots[g[0]].wk?.restSec || 75) : restDefault(W.slots[g[0]])); }
+function afterTick(si, i) {
+  const g = groupAt(si).filter(x => !W.slots[x].skipped), sl = W.slots[si];
+  if (g.length > 1) {
+    const roundDone = g.every(x => { const s = workSets(W.slots[x])[i]; return !s || s.done; }), more = g.some(x => workSets(W.slots[x]).some(s => !s.done));
+    if (roundDone && more) startRest(restFor(g), restKeyFor(g), `Round ${i + 1} done`);
+    else if (!roundDone) { const nx = g.find(x => { const s = workSets(W.slots[x])[i]; return s && !s.done; }); toast('Now: ' + W.slots[nx].name); }
+    else toast(groupName(g.length) + ' complete');
+    return;
+  }
+  const next = workSets(sl).find(s => !s.done);
+  if (!next) { if (sl.kind !== 'check') toast(sl.name + ' complete'); return; }
+  if (next.drop) return toast('Drop set: strip ~20% and go');
+  const r = restFor([si]); if (r) startRest(r, restKeyFor([si]), sl.name);
+}
+function completeRest(g) { g.forEach(si => workSets(W.slots[si]).forEach(s => { s.done = true; if (isSide(W.slots[si])) { s.L = s.R = true; } })); persist(); redraw(); }
+function unskipAt(si) { W.slots[si].skipped = false; persist(); redraw(); }
+
+// ── Main lift: find load, undo working load ─────────────────────────
+function drawMain2(si) {
+  const sl = W.slots[si], wk = sl.wk; let h = '';
+  if (sl.finding) {
+    h += `<div class="target">Find load</div><div class="reason">${esc(sl.rx.reason)}</div>`;
+    const ramps = sl.sets.filter(s => s.ramp);
+    ramps.forEach((s, k) => h += `<div class="setrow done"><div class="n">RAMP ${k + 1}</div><div class="v">${fmtKg(s.load)} × ${s.reps}</div>${k === ramps.length - 1 ? `<button class="tick" aria-label="Remove" onclick="dropRamp(${si})">✕</button>` : '<div class="tick">✓</div>'}</div>`);
+    h += `<div class="editor"><div class="lbl">Next ramp set (kg)</div>${numCtl(`rampEd.bind(null,${si})`, sl.rampLoad, [-2.5, -0.5, 0.5, 2.5])}
+      <div class="grid2" style="margin-top:12px"><button class="btn" onclick="logRamp2(${si})">Log ramp set</button><button class="btn primary" onclick="setWorking2(${si})" ${ramps.length ? '' : 'disabled style="opacity:.45"'}>Last set = working load</button></div>
+      <div class="dim" style="font-size:12px;margin-top:8px">Log a set. If it felt RPE ${wk.rpe.join('–')}, tap "working load" and Apex lays out ${wk.sets}×${wk.reps} at that weight. Wrong set? ✕ removes it.</div></div>`;
+    return h + prevLine(sl);
+  }
+  const ws = workSets(sl);
+  h += `<div class="target">${fmtKg(ws[0]?.load)}kg × ${wk.reps} × ${wk.sets}</div><div class="reason">Target RPE ${wk.rpe.join('–')} · ${esc(sl.rx?.reason || '')}</div>`;
+  if (sl.rx?.foundToday) h += `<button class="btn ghost sm" style="margin-top:8px" onclick="undoWorking(${si})">↺ Change working load</button>`;
+  h += prevLine(sl) + rowsHTML([si]);
+  if (ws.length && ws.every(s => s.done)) h += `<div class="editor"><div class="lbl">RPE of the final set</div>${rpePicker(sl.finalRpe)}</div>`;
+  return h;
+}
+function rampEd(si, delta, raw) { const sl = W.slots[si]; let v = raw != null ? parseFloat(raw) : (sl.rampLoad || 0) + delta; if (isNaN(v)) return; sl.rampLoad = Math.max(0, Math.round(v * 100) / 100); persist(); redraw(); }
+function logRamp2(si) { const sl = W.slots[si]; sl.sets.push({ ramp: true, load: sl.rampLoad, reps: sl.wk.reps, done: true }); sl.rampLoad = Math.round((sl.rampLoad + (sl.exercise === 'deadlift' ? 10 : 5)) * 100) / 100; persist(); redraw(); }
+function dropRamp(si) { const sl = W.slots[si], k = sl.sets.map(s => !!s.ramp).lastIndexOf(true); if (k < 0) return; sl.rampLoad = sl.sets[k].load; sl.sets.splice(k, 1); persist(); redraw(); toast('Ramp set removed'); }
+function setWorking2(si) {
+  const sl = W.slots[si], ramps = sl.sets.filter(s => s.ramp); if (!ramps.length) return toast('Log at least one ramp set first', true);
+  const last = ramps[ramps.length - 1], load = last.load; last.ramp = false; last.rpe = null;
+  for (let k = 1; k < sl.wk.sets; k++) sl.sets.push({ load, reps: sl.wk.reps, done: false });
+  sl.finding = false; sl.rx = { ...sl.rx, mode: 'load', load, foundToday: true, reason: `Working load found at ${fmtKg(load)}kg — your current baseline.` };
+  persist(); redraw(); startRest(restFor([si]), restKeyFor([si]), sl.name);
+}
+function undoWorking(si) {
+  const sl = W.slots[si];
+  sl.sets = sl.sets.filter(s => s.ramp || s.done); sl.sets.forEach(s => { s.ramp = true; });
+  sl.finding = true; sl.rampLoad = sl.sets.length ? sl.sets[sl.sets.length - 1].load : sl.rampLoad;
+  sl.rx = { ...sl.rx, mode: 'find', foundToday: false, reason: 'Working load reset. Logged sets are kept as ramp sets. Adjust the load and pick again.' };
+  stopRest(); persist(); redraw(); toast('Working load reset');
+}
+
+// ── Check (prep) checklist + timed blocks ───────────────────────────
+function drawItems(si) {
+  const sl = W.slots[si];
+  return `<div class="items">${sl.items.map((it, ii) => `<div class="item ${it.done.every(Boolean) ? 'on' : ''}"><div style="flex:1"><div>${esc(it.t)}</div>${it.n > 1 || it.side ? `<div class="dim" style="font-size:12px">${it.n > 1 ? it.n + ' rounds' : ''}${it.n > 1 && it.side ? ' · ' : ''}${it.side ? 'each side' : ''}</div>` : ''}</div>
+    <div class="chips">${it.done.map((d, j) => `<button class="${d ? 'on' : ''}" aria-label="${it.side ? (j % 2 ? 'Right' : 'Left') : 'Round ' + (Math.floor(j) + 1)}" onclick="tickItem(${si},${ii},${j})">${d ? '✓' : it.side ? (j % 2 ? 'R' : 'L') : ''}</button>`).join('')}</div></div>`).join('')}</div>`;
+}
+function tickItem(si, ii, j) {
+  const sl = W.slots[si], it = sl.items[ii]; it.done[j] = !it.done[j];
+  const all = sl.items.every(x => x.done.every(Boolean));
+  if (sl.kind === 'check') { const was = sl.sets[0].done; sl.sets[0].done = all; if (all && !was) toast('Prep done ✓'); }
+  persist(); redraw();
+}
+function tickAllItems(si) { const sl = W.slots[si]; sl.items.forEach(it => it.done = it.done.map(() => true)); if (sl.kind === 'check') sl.sets[0].done = true; persist(); redraw(); }
+function drawCheck2(si) {
+  const sl = W.slots[si], wk = sl.wk; let h = '';
+  if (sl.items) {
+    const n = sl.items.reduce((a, x) => a + x.done.length, 0), d = sl.items.reduce((a, x) => a + x.done.filter(Boolean).length, 0);
+    h += `<div class="row between" style="margin-top:8px"><div class="target" style="font-size:20px">${wk.durationMin ? '~' + wk.durationMin + ' min' : 'Checklist'}</div><span class="mono dim">${d}/${n}</span></div>${drawItems(si)}
+      ${d < n ? `<button class="btn ghost sm" style="width:100%;margin-top:10px" onclick="tickAllItems(${si})">Tick all</button>` : '<div class="pb" style="text-align:center;padding:10px">✓ Done</div>'}`;
+  } else if (!wk.tests && (workSets(sl).length > 1 || wk.sets)) {
+    h += `<div class="target" style="font-size:22px">${wk.sets || workSets(sl).length} × ${setLabel(sl, {})}</div>${wk.restSec ? `<div class="reason">Rest ${mmss(wk.restSec)} starts after each rep — adjust it with −5/+5.</div>` : ''}${rowsHTML([si])}`;
+  } else {
+    const done = sl.sets[0]?.done;
+    h += `<div class="target" style="font-size:22px">${wk.durationMin ? wk.durationMin + ' min' : 'Complete'}</div>
+      ${wk.durationMin && !done ? `<button class="btn primary" style="width:100%;margin-top:12px" onclick="blockTimer(${si})">▶ Start ${wk.durationMin}:00 timer</button>` : ''}
+      <button class="btn ${done ? 'primary' : ''}" style="width:100%;margin-top:8px" onclick="W.slots[${si}].sets[0].done=!W.slots[${si}].sets[0].done;persist();redraw()">${done ? '✓ Done' : 'Mark done'}</button>`;
+  }
+  if (wk.tests) h += `<div class="editor"><div class="lbl">Record results (protocol shown on each)</div>${wk.tests.map(id => { const dn = metricSeries(id).some(x => x.date === today()); return `<button class="btn ${dn ? '' : 'primary'}" style="width:100%;margin-top:8px;justify-content:space-between" onclick="testSheet('${id}')"><span>${esc(METRICS[id].name)}</span><span>${dn ? '✓ logged' : 'Record ›'}</span></button>`; }).join('')}</div>`;
+  return h;
+}
+function blockTimer(si) { const sl = W.slots[si]; runTimer([{ label: sl.name, sec: sl.wk.durationMin * 60, kind: 'work' }], { onDone: () => { sl.sets[0].done = true; persist(); redraw(); toast(sl.name + ' done'); } }); }
+
+// ── Holds (guided L → switch → R) ───────────────────────────────────
+function holdTimer(si, i) {
+  const sl = W.slots[si], s = workSets(sl)[i], sec = s.holdSec || sl.wk.holdSec || 30, side = isSide(sl);
+  const seq = side ? [...(!s.L ? [{ label: `${sl.name} — LEFT`, sec, kind: 'work', side: 'L' }] : []), ...(!s.L && !s.R ? [{ label: 'Switch sides', sec: 5, kind: 'switch' }] : []), ...(!s.R ? [{ label: `${sl.name} — RIGHT`, sec, kind: 'work', side: 'R' }] : [])]
+    : [{ label: sl.name, sec, kind: 'work', side: 'B' }];
+  runTimer(seq, {
+    onPhase: (ph, el) => { if (ph.kind !== 'work') return; s.held = { ...(s.held || {}), [ph.side]: el }; if (ph.side !== 'B') s[ph.side] = true; persist(); redraw(); },
+    onDone: () => { const was = s.done; s.done = side ? !!(s.L && s.R) : true; persist(); redraw(); if (s.done && !was) afterTick(si, i); },
+  });
+}
+
+// ── Erg + run with interval timers ──────────────────────────────────
+function drawErg2(si) {
+  const sl = W.slots[si], wk = sl.wk, iv = !!wk.workSec;
+  let h = `<div class="target" style="font-size:22px">${iv ? `${wk.sets} × ${mmss(wk.workSec)} / ${mmss(wk.restSec)}` : `${wk.durationMin} min`}</div><div class="reason">RPE ${(wk.rpe || []).join('–')}. Enter metres from the monitor${iv ? ' after each interval' : ' at the end'}.</div>
+    <button class="btn primary" style="width:100%;margin-top:10px" onclick="ergTimer(${si})">▶ ${iv ? 'Start interval timer' : `Start ${wk.durationMin}:00 timer`}</button>`;
+  sl.sets.forEach((s, i) => h += `<div class="setrow ${s.done ? 'done' : ''}"><div class="n">${iv ? 'REP ' + (i + 1) : 'TOTAL'}</div><input class="num" id="erg${i}" inputmode="numeric" placeholder="metres" value="${s.metres ?? ''}" onchange="setMetres(${i},this.value)"><div class="tick" style="${s.done ? '' : 'opacity:.3'}">✓</div></div>`);
+  const m = sl.sets.map(s => s.metres).filter(Boolean);
+  if (m.length >= 2) { const drop = Math.round((1 - m[m.length - 1] / m[0]) * 1000) / 10; h += `<div class="reason">Drop-off first → last: <b>${drop}%</b> ${drop > 5 ? '— above the ~5% repeatability target' : '— repeatable ✓'}</div>`; }
+  if (!iv && sl.sets[0].metres) { const pace = (wk.durationMin * 60) / (sl.sets[0].metres / 1000); h += `<div class="reason">Average pace ≈ <b>${mmss(pace)}</b> /1000m</div>`; }
+  return h;
+}
+function intervalSeq(wk, n) { const out = []; for (let k = 0; k < n; k++) { out.push({ label: `${wk.workLabel || 'Work'} ${k + 1}/${n}`, sec: wk.workSec, kind: 'work', rep: k }); if (k < n - 1) out.push({ label: `${wk.restLabel || 'Easy'} — next: ${k + 2}/${n}`, sec: wk.restSec, kind: 'rest' }); } return out; }
+function ergTimer(si) {
+  const sl = W.slots[si], wk = sl.wk;
+  if (!wk.workSec) return runTimer([{ label: sl.name, sec: wk.durationMin * 60, kind: 'work' }], { onDone: () => { toast('Time! Enter your metres'); setTimeout(() => $('#erg0')?.focus(), 300); } });
+  runTimer(intervalSeq(wk, sl.sets.length), { onPhase: ph => { if (ph.kind === 'work') toast(`Rep ${ph.rep + 1} done — log metres`); } });
+}
+function drawRun(si) {
+  const sl = W.slots[si], wk = sl.wk; let h = `<div class="target" style="font-size:22px">${workSets(sl).length} reps</div>`;
+  if (wk.workSec) h += `<button class="btn primary" style="width:100%;margin-top:10px" onclick="runTimer(intervalSeq(W.slots[${si}].wk, workSets(W.slots[${si}]).length), { onPhase: ph => { if (ph.kind === 'work') { workSets(W.slots[${si}])[ph.rep].done = true; persist(); redraw(); } } })">▶ Start run/walk timer</button>`;
+  return h + rowsHTML([si]) + drawScale(sl, 'calf', 'Lower-leg tightness (0–10)', [0, 1, 2, 3, 4, 5, 6, 7, 8]);
+}
+
+// ── Cool-down mobility (minimum 5 min, timed) ───────────────────────
+let mobH = null;
+const mobElapsed = sl => (sl.mob.acc || 0) + (sl.mob.since ? (Date.now() - sl.mob.since) / 1000 : 0);
+function drawMobility(si) {
+  const sl = W.slots[si], m = sl.mob, el = mobElapsed(sl), done = sl.sets[0]?.done;
+  return `<div class="mobt"><div class="eyebrow">${done ? 'Minimum done ✓' : 'Minimum ' + mmss(m.min)}</div><div class="t mono" id="mobT">${mmss(el)}</div><div class="bar"><i id="mobBar" style="width:${Math.min(100, el / m.min * 100)}%"></i></div>
+    <button class="btn ${m.since ? '' : 'primary'} big" style="margin-top:12px" onclick="mobToggle(${si})">${m.since ? 'Pause' : el > 0 ? 'Resume' : '▶ Start cool-down'}</button>
+    <div class="reason">${done ? `Logged. Keep going to ${mmss(m.target)} if you have time.` : 'Counts only after the full minimum. The timer keeps running if you switch screens.'}</div></div>
+    ${sl.items ? `<div class="eyebrow" style="margin-top:14px">Today's routine (tick as you go)</div>${drawItems(si)}` : ''}`;
+}
+function mobToggle(si) {
+  const sl = W.slots[si], m = sl.mob;
+  if (m.since) { m.acc = mobElapsed(sl); m.since = null; } else { audioUnlock(); m.since = Date.now(); }
+  persist(); redraw(); mobLoop();
+}
+function mobLoop() {
+  clearInterval(mobH);
+  mobH = setInterval(() => {
+    if (!W) return clearInterval(mobH);
+    const run = W.slots.filter(s => s.kind === 'mobility' && s.mob?.since); if (!run.length) return clearInterval(mobH);
+    run.forEach(sl => { const el = mobElapsed(sl); if (!sl.sets[0].done && el >= sl.mob.min) { sl.sets[0].done = true; persist(); beep(2); toast('Cool-down minimum done ✓'); if (W.slots[W.idx] === sl) redraw(); }
+      if (W.slots[W.idx] === sl && $('#mobT')) { $('#mobT').textContent = mmss(el); $('#mobBar').style.width = Math.min(100, el / sl.mob.min * 100) + '%'; } });
+  }, 500);
+}
+
+// ── Timer engine (timestamp-based; survives screen switches) ────────
+let TM = null, tmH = null;
+function audioUnlock() { try { audio = audio || new (window.AudioContext || window.webkitAudioContext)(); audio.resume?.(); } catch (e) {} }
+function tone(f, d, v = .15, at = 0) { try { const o = audio.createOscillator(), g = audio.createGain(), t0 = audio.currentTime + at; o.frequency.value = f; o.connect(g); g.connect(audio.destination); g.gain.setValueAtTime(v, t0); o.start(t0); o.stop(t0 + d); } catch (e) {} }
+function beep(n = 1) { for (let k = 0; k < n; k++) tone(880, .2, .15, k * .28); }
+function runTimer(seq, opts = {}) {
+  if (!seq.length) return; audioUnlock(); stopRest();
+  TM = { seq, i: 0, end: Date.now() + seq[0].sec * 1000, paused: null, opts, cd: null };
+  $('#tmr').classList.add('on'); clearInterval(tmH); tmH = setInterval(tickTimer, 200); tickTimer();
+}
+function tickTimer() {
+  if (!TM) return; const ph = TM.seq[TM.i], left = TM.paused ? (TM.end - TM.paused) / 1000 : (TM.end - Date.now()) / 1000;
+  if (!TM.paused && left <= 0) return phaseDone(ph.sec);
+  if (!TM.paused && left <= 3.05 && Math.ceil(left) !== TM.cd) { TM.cd = Math.ceil(left); tone(660, .08, .1); }
+  $('#tmrL').textContent = ph.label; $('#tmrT').textContent = mmss(Math.ceil(Math.max(0, left)));
+  $('#tmrBar').style.width = Math.max(0, left / ph.sec * 100) + '%'; $('#tmr').dataset.kind = ph.kind;
+  $('#tmrP').textContent = TM.paused ? 'Resume' : 'Pause';
+}
+function phaseDone(elapsed) {
+  const ph = TM.seq[TM.i], o = TM.opts; beep(ph.kind === 'work' ? 2 : 1);
+  try { o.onPhase?.(ph, Math.round(elapsed), TM.i); } catch (e) { console.error(e); }
+  TM.i++; TM.cd = null;
+  if (TM.i >= TM.seq.length) { stopTimer(); try { o.onDone?.(); } catch (e) { console.error(e); } return; }
+  TM.end = Date.now() + TM.seq[TM.i].sec * 1000; tickTimer();
+}
+function timerNext() { if (!TM) return; const ph = TM.seq[TM.i], now = TM.paused || Date.now(); TM.paused = null; phaseDone(Math.max(0, ph.sec - (TM.end - now) / 1000)); }
+function timerPause() { if (!TM) return; if (TM.paused) { TM.end += Date.now() - TM.paused; TM.paused = null; } else TM.paused = Date.now(); tickTimer(); }
+function stopTimer() { clearInterval(tmH); TM = null; $('#tmr').classList.remove('on'); }
+
+// ── Rest timer: ±5s, remembered per exercise ────────────────────────
+let restEnd = 0, restLen = 0, restH = null, audio = null, restKey = null;
+function startRest(sec, key, label) {
+  if (!sec) return; audioUnlock(); restKey = key || null;
+  restLen = sec; restEnd = Date.now() + sec * 1000; $('#restLbl').textContent = 'Rest' + (label ? ' · ' + label : '');
+  $('#rest').classList.add('on'); tickRest(); clearInterval(restH); restH = setInterval(tickRest, 250);
 }
 function tickRest() {
-  const left = Math.max(0, (restEnd - Date.now())/1000);
-  $('#restT').textContent = mmss(Math.ceil(left)); $('#restBar').style.width = (left/restLen*100) + '%';
-  if (left <= 0) { stopRest(); beep(); }
+  const left = Math.max(0, (restEnd - Date.now()) / 1000);
+  $('#restT').textContent = mmss(Math.ceil(left)); $('#restBar').style.width = Math.min(100, left / restLen * 100) + '%';
+  if (left <= 0) { stopRest(); beep(2); }
 }
 function stopRest() { clearInterval(restH); $('#rest').classList.remove('on'); }
-function beep() { try { const o = audio.createOscillator(), g = audio.createGain(); o.frequency.value = 880; o.connect(g); g.connect(audio.destination); g.gain.setValueAtTime(.15, audio.currentTime); o.start(); o.stop(audio.currentTime + .25); } catch(e) {} }
-$('#restPlus').onclick = () => { restEnd += 30000; restLen += 30; };
+function restAdj(d) {
+  restEnd += d * 1000; restLen = Math.max(5, restLen + d);
+  if (restKey) { Store.d.restPrefs = Store.d.restPrefs || {}; Store.d.restPrefs[restKey] = restLen; Store.save(); $('#restNote').textContent = `next time ${mmss(restLen)}`; }
+  tickRest();
+}
+$('#restMinus').onclick = () => restAdj(-5);
+$('#restPlus').onclick = () => restAdj(5);
 $('#restSkip').onclick = stopRest;
 
-// ── Finish → summary → save ─────────────────────────────────────────
+// ── Navigation + More sheet (group-aware) ───────────────────────────
+$('#pPrev').onclick = () => { if (W.idx > 0) { W.idx = groupAt(W.idx - 1)[0]; editing = null; persist(); drawPlayer(); } };
+$('#pNext').onclick = () => { const g = groupAt(W.idx), last = g[g.length - 1]; if (last < W.slots.length - 1) { W.idx = last + 1; editing = null; persist(); drawPlayer(); } else finishFlow(); };
+$('#pClose').onclick = () => { persist(); closePlayer(); toast('Workout paused — resume from Today'); };
+$('#pMore').onclick = () => {
+  const g = groupAt(W.idx);
+  openSheet(g.map(si => { const sl = W.slots[si]; return `<h2 style="${si !== g[0] ? 'margin-top:18px' : ''}">${esc(sl.name)}</h2>
+    <div class="grid2" style="margin-top:10px"><button class="btn sm" onclick="skipAt(${si},'Equipment')">Skip — equipment</button><button class="btn sm" onclick="skipAt(${si},'Time')">Skip — time</button></div>
+    <button class="btn sm" style="width:100%;margin-top:8px;color:var(--red)" onclick="painAt(${si})">Pain during this exercise</button>
+    <input class="num" style="font-size:15px;margin-top:8px" id="slNote${si}" value="${esc(sl.note || '')}" placeholder="Note, e.g. 12kg kettlebell, left calf tight">`; }).join('') + `
+    <button class="btn primary" style="width:100%;margin-top:10px" onclick="${g.map(si => `W.slots[${si}].note=$('#slNote${si}').value;`).join('')}persist();closeSheet();toast('Saved')">Save note${g.length > 1 ? 's' : ''}</button>
+    ${typeof devNoteButton === 'function' ? devNoteButton('player') : ''}
+    <div class="sep"></div><button class="btn ghost" style="width:100%;color:var(--red)" onclick="abandonWorkout()">Discard whole workout</button>`);
+};
+function skipAt(si, why) {
+  const sl = W.slots[si]; sl.skipped = true; sl.skipReason = why; persist(); closeSheet();
+  const g = groupAt(si); if (g.every(x => W.slots[x].skipped)) $('#pNext').onclick(); else redraw();
+}
+function painAt(si) {
+  closeSheet();
+  setTimeout(() => openSheet(`<h2>Pain flag — ${esc(W.slots[si].name)}</h2><p class="muted" style="margin-top:6px">Apex won't diagnose. It stops load increases for this exercise next time and notes it for review.</p>
+    <div class="pick" style="margin-top:12px">${[2, 3, 4, 5, 6, 7].map(n => `<button onclick="W.slots[${si}].pain=${n};W.painFlag=true;persist();closeSheet();toast('Logged. Stop or reduce if ≥3/10.')">${n}${n === 7 ? '+' : ''}</button>`).join('')}</div>`), 220);
+}
+function abandonWorkout() { if (!confirm('Discard this workout? Nothing from it will be saved.')) return; Store.d.activeWorkout = null; Store.save(); W = null; closeSheet(); stopRest(); stopTimer(); closePlayer(); }
+
+// ── Finish gate: cool-down ──────────────────────────────────────────
 function finishFlow() {
-  stopRest();
+  const pending = W.slots.map((s, i) => ({ s, i })).filter(x => x.s.kind === 'mobility' && !x.s.skipped && !x.s.sets[0]?.done);
+  if (!pending.length) return finishFlowCore();
+  const x = pending[0], el = mobElapsed(ensureSlot(x.s));
+  openSheet(`<h2>Cool-down first?</h2><p class="muted" style="margin-top:6px">${el > 0 ? `${mmss(el)} of ${mmss(x.s.mob.min)} done.` : `${mmss(x.s.mob.min)} of mobility left.`} It's the cheapest recovery you can buy, and it's what makes the next session feel good.</p>
+    <button class="btn primary big" style="margin-top:14px" onclick="closeSheet();W.idx=${x.i};persist();drawPlayer();if(!W.slots[${x.i}].mob.since)mobToggle(${x.i})">▶ Start cool-down now</button>
+    <button class="btn ghost" style="width:100%;margin-top:8px" onclick="W.slots[${x.i}].skipped=true;W.slots[${x.i}].skipReason='Skipped at finish';W.slots[${x.i}].mob.since=null;persist();closeSheet();setTimeout(finishFlowCore,250)">Skip today (logged)</button>`);
+}
+
+// ════════════════════════════════════════════════════════════════════
+// STAGE 8 — Coach's export · Developer notes · data fixes
+// ════════════════════════════════════════════════════════════════════
+const COACH_PERIODS = [['1 week', 7], ['1 month', 30], ['3 months', 91], ['6 months', 182], ['12 months', 365]];
+const kgs = x => fmtKg(x) + 'kg';
+function slotLine(sl, s) {
+  const ws = (sl.sets || []).filter(x => !x.ramp), done = ws.filter(x => x.done), wk = sl.wk || {}, side = wk.perSide ? '/side' : '';
+  const tag = sl.superset ? ` [${sl.superset}]` : '', name = sl.name + (sl.adapted ? ` (sub for ${sl.adapted.from})` : '') + tag;
+  if (sl.skipped) return `- ${name}: SKIPPED${sl.skipReason ? ' (' + sl.skipReason + ')' : ''}`;
+  let body = '';
+  if (sl.kind === 'main' || sl.kind === 'lift') {
+    const ramps = sl.sets.filter(x => x.ramp && x.done).map(x => `${fmtKg(x.load)}×${x.reps}`);
+    const fmt = x => `${x.load != null ? fmtKg(x.load) + 'kg×' : ''}${x.reps ?? x.repsText ?? '?'}${x.repsR != null && x.repsR !== x.reps ? '(R ' + x.repsR + ')' : ''}${side}${x.rpe ? ' @' + x.rpe : ''}`;
+    const parts = done.map(fmt), same = parts.length > 1 && parts.every(p => p === parts[0]);
+    body = (ramps.length ? `ramp ${ramps.join(', ')} → ` : '') + (same ? `${parts[0]} ×${parts.length}` : parts.join(', ') || 'no sets logged');
+    if (sl.finalRpe && !body.endsWith('@' + sl.finalRpe)) body += ` (final set RPE ${sl.finalRpe})`;
+    const half = ws.filter(x => !x.done && (x.L || x.R)); if (half.length) body += ` · ${half.length} set(s) one side only`;
+  } else if (sl.kind === 'strict') body = done.length ? `${done.map(x => x.reps).join(', ')} strict reps` : 'no sets';
+  else if (sl.kind === 'erg') { const m = sl.sets.map(x => x.metres).filter(Boolean); body = wk.workSec ? `${m.length}×${mmss(wk.workSec)}/${mmss(wk.restSec)}: ${m.join(', ')} m` : `${wk.durationMin} min · ${m[0] ? m[0] + ' m (' + mmss(wk.durationMin * 60 / (m[0] / 1000)) + '/1000m)' : 'no distance'}`; }
+  else if (sl.kind === 'hold') body = `${wk.holdSec}s${side} ×${done.length}` + (done.some(x => x.held) ? ' · held ' + done.map(x => x.held ? (x.held.B ?? `L${x.held.L ?? '–'}/R${x.held.R ?? '–'}`) + 's' : '').filter(Boolean).join(', ') : '');
+  else if (sl.kind === 'run') body = `${done.length}/${ws.length} reps · ${wk.text || ''}${sl.measures?.calf != null ? ' · lower-leg tightness ' + sl.measures.calf + '/10' : ''}`;
+  else if (sl.kind === 'mobility') body = sl.mob ? `${mmss(Math.round((sl.mob.acc || 0) + (sl.mob.since ? ((s?.endedAt || Date.now()) - sl.mob.since) / 1000 : 0)))} timed${sl.sets[0]?.done ? ' ✓' : ' (under minimum)'}` : (sl.sets[0]?.done ? 'done' : 'not done');
+  else if (sl.items) { const n = sl.items.reduce((a, x) => a + x.done.length, 0), d = sl.items.reduce((a, x) => a + x.done.filter(Boolean).length, 0); body = d === n ? 'done' : `${d}/${n} items`; }
+  else body = ws.length > 1 ? `${done.length}/${ws.length} reps${wk.distanceM ? ' × ' + wk.distanceM + 'm' : ''}` : (done.length ? 'done' : 'not done');
+  if (ws.length > 1 && done.length < ws.length && ['main', 'lift', 'hold'].includes(sl.kind)) body += ` (${done.length}/${ws.length} sets)`;
+  return `- ${name}: ${body}${sl.pain ? ` · PAIN ${sl.pain}/10` : ''}${sl.note ? ` · note: "${sl.note}"` : ''}`;
+}
+function coachExport(days) {
+  const d = Store.d, a = d.athlete, t = today(), from = addDays(t, -(days - 1));
+  const ss = d.sessions.filter(s => s.scheduledDate >= from && s.scheduledDate <= t).sort((x, y) => x.scheduledDate.localeCompare(y.scheduledDate) || x.startedAt - y.startedAt);
+  const wk = weekOf(t), L = [];
+  L.push(`# Apex training log — ${a.name} · ${fmtDay(from)} → ${fmtDay(t)} (${COACH_PERIODS.find(p => p[1] === days)?.[0] || days + ' days'})`);
+  L.push(`Athlete: ${a.sex}, ${a.age}y, ${a.heightCm}cm · football midfielder · training age ${a.trainingAge ?? '?'}y${(a.injuryHistory || []).length ? ' · history: ' + a.injuryHistory.map(i => `${(i.region || '').replace('_', ' ')} (${(i.status || '').replace(/_/g, ' ')})`).join(', ') : ''}`);
+  if (P()) L.push(`Program: ${P().block.name}${wk ? ` · week ${wk.week} (${wk.label})` : ''} · sessions A–D core, E/E2 optional. RPE = 1–10 effort; AU = session RPE × minutes.`);
+  const ad = adherenceRange(from, t); L.push(`Adherence: ${ad.done}/${ad.due} planned core sessions (${ad.due ? ad.pct + '%' : 'n/a'}) · ${ss.length} sessions logged · total load ${ss.reduce((x, s) => x + (s.load || 0), 0)} AU`);
+  const body = d.body.filter(b => b.weightKg && /^\d{4}-\d\d-\d\d$/.test(b.date)).sort((x, y) => x.date.localeCompare(y.date)), lastB = body[body.length - 1], tr = weightTrend(Math.max(28, days));
+  if (lastB) L.push(`Body: latest ${kgs(lastB.weightKg)} (${fmtDay(lastB.date)})${lastB.waistCm ? ', waist ' + lastB.waistCm + 'cm' : ''}${tr.kgWk != null ? ` · trend ${tr.kgWk > 0 ? '+' : ''}${tr.kgWk.toFixed(2)} kg/wk` : ''}`);
+  const nw = nutWindow(t, days), T = NUT().targets;
+  L.push(`Nutrition (MFP): logged ${nw.yes + nw.part}/${nw.days} days${nw.kN ? ` · avg ${nw.kAvg} kcal, ${nw.pAvg ?? '—'} g protein (full-log days)` : ''} · targets ${T.kcal} kcal, ${T.protein} g protein, −${T.lossKgWk.join('–')} kg/wk`);
+  const rd = d.readiness.filter(r => r.v2 && r.date >= from);
+  if (rd.length) L.push(`Readiness (sleep/energy/soreness, 1–5): ${rd.map(r => `${r.date.slice(5)} ${r.sleep}/${r.energy}/${r.soreness}${r.pain ? ` pain ${r.painRegion} ${r.pain}` : ''}`).join(' · ')}`);
+  L.push('', '## Sessions');
+  if (!ss.length) L.push('None logged in this period.');
+  ss.forEach(s => {
+    L.push(`### ${fmtDay(s.scheduledDate)} — ${s.sessionKey} · ${s.name} (${s.durationMin} min · sRPE ${s.sessionRpe ?? '—'}${s.feel ? ' · felt ' + s.feel.toLowerCase() : ''} · ${s.load ?? '—'} AU${s.status !== 'completed' ? ' · ' + s.status : ''})`);
+    if (s.adaptation?.changes?.length) L.push(`Adapted (${s.adaptation.equip || 'constraints'}): ${s.adaptation.changes.map(c => `${c.from} → ${c.to}`).join('; ')}`);
+    s.slots.filter(sl => sl.intent !== 'prep' || sl.skipped).forEach(sl => L.push(slotLine(sl, s)));
+    const prep = s.slots.find(sl => sl.intent === 'prep' && !sl.skipped); if (prep) L.push(`- Warm-up: ${prep.sets[0]?.done ? 'done' : 'partial'}`);
+  });
+  const lifts = {}; ss.forEach(s => s.slots.forEach(sl => { if (!['main', 'lift'].includes(sl.kind) || sl.skipped) return; const top = sl.sets.filter(x => x.done && !x.ramp && x.load && typeof x.reps === 'number').sort((x, y) => epley(y.load, y.reps) - epley(x.load, x.reps))[0]; if (!top) return; (lifts[sl.name] = lifts[sl.name] || []).push({ date: s.scheduledDate, top }); }));
+  const lk = Object.keys(lifts); if (lk.length) { L.push('', '## Lift progression (top set per session)'); lk.forEach(k => { const v = lifts[k], f = v[0], l = v[v.length - 1], best = Math.max(...v.map(x => epley(x.top.load, x.top.reps))); L.push(`- ${k}: ${v.length} session(s) · first ${fmtKg(f.top.load)}×${f.top.reps} (${f.date.slice(5)}) → latest ${fmtKg(l.top.load)}×${l.top.reps} (${l.date.slice(5)}) · best est. 1RM ${Math.round(best)}kg`); }); }
+  const obs = d.observations.filter(o => o.date >= from && o.date <= t && METRICS[o.metric]); if (obs.length) { L.push('', '## Tests recorded'); obs.forEach(o => L.push(`- ${METRICS[o.metric].name}: ${typeof o.value === 'object' ? JSON.stringify(o.value) : o.value}${o.unit ? ' ' + o.unit : ''} (${o.date}, ${o.method || ''})`)); }
+  try { const c = computeCard(), r = Object.entries(c.doms).filter(([, v]) => v.r != null); if (r.length) { L.push('', '## Current ratings (1–99, research-anchored)'); L.push(r.map(([k, v]) => `${k} ${v.r}`).join(' · ') + (c.ath.r != null ? ` · Athletic Index ${c.ath.r}` : '')); } } catch (e) {}
+  const nxt = P() ? Object.values(scheduleMap()).filter(x => x.date > t && x.date <= addDays(t, 7)).sort((x, y) => x.date.localeCompare(y.date)) : [];
+  if (nxt.length) { L.push('', '## Next 7 days (planned)'); nxt.forEach(x => L.push(`- ${fmtDay(x.date)}: ${x.session ? x.session + ' · ' + P().sessions[x.session].name : 'rest'}`)); }
+  L.push('', '_Logged by the athlete in Apex. Treat estimated 1RMs as training estimates, not tests._');
+  return L.join('\n');
+}
+function coachSheet(days = 7) {
+  const txt = coachExport(days);
+  openSheet(`<h2>Coach's export</h2><p class="muted" style="font-size:14px;margin-top:6px">A concise log to paste into ChatGPT (or send a coach). Ask your question underneath it.</p>
+    <div class="pick wrapflex" style="margin-top:12px;flex-wrap:wrap">${COACH_PERIODS.map(([l, n]) => `<button class="${n === days ? 'sel' : ''}" style="flex:1 0 30%" onclick="coachSheet(${n})">${l}</button>`).join('')}</div>
+    <textarea id="coachTxt" class="num" readonly style="height:240px;margin-top:12px;font:12px/1.45 var(--mono);padding:10px">${esc(txt)}</textarea>
+    <div class="dim" style="font-size:12px;margin-top:4px">${txt.length.toLocaleString('en-AU')} characters</div>
+    <div class="grid2" style="margin-top:10px"><button class="btn primary" onclick="copyText($('#coachTxt').value,'Copied — paste into ChatGPT')">Copy</button><button class="btn" onclick="shareText($('#coachTxt').value,'apex-coach-${today()}-${days}d.md')">Share file</button></div>`);
+}
+async function copyText(t, msg) { try { await navigator.clipboard.writeText(t); toast(msg || 'Copied'); } catch (e) { const ta = $('#coachTxt') || $('#devTxt'); if (ta) { ta.removeAttribute('readonly'); ta.select(); document.execCommand('copy'); ta.setAttribute('readonly', ''); toast(msg || 'Copied'); } else toast('Copy failed', true); } }
+function shareText(t, name) { const f = new File([t], name, { type: 'text/markdown' }); if (navigator.canShare?.({ files: [f] })) navigator.share({ files: [f], title: name }).catch(() => {}); else { const u = URL.createObjectURL(f), el = document.createElement('a'); el.href = u; el.download = name; document.body.appendChild(el); el.click(); el.remove(); } }
+
+// ── Developer notes (self-contained: delete this block + 4 hooks to remove) ──
+const DEV_TAGS = [['works', 'Works ✓'], ['broken', 'Broken'], ['improve', 'Improve'], ['idea', 'Idea']];
+function DEV() { const d = Store.d; d.devNotes = d.devNotes || { enabled: true, items: [] }; return d.devNotes; }
+function devCtx() {
+  if ($('#player')?.classList.contains('open') && W) { const g = groupAt(W.idx); return `Player · ${W.sessionKey} · ${g.map(i => W.slots[i].name).join(' + ')}`; }
+  return ({ today: 'Today', plan: 'Plan', progress: 'Progress', me: 'Me' })[tab] + ' tab';
+}
+function devNoteButton() { return DEV().enabled ? `<button class="btn sm" style="width:100%;margin-top:10px" onclick="closeSheet();setTimeout(devNoteSheet,230)">✎ Developer note</button>` : ''; }
+function devNoteSheet() {
+  const ctx = devCtx(); let tag = 'improve';
+  openSheet(`<h2>Developer note</h2><div class="dim" style="font-size:12px;margin-top:4px">Context: ${esc(ctx)} · v${APP_VERSION}</div>
+    <div class="pick" id="devTag" style="margin-top:12px">${DEV_TAGS.map(([k, l]) => `<button data-v="${k}" class="${k === tag ? 'sel' : ''}">${l}</button>`).join('')}</div>
+    <textarea id="devIn" class="num" style="height:120px;margin-top:10px;font:15px/1.4 var(--font);padding:10px" placeholder="What works, what's broken, what could be better…"></textarea>
+    <button class="btn primary big" style="margin-top:10px" id="devSave">Save note</button>`);
+  $('#devTag').onclick = e => { const b = e.target.closest('button'); if (!b) return; tag = b.dataset.v; $('#devTag').querySelectorAll('button').forEach(x => x.classList.toggle('sel', x === b)); };
+  setTimeout(() => $('#devIn')?.focus(), 250);
+  $('#devSave').onclick = () => { const v = $('#devIn').value.trim(); if (!v) return toast('Write something first', true); DEV().items.push({ id: uid('dn'), ts: Date.now(), tag, text: v, ctx, v: APP_VERSION, sent: false }); Store.save(); closeSheet(); toast('Note saved — included in your backup'); if (tab === 'me' && !$('#player').classList.contains('open')) render(); };
+}
+function devNotesText(all) {
+  const it = DEV().items.filter(x => all || !x.sent); if (!it.length) return 'No open developer notes.';
+  return `# Apex developer notes (${it.length})\n` + DEV_TAGS.map(([k, l]) => { const xs = it.filter(x => x.tag === k); return xs.length ? `\n## ${l.replace(' ✓', '')}\n` + xs.map(x => `- ${x.text.replace(/\n+/g, ' ')} _(${new Date(x.ts).toLocaleDateString('en-AU')} · ${x.ctx} · v${x.v})_`).join('\n') : ''; }).join('');
+}
+function devMeHTML() {
+  const D = DEV(), open = D.items.filter(x => !x.sent);
+  if (!D.enabled) return `<div class="card"><div class="row between"><div><div class="eyebrow">Developer notes</div><div class="dim" style="font-size:13px;margin-top:4px">Hidden · ${D.items.length} saved</div></div><button class="btn sm" onclick="DEV().enabled=true;Store.save();render();applyDevFab()">Show</button></div></div>`;
+  return `<div class="card"><div class="row between"><div class="eyebrow">Developer notes · ${open.length} open</div><button class="btn sm primary" onclick="devNoteSheet()">+ Note</button></div>
+    ${open.slice(-5).reverse().map(x => `<div class="list-item"><span class="chip ${x.tag === 'broken' ? 'r' : x.tag === 'works' ? 'g' : x.tag === 'idea' ? 'b' : 'a'}">${esc(x.tag)}</span><div style="flex:1;font-size:14px">${esc(x.text)}<div class="dim" style="font-size:11px">${esc(x.ctx)}</div></div><button class="btn sm ghost" aria-label="Delete" onclick="if(confirm('Delete this note?')){DEV().items=DEV().items.filter(n=>n.id!=='${x.id}');Store.save();render()}">✕</button></div>`).join('') || '<div class="reason">Tap ✎ anywhere in the app when an idea hits. Notes ride along in every backup.</div>'}
+    ${open.length > 5 ? `<div class="reason">+${open.length - 5} more</div>` : ''}
+    <div class="grid2" style="margin-top:10px"><button class="btn sm" onclick="copyText(devNotesText(),'Notes copied')">Copy for Claude</button><button class="btn sm" onclick="if(confirm('Mark all open notes as sent? They stay in your backup.')){DEV().items.forEach(x=>x.sent=true);Store.save();render()}">Mark as sent</button></div>
+    <button class="btn ghost sm" style="width:100%;margin-top:6px" onclick="DEV().enabled=false;Store.save();render();applyDevFab()">Hide the ✎ button</button></div>`;
+}
+function applyDevFab() { const on = !!Store.d && DEV().enabled; let b = $('#devFab'); if (!b) { b = document.createElement('button'); b.id = 'devFab'; b.setAttribute('aria-label', 'Developer note'); b.textContent = '✎'; b.onclick = devNoteSheet; document.body.appendChild(b); } b.style.display = on ? '' : 'none'; }
+
+// ── One-off fix: loads that disagree with your own notes (workout #1) ──
+function fixLoadsFromNotes() {
+  const d = Store.d; d.migrations = d.migrations || []; if (d.migrations.some(m => m.key === 'fixLoads26')) return;
+  const hits = [];
+  d.sessions.forEach(s => s.slots.forEach(sl => { if (sl.kind !== 'lift' || !sl.note) return; const m = String(sl.note).match(/(\d+(?:\.\d+)?)\s*kg/i); if (!m) return; const kg = +m[1], ws = sl.sets.filter(x => !x.ramp && x.load != null); if (ws.length && ws.every(x => x.load !== kg && Math.abs(x.load - kg) <= 2.5)) hits.push({ ws, kg, name: sl.name, was: ws[0].load }); }));
+  if (hits.length) { snapshot('pre-load-fix'); hits.forEach(h => h.ws.forEach(x => x.load = h.kg)); }
+  d.migrations.push({ at: Date.now(), key: 'fixLoads26', from: hits.length ? `Loads corrected from your notes: ${hits.map(h => `${h.name} ${fmtKg(h.was)}→${fmtKg(h.kg)}kg`).join(', ')}` : 'Load check (nothing to fix)' });
+  Store.save();
+}
+
+
+// ── Finish → summary → save ─────────────────────────────────────────
+function finishFlowCore() {
+  stopRest(); stopTimer(); W.slots.forEach(s => { if (s.mob?.since) { s.mob.acc = mobElapsed(s); s.mob.since = null; } });
   const st = { rpe: null, feel: null };
   openSheet(`<h2>Session complete</h2><div class="muted mono" style="margin-top:4px">${Math.round((Date.now()-W.startedAt)/60000)} min</div>
     <div style="margin-top:16px"><b>Session RPE</b><div class="pick" id="sRpe" style="margin-top:8px;flex-wrap:wrap">${[1,2,3,4,5,6,7,8,9,10].map(n=>`<button data-v="${n}" style="flex:1 0 17%">${n}</button>`).join('')}</div></div>
@@ -2305,11 +2716,13 @@ function renderMe() {
       <div class="reason" style="color:var(--tx)">Active: <b>${esc(activeEquip().name)}</b> · ${activeEquip().equip.length} items${activeEquip().equip.includes('dumbbells') ? ' · DBs to ' + fmtKg(activeEquip().maxDbKg) + 'kg' : ''}</div>
       <div class="reason">Stays active until you change it — set Hotel gym on 22 Oct and every session adapts automatically (with review).</div></div>
     ${habitsMeHTML()}
+    ${devMeHTML()}
     ${appearanceHTML()}
     <div class="card"><div class="eyebrow">Settings</div><div class="row between" style="margin-top:10px"><span>Home-gym max barbell load</span>${stepperRaw('homeMax', d.settings.homeMaxKg)}</div></div>
     <div class="card"><div class="eyebrow">Data</div>
       <div class="reason">${d.sessions.length} V2 sessions · ${d.observations.length} performance records · ${d.body.length} body entries · ~${Math.round(bytes/1024)} KB<br>Last export: ${d.lastExportAt ? new Date(d.lastExportAt).toLocaleString('en-AU') : '<b style="color:var(--amber)">never</b>'}</div>
       <div class="grid2" style="margin-top:12px"><button class="btn" onclick="exportAll()">Export backup</button><button class="btn" onclick="$('#fileIn').click()">Import file</button></div>
+      <button class="btn primary" style="width:100%;margin-top:8px" onclick="coachSheet(7)">Coach's export (for ChatGPT)</button>
       <div class="reason" style="margin-top:10px">Import accepts: your legacy Apex export, the Apex seed file, a program (apex.program/1) from a coach or AI, an athlete baseline, or a V2 backup. You always see a preview first.</div>
       ${snaps.length ? `<div class="sep"></div><div class="eyebrow">Snapshots on this device</div>${snaps.map(k => { const ts = +k.slice(SNAP_PREFIX.length); return `<div class="list-item"><div style="flex:1" class="mono dim">${new Date(ts).toLocaleString('en-AU',{day:'numeric',month:'short',hour:'numeric',minute:'2-digit'})}</div><button class="btn sm" onclick="restoreSnap('${k}')">Restore</button></div>`; }).join('')}` : ''}
       ${(d.migrations||[]).length ? `<div class="sep"></div><div class="eyebrow">Migration log</div>${d.migrations.map(m => `<div class="reason mono" style="font-size:12px">${new Date(m.at).toLocaleDateString('en-AU')} · ${esc(m.from)}${m.observations!=null?` · ${m.observations} records, ${m.body} body`:''}</div>`).join('')}` : ''}
@@ -2380,7 +2793,7 @@ function restoreSnap(k) { if (!confirm('Restore this snapshot? Current data is s
 // ════════════════════════════════════════════════════════════════════
 // BOOT
 // ════════════════════════════════════════════════════════════════════
-Store.load(); applyUI(); ensureEquip(); dailySnapshot();
+Store.load(); fixLoadsFromNotes(); applyUI(); ensureEquip(); dailySnapshot(); applyDevFab();
 try { window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', applyUI); } catch(e) {}
 try { navigator.storage?.persist?.(); } catch(e) {}
 if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) navigator.serviceWorker.register('sw.js').catch(()=>{});
