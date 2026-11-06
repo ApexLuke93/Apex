@@ -322,7 +322,7 @@ select.num{appearance:none;-webkit-appearance:none}
 // ════════════════════════════════════════════════════════════════════
 // APEX V2 — Stage 1 (data layer + migration) + Stage 2 (execution)
 // ════════════════════════════════════════════════════════════════════
-const APP_VERSION = '3.1.0';
+const APP_VERSION = '3.1.1';
 const STORE_KEY = 'apex.store';           // schema v3
 const LEGACY_KEY = 'apex_v2';             // never written by V2
 const SNAP_PREFIX = 'apex.snap.';
@@ -593,7 +593,7 @@ function buildWorkout(date, sessionKey) {
   return {
     id: uid('s'), scheduledDate: date, sessionKey, week: w, name: def.name, startedAt: Date.now(), idx: 0,
     slots: def.slots.filter(sl => !sl.onlyWeeks || sl.onlyWeeks.includes(w)).map(sl => {
-      const wk = sl.byWeek[String(w)] || sl.byWeek['1'] || {};
+      const wk = wkFor(sl, w);
       const kind = slotKind(sl, wk);
       const base = { slotId: sl.id, exercise: sl.exercise, name: sl.name, kind, priority: sl.priority, intent: sl.intent, wk, cues: sl.cues || '', superset: sl.superset || null, sets: [], measures: {} };
       const nSets = typeof wk.sets === 'number' ? wk.sets : (parseInt(wk.sets) || 1);
@@ -910,7 +910,7 @@ function buildAIRequest(date, key, opts) {
     instructions: 'Propose a modified version of the planned session. Preserve training intent. Return JSON with schema "apex.adaptationProposal/1": { changes:[{slotId, from, to, prescription, fidelity:"equivalent|close|approximate|different", rationale}] }. Do not diagnose injuries.',
     athlete: { sex: Store.d.athlete.sex, age: Store.d.athlete.age, injuryHistory: Store.d.athlete.injuryHistory },
     block: { name: P().block.name, week: weekOf(date)?.week, weekLabel: weekOf(date)?.label },
-    plannedSession: { key, name: P().sessions[key].name, intent: P().sessions[key].intent, slots: P().sessions[key].slots.map(s => ({ id: s.id, name: s.name, priority: s.priority, intent: s.intent, prescription: s.byWeek[String(weekOf(date)?.week || 1)] })) },
+    plannedSession: { key, name: P().sessions[key].name, intent: P().sessions[key].intent, slots: P().sessions[key].slots.map(s => ({ id: s.id, name: s.name, priority: s.priority, intent: s.intent, prescription: wkFor(s, weekOf(date)?.week || 1) })) },
     constraints: { equipment: opts.equip.equip, maxDumbbellKg: opts.equip.maxDbKg, maxBarbellKg: opts.equip.maxBarKg, availableMin: opts.timeMin, location: opts.equip.name },
     readiness: opts.readiness || null, recentSessions: recent };
 }
@@ -1919,7 +1919,7 @@ function renderToday() {
 }
 
 function targetCard(slotDef) {
-  const w = weekOf(today())?.week || 1, wk = slotDef.byWeek[String(w)] || {};
+  const w = weekOf(today())?.week || 1, wk = wkFor(slotDef, w);
   const rx = prescribeMain(slotDef, wk);
   return `<div style="margin-top:14px;padding:12px;border-radius:12px;background:rgba(0,0,0,.25)">
     <div class="eyebrow">Main lift · ${esc(slotDef.name)}</div>
@@ -1970,7 +1970,7 @@ function trySwap(a, b) {
   $('#swapAnyway').onclick = commit;
 }
 function pickSession(date) {
-  openSheet(`<h2>Choose a session</h2>${Object.entries(P().sessions).map(([k,s]) => `<button class="btn" style="width:100%;margin-top:8px;justify-content:space-between" onclick="closeSheet();setTimeout(()=>startFlow('${date}','${k}'),220)"><span>${esc(k)} · ${esc(s.name)}</span><span class="dim mono">~${s.estMin}m</span></button>`).join('')}`);
+  openSheet(`<h2>Choose a session</h2>${Object.entries(P().sessions).filter(([k, s]) => P().block?.id !== 'hybrid-1' || s.block === 'hybrid').map(([k,s]) => `<button class="btn" style="width:100%;margin-top:8px;justify-content:space-between" onclick="closeSheet();setTimeout(()=>startFlow('${date}','${k}'),220)"><span>${esc(k)} · ${esc(s.name)}</span><span class="dim mono">~${s.estMin}m</span></button>`).join('')}`);
 }
 
 // ════════════════════════════════════════════════════════════════════
@@ -2528,7 +2528,8 @@ function showSummary(s, pbs, gained = []) {
   const nextKey = (P().schedule || []).find(x => x.date > s.scheduledDate && x.session && !P().sessions[x.session].optional);
   const nextMain = MAIN_LIFTS.map(ex => { const sl = s.slots.find(x => x.exercise === ex && !x.skipped); if (!sl) return null;
     const def = P().sessions[s.sessionKey]?.slots.find(x => x.slotId === sl.slotId || x.id === sl.slotId);
-    const w = Math.min(3, s.week + 1), wk = def?.byWeek[String(w)] || def?.byWeek[String(s.week)];
+    if (def && s.program === 'hybrid-1' && sl.hy) { const r = hyPrescribe(s.sessionKey, def, wkFor(def, s.week + 1)); return { name: LIFT_NAMES[ex], rx: { mode: 'load', load: r.load, reason: `${fmtKg(r.load)}kg × ${r.reps} · ${r.reason}` } }; }
+    const w = Math.min(3, s.week + 1), wk = def ? wkFor(def, w) : null;
     return def && wk ? { name: LIFT_NAMES[ex], rx: prescribeMain(def, wk) } : null; }).filter(Boolean);
   const done = s.slots.filter(x => !x.skipped && x.sets.some(y => y.done)).length;
   openSheet(`<div class="eyebrow" style="color:var(--green)">Saved</div><h2 style="margin-top:4px">${esc(s.name)}</h2>
@@ -3991,6 +3992,13 @@ function restoreSnap(k) { if (!confirm('Restore this snapshot? Current data is s
 // Nothing here completes, moves or deletes a session by itself.
 // ════════════════════════════════════════════════════════════════════
 const HY_START = '2026-11-12';
+// Prescription for week w; if the slot has no entry for w, use the nearest week it does have (never an empty prescription)
+function wkKeyFor(sl, w) {
+  const bw = sl?.byWeek || {}; if (bw[String(w)]) return String(w);
+  const ks = Object.keys(bw).filter(k => !isNaN(k)).map(Number).sort((a, b) => a - b); if (!ks.length) return null;
+  return String(ks.reduce((best, k) => Math.abs(k - w) < Math.abs(best - w) ? k : best, ks[0]));
+}
+function wkFor(sl, w) { const k = wkKeyFor(sl, w); return k ? sl.byWeek[k] : {}; }
 const HY_FMT = n => fmtKg(n);
 const isHy = sl => !!(sl && sl.hy);
 const wkDisp = w => w ? (w.display ?? w.week) : '';
@@ -4000,7 +4008,7 @@ const roundTo = (x, step) => { const s = step > 0 ? step : 0.5; return Math.roun
 
 // History of one program slot inside the hybrid block (most recent first). Skipped / substituted slots never count.
 function hyHistory(sessionKey, slotId, exercise) {
-  return [...Store.d.sessions].filter(s => s.sessionKey === sessionKey && (s.scheduledDate || '') >= HY_START)
+  return [...Store.d.sessions].filter(s => s.sessionKey === sessionKey && (s.program === 'hybrid-1' || (s.scheduledDate || '') >= HY_START))
     .sort((a, b) => (b.endedAt || 0) - (a.endedAt || 0))
     .map(s => ({ session: s, slot: (s.slots || []).find(x => x.slotId === slotId && x.exercise === exercise && !x.skipped && !x.substituted) }))
     .filter(h => h.slot && workingSets(h.slot).length);
@@ -4021,7 +4029,7 @@ function hyPrescribe(sessionKey, slot, wk) {
   const prescribed = last.slot.targetSets || prevWk.sets || ws.length;
   const top = ws.length >= prescribed && ws.every(s => (s.reps ?? 0) >= hi && (s.rir == null || s.rir >= rirMin) && (isSideSlotLike(last.slot) ? (s.repsR ?? s.reps) >= hi : true));
   const below = ws.some(s => (s.reps ?? 0) < lo);
-  const why = [`Last ${fmtDay(last.session.scheduledDate).slice(0, 6)}: ${ws.map(s => `${s.load != null ? HY_FMT(s.load) + '×' : ''}${s.reps ?? '?'}${s.rir != null ? ' RIR ' + s.rir : ''}`).join(', ')}`];
+  const why = [`Last ${new Date(last.session.scheduledDate + 'T12:00:00').toLocaleDateString('en-AU', { weekday: 'short', day: 'numeric', month: 'short' })}: ${ws.map(s => `${s.load != null ? HY_FMT(s.load) + '×' : ''}${s.reps ?? '?'}${s.rir != null ? ' RIR ' + s.rir : ''}`).join(', ')}`];
   let load = lastLoad, reps = lo;
   if (last.session.painFlag) { why.push('pain flagged last time → hold'); reps = Math.min(hi, Math.max(lo, Math.min(...ws.map(s => s.reps || lo)))); }
   else if (top && lastLoad != null) { load = Math.round((lastLoad + inc) * 100) / 100; reps = lo; why.push(`every set hit ${hi} → +${HY_FMT(inc)}kg, back to ${lo} reps`); }
@@ -4045,7 +4053,10 @@ const _hyBuild = buildWorkout;
 buildWorkout = function (date, key) {
   const w = _hyBuild(date, key), def = P()?.sessions?.[key];
   if (!def || def.block !== 'hybrid') return w;
-  w.week = weekOf(date)?.week ?? w.week; w.weekDisplay = wkDisp(weekOf(date)); w.program = 'hybrid-1';
+  const wo = weekOf(date), inBlock = wo && def.slots.some(sl => sl.byWeek?.[String(wo.week)]);
+  if (!inBlock) { const k = Number(wkKeyFor(def.slots.find(sl => sl.byWeek) || {}, wo?.week ?? (date < HY_START ? 0 : 99))); w.week = k; w.offBlock = true; w.weekDisplay = wkDisp((P().weeks || []).find(x => x.week === k)); }
+  else { w.week = wo.week; w.weekDisplay = wkDisp(wo); }
+  w.program = 'hybrid-1';
   w.slots.forEach(b => {
     const wk = b.wk; if (!wk || wk.prog !== 'double') return;
     const sl = def.slots.find(x => x.id === b.slotId), rx = hyPrescribe(key, sl, wk), n = typeof wk.sets === 'number' ? wk.sets : parseInt(wk.sets) || 1;
@@ -4291,6 +4302,20 @@ function fix13() {
   if (d.activeWorkout && d.activeWorkout.scheduledDate >= HY_START && !P().sessions[d.activeWorkout.sessionKey]?.block) notes.push('note: an old-program workout is in progress — left untouched');
   d.nutritionGamificationOffAt = d.nutritionGamificationOffAt || today();
   d.migrations.push({ at: Date.now(), key: 'hybrid13', from: 'APEX Hybrid Performance active from 12 Nov · Foundation 1A superseded · ' + (notes.join(', ') || 'no data changes') });
+  Store.save();
+}
+
+// v3.1.1 · repair an in-progress hybrid workout built on a date outside the block (empty prescriptions). Ticked sets are kept.
+function fix13b() {
+  const d = Store.d, a = d.activeWorkout; d.migrations = d.migrations || [];
+  if (!a || d.migrations.some(m => m.key === 'hybrid13b-' + a.id)) return;
+  const def = P()?.sessions?.[a.sessionKey]; if (!def || def.block !== 'hybrid') return;
+  const empty = (a.slots || []).filter(sl => (!sl.wk || !Object.keys(sl.wk).length) && !(sl.sets || []).some(x => x.done));
+  if (!empty.length) return;
+  snapshot('pre-hybrid13b'); const fresh = buildWorkout(a.scheduledDate, a.sessionKey);
+  a.slots = fresh.slots.map(fs => { const old = a.slots.find(o => o.slotId === fs.slotId); return old && !empty.includes(old) ? old : fs; });
+  a.week = fresh.week; a.program = 'hybrid-1'; a.weekDisplay = fresh.weekDisplay; if (a.idx >= a.slots.length) a.idx = 0;
+  d.migrations.push({ at: Date.now(), key: 'hybrid13b-' + a.id, from: `Rebuilt ${empty.length} empty exercise(s) in the ${a.sessionKey} workout in progress (${a.scheduledDate})` });
   Store.save();
 }
 
@@ -4642,7 +4667,7 @@ function ntFReject(date) { ntPush('fuel'); const F = NTS().fuel; F.on = false; d
 // ════════════════════════════════════════════════════════════════════
 // BOOT
 // ════════════════════════════════════════════════════════════════════
-Store.load(); fixLoadsFromNotes(); fixNavyBF(); fixWeek1(); confirm28(); fix29(); fix13(); travelTick(); applyUI(); ensureEquip(); dailySnapshot(); applyDevFab();
+Store.load(); fixLoadsFromNotes(); fixNavyBF(); fixWeek1(); confirm28(); fix29(); fix13(); fix13b(); travelTick(); applyUI(); ensureEquip(); dailySnapshot(); applyDevFab();
 try { window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', applyUI); } catch(e) {}
 try { navigator.storage?.persist?.(); } catch(e) {}
 if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) navigator.serviceWorker.register('sw.js').catch(()=>{});
